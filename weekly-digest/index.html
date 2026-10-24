@@ -138,14 +138,32 @@
   }
   .filter-select:focus { outline: none; border-color: var(--border-focus); }
 
-  /* 时间范围组合 */
-  .year-range-group {
-    display: flex; align-items: center; gap: 0.25rem; flex: 1.5; min-width: 200px;
+  /* 时间选择器组合 */
+  .date-range-group {
+    display: flex; align-items: center; gap: 0.25rem; flex: 1.5; min-width: 220px;
   }
-  .year-range-group .filter-select {
-    min-width: 0; flex: 1; padding-right: 1.5rem; 
-    background-position: right 0.5rem center;
+  .date-input {
+    flex: 1; 
+    padding: 0.4rem 0.6rem; 
+    border: 1px solid var(--border-color); 
+    border-radius: var(--radius-md); 
+    font-size: 0.85rem; 
+    background: var(--bg-surface); 
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.2s;
+    outline: none;
+    font-family: inherit;
   }
+  .date-input:focus { border-color: var(--border-focus); }
+  .date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer; opacity: 0.6; transition: opacity 0.2s;
+    /* 深色模式下反转日历图标颜色 */
+    filter: var(--calendar-filter, none); 
+  }
+  .date-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+  [data-theme="dark"] { --calendar-filter: invert(1); }
+  
   .range-separator { color: var(--text-tertiary); font-size: 0.9rem; }
 
   /* ================= 卡片列表 ================= */
@@ -322,7 +340,8 @@
     .modal-header { padding: 1rem; }
     .modal-body { padding: 1rem; }
     .modal-footer { padding: 1rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
-    .year-range-group { min-width: 100%; }
+    .date-range-group { min-width: 100%; flex-wrap: wrap; }
+    .date-input { width: 100%; }
   }
 </style>
 </head>
@@ -356,11 +375,11 @@
         <select id="categorySelect" class="filter-select"><option value="全部">全部分类</option></select>
         <select id="contributorSelect" class="filter-select"><option value="全部">全部贡献者</option></select>
         
-        <!-- 时间范围组合 -->
-        <div class="year-range-group">
-          <select id="startYearSelect" class="filter-select"><option value="">不限</option></select>
-          <span class="range-separator">-</span>
-          <select id="endYearSelect" class="filter-select"><option value="">不限</option></select>
+        <!-- 时间范围组合：挂两个原生 Date Picker -->
+        <div class="date-range-group">
+          <input type="date" id="startDate" class="date-input" title="开始日期">
+          <span class="range-separator">至</span>
+          <input type="date" id="endDate" class="date-input" title="结束日期">
         </div>
 
         <select id="attachmentSelect" class="filter-select">
@@ -406,8 +425,8 @@
   let currentSearch = "";
   let currentCategory = "全部";
   let currentContributor = "全部";
-  let currentStartYear = "";
-  let currentEndYear = "";
+  let currentStartDate = "";
+  let currentEndDate = "";
   let currentAttachment = "全部";
 
   const Icons = {
@@ -460,9 +479,15 @@
     return s || e || fmt(defaultTime);
   }
   
-  function getRecordYear(item) {
-    const ts = item["开始时间"] || item["投稿时间"];
-    return ts ? new Date(ts).getFullYear() : null; // 返回数字类型用于比较
+  // 提取记录的时间范围（时间戳数组 [min, max]）
+  function getRecordTimeRange(item) {
+    let times = [];
+    if (item["开始时间"]) times.push(item["开始时间"]);
+    if (item["结束时间"]) times.push(item["结束时间"]);
+    if (times.length === 0 && item["投稿时间"]) times.push(item["投稿时间"]);
+    
+    if (times.length === 0) return null;
+    return [Math.min(...times), Math.max(...times)];
   }
 
   function getAttachmentType(item) {
@@ -491,7 +516,7 @@
   }
 
   function hasActiveFilters() {
-    return currentSearch !== "" || currentCategory !== "全部" || currentContributor !== "全部" || currentStartYear !== "" || currentEndYear !== "" || currentAttachment !== "全部";
+    return currentSearch !== "" || currentCategory !== "全部" || currentContributor !== "全部" || currentStartDate !== "" || currentEndDate !== "" || currentAttachment !== "全部";
   }
 
   function updateUIState() {
@@ -508,8 +533,8 @@
     if (currentSearch) params.set("search", currentSearch);
     if (currentCategory !== "全部") params.set("category", currentCategory);
     if (currentContributor !== "全部") params.set("contributor", currentContributor);
-    if (currentStartYear) params.set("yearStart", currentStartYear);
-    if (currentEndYear) params.set("yearEnd", currentEndYear);
+    if (currentStartDate) params.set("dateStart", currentStartDate);
+    if (currentEndDate) params.set("dateEnd", currentEndDate);
     if (currentAttachment !== "全部") params.set("attachment", currentAttachment);
     
     const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
@@ -640,15 +665,22 @@
       const matchCategory = currentCategory === "全部" || extractText(item["分区"]) === currentCategory;
       const matchContributor = currentContributor === "全部" || extractText(item["投稿人昵称"]) === currentContributor;
       
-      // 时间范围筛选
-      const itemYear = getRecordYear(item);
-      let matchYear = true;
-      if (currentStartYear || currentEndYear) {
-        if (!itemYear) {
-          matchYear = false; // 如果筛选了年份，但没有时间的记录不展示
+      // 精准时间范围筛选
+      let matchTime = true;
+      if (currentStartDate || currentEndDate) {
+        const recordTime = getRecordTimeRange(item);
+        if (!recordTime) {
+          matchTime = false; // 如果设了时间范围，但记录无时间，则隐藏
         } else {
-          if (currentStartYear && itemYear < parseInt(currentStartYear)) matchYear = false;
-          if (currentEndYear && itemYear > parseInt(currentEndYear)) matchYear = false;
+          // 将用户选择的起始日期转为 00:00:00 的时间戳
+          const filterStart = currentStartDate ? new Date(currentStartDate).getTime() : 0;
+          // 将用户选择的结束日期转为 23:59:59 的时间戳
+          const filterEnd = currentEndDate ? new Date(currentEndDate).getTime() + 86399000 : Infinity;
+          
+          // 记录的时间段 [recordTime[0], recordTime[1]] 与筛选时间段 [filterStart, filterEnd] 必须有交集
+          if (recordTime[1] < filterStart || recordTime[0] > filterEnd) {
+            matchTime = false;
+          }
         }
       }
       
@@ -668,7 +700,7 @@
         extractText(item["内容主要参与人"]).toLowerCase().includes(search) ||
         extractText(item["UID"]).toLowerCase().includes(search);
 
-      return matchCategory && matchContributor && matchYear && matchAttachment && matchSearch;
+      return matchCategory && matchContributor && matchTime && matchAttachment && matchSearch;
     });
 
     filteredData.sort((a, b) => {
@@ -685,43 +717,35 @@
   function initFilters() {
     const catSelect = document.getElementById("categorySelect");
     const conSelect = document.getElementById("contributorSelect");
-    const startYearSelect = document.getElementById("startYearSelect");
-    const endYearSelect = document.getElementById("endYearSelect");
 
     const categories = [...new Set(allData.map(i => extractText(i["分区"])).filter(Boolean))];
     const contributors = [...new Set(allData.map(i => extractText(i["投稿人昵称"])).filter(Boolean))];
-    // 提取所有年份，并去重排序（降序）
-    const years = [...new Set(allData.map(i => getRecordYear(i)).filter(y => y !== null))].sort((a,b) => b - a);
 
     categories.forEach(cat => { catSelect.innerHTML += `<option value="${cat}">${cat}</option>`; });
     contributors.forEach(con => { conSelect.innerHTML += `<option value="${con}">${con}</option>`; });
-    years.forEach(year => { 
-      startYearSelect.innerHTML += `<option value="${year}">${year}年</option>`; 
-      endYearSelect.innerHTML += `<option value="${year}">${year}年</option>`; 
-    });
 
     // 从 URL 读取初始状态
     const params = new URLSearchParams(window.location.search);
     currentSearch = params.get("search") || "";
     currentCategory = params.get("category") || "全部";
     currentContributor = params.get("contributor") || "全部";
-    currentStartYear = params.get("yearStart") || "";
-    currentEndYear = params.get("yearEnd") || "";
+    currentStartDate = params.get("dateStart") || "";
+    currentEndDate = params.get("dateEnd") || "";
     currentAttachment = params.get("attachment") || "全部";
 
     // 同步到 UI
     document.getElementById("searchInput").value = currentSearch;
     catSelect.value = currentCategory;
     conSelect.value = currentContributor;
-    startYearSelect.value = currentStartYear;
-    endYearSelect.value = currentEndYear;
+    document.getElementById("startDate").value = currentStartDate;
+    document.getElementById("endDate").value = currentEndDate;
     document.getElementById("attachmentSelect").value = currentAttachment;
 
     // 绑定事件
     catSelect.addEventListener("change", (e) => { currentCategory = e.target.value; applyFilters(); });
     conSelect.addEventListener("change", (e) => { currentContributor = e.target.value; applyFilters(); });
-    startYearSelect.addEventListener("change", (e) => { currentStartYear = e.target.value; applyFilters(); });
-    endYearSelect.addEventListener("change", (e) => { currentEndYear = e.target.value; applyFilters(); });
+    document.getElementById("startDate").addEventListener("change", (e) => { currentStartDate = e.target.value; applyFilters(); });
+    document.getElementById("endDate").addEventListener("change", (e) => { currentEndDate = e.target.value; applyFilters(); });
     document.getElementById("attachmentSelect").addEventListener("change", (e) => { currentAttachment = e.target.value; applyFilters(); });
   }
 
@@ -787,12 +811,12 @@
         searchInput.value = "";
         document.getElementById("categorySelect").value = "全部";
         document.getElementById("contributorSelect").value = "全部";
-        document.getElementById("startYearSelect").value = "";
-        document.getElementById("endYearSelect").value = "";
+        document.getElementById("startDate").value = "";
+        document.getElementById("endDate").value = "";
         document.getElementById("attachmentSelect").value = "全部";
         
         currentSearch = ""; currentCategory = "全部"; currentContributor = "全部"; 
-        currentStartYear = ""; currentEndYear = ""; currentAttachment = "全部";
+        currentStartDate = ""; currentEndDate = ""; currentAttachment = "全部";
         
         applyFilters();
       };
