@@ -41,7 +41,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--bg-body);
     color: var(--text-primary);
     line-height: 1.6;
@@ -60,9 +60,20 @@
     justify-content: space-between;
     align-items: center;
     z-index: 100;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
-  .nav-brand { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
-  .nav-actions { display: flex; align-items: center; gap: 1rem; }
+  .nav-brand { 
+    font-size: 1.25rem; 
+    font-weight: 700; 
+    letter-spacing: -0.02em; 
+    white-space: nowrap; 
+  }
+  .nav-actions { 
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+  }
   
   .btn-icon {
     background: none; border: none; cursor: pointer; color: var(--text-secondary);
@@ -76,6 +87,7 @@
     background: var(--primary); color: #fff; text-decoration: none;
     padding: 0.5rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500;
     transition: background 0.2s;
+    white-space: nowrap;
   }
   .btn-primary:hover { background: var(--primary-hover); }
 
@@ -118,8 +130,15 @@
   }
   .entry:hover { box-shadow: var(--shadow-md); border-color: var(--border-hover); transform: translateY(-1px); }
 
-  .entry-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
-  .entry-title { font-size: 1.25rem; font-weight: 600; line-height: 1.4; color: var(--text-primary); }
+  .entry-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    gap: 1rem; 
+    margin-bottom: 0.75rem; 
+    flex-wrap: wrap; /* 防止窄屏挤压 */
+  }
+  .entry-title { font-size: 1.25rem; font-weight: 600; line-height: 1.4; color: var(--text-primary); word-break: break-word; }
   
   .tag {
     background: var(--bg-tag); color: var(--text-secondary);
@@ -157,7 +176,7 @@
     text-decoration: none; transition: all 0.15s;
   }
   .attachment-item:hover { border-color: var(--text-tertiary); }
-  .attachment-item svg { width: 16px; height: 16px; color: var(--text-secondary); }
+  .attachment-item svg { width: 16px; height: 16px; color: var(--text-secondary); flex-shrink: 0; }
   .attachment-item span { max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* 底部操作区 (举报) */
@@ -177,10 +196,28 @@
     background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px dashed var(--border-light);
   }
 
-  @media (max-width: 600px) {
-    .toolbar { flex-direction: column; }
-    .filter-select { width: 100%; }
-    .navbar { padding: 1rem; }
+  /* 响应式适配 */
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .nav-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .toolbar { 
+      flex-direction: column; 
+    }
+    .filter-select { 
+      width: 100%; 
+    }
+    .entry-header { 
+      flex-direction: column; 
+      align-items: flex-start; 
+      gap: 0.5rem;
+    }
   }
 </style>
 </head>
@@ -190,14 +227,11 @@
   <nav class="navbar">
     <div class="nav-brand">校史档案</div>
     <div class="nav-actions">
-      <!-- 亮暗切换按钮 -->
       <button id="themeToggle" class="btn-icon" title="切换主题">
-        <!-- 太阳图标 (默认在亮色下显示) -->
         <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-        <!-- 月亮图标 (默认隐藏) -->
         <svg id="icon-moon" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
       </button>
-      <!-- 投稿入口 (替换为你提供的飞书链接) -->
+      <!-- 投稿入口，直接使用你提供的链接 -->
       <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="btn-primary">我要投稿</a>
     </div>
   </nav>
@@ -222,9 +256,10 @@
 
 <script>
   // ================= 核心配置 =================
-  // 因为部署在 Cloudflare Pages，直接读取同源相对路径即可，无需写死 GitHub 仓库地址
-  const DATA_URL = './data.json';
-  const CDN_PREFIX = './'; 
+  // 注意：加了开头的斜杠，直接从根目录读取。
+  // 无论这个 html 是在 /history/ 还是 /gallery/ 下面，都能直接找到根目录的 data.json
+  const DATA_URL = '/data.json';
+  const CDN_PREFIX = '/'; 
 
   let allData = [];
   let currentSearch = "";
@@ -276,10 +311,18 @@
     // 1. 标题与分类
     const header = document.createElement("div");
     header.className = "entry-header";
-    header.innerHTML = `
-      <div class="entry-title">${item["内容标题"] || "无标题"}</div>
-      ${item["分区"] ? `<span class="tag">${item["分区"]}</span>` : ''}
-    `;
+    
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "entry-title";
+    titleDiv.textContent = item["内容标题"] || "无标题";
+    header.appendChild(titleDiv);
+
+    if (item["分区"]) {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = item["分区"];
+      header.appendChild(tag);
+    }
     card.appendChild(header);
 
     // 2. 元信息 (贡献者、时间)
@@ -288,10 +331,16 @@
     meta.className = "entry-meta";
     
     if (item["投稿人昵称"]) {
-      meta.innerHTML += `<span class="meta-item">${Icons.user} <span class="meta-contributor">贡献者：${item["投稿人昵称"]}</span></span>`;
+      const authorSpan = document.createElement("span");
+      authorSpan.className = "meta-item";
+      authorSpan.innerHTML = `${Icons.user} <span class="meta-contributor">贡献者：${item["投稿人昵称"]}</span>`;
+      meta.appendChild(authorSpan);
     }
     if (timeStr) {
-      meta.innerHTML += `<span class="meta-item">${Icons.clock} <span>${timeStr}</span></span>`;
+      const timeSpan = document.createElement("span");
+      timeSpan.className = "meta-item";
+      timeSpan.innerHTML = `${Icons.clock} <span>${timeStr}</span>`;
+      meta.appendChild(timeSpan);
     }
     card.appendChild(meta);
 
@@ -313,6 +362,7 @@
       attachments.forEach(path => {
         const a = document.createElement("a");
         a.className = "attachment-item";
+        // 从根目录读取附件
         a.href = CDN_PREFIX + path.replace(/^\//, "");
         a.target = "_blank";
         a.rel = "noopener";
@@ -432,7 +482,7 @@
     const listContainer = document.getElementById("list");
     
     try {
-      // 请求当前域名下的 data.json
+      // 从根目录请求 data.json
       const res = await fetch(DATA_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       allData = await res.json();
@@ -457,7 +507,7 @@
 
     } catch (e) {
       console.error("数据加载失败:", e);
-      listContainer.innerHTML = '<div class="empty">数据加载失败，请确认 data.json 是否存在且格式正确。</div>';
+      listContainer.innerHTML = '<div class="empty">数据加载失败，请检查根目录下是否存在 data.json。</div>';
     }
   }
 
