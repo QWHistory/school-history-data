@@ -111,17 +111,27 @@ def main():
                     print(f"      ✅ 附件已上传至 GitHub")
                     attachment_paths.append(github_path)
 
-        # --- 处理数据并合并 ---
+               # --- 处理数据并合并 (动态提取所有列) ---
         print(f"   -> 正在处理数据...")
+        
+        # 先放几个基础的核心字段（保持和之前兼容）
         data_entry = {
             "id": record_id,
-            "title": extract_text(fields.get("内容标题")),
-            "author": extract_text(fields.get("投稿人昵称")),
-            "content": extract_text(fields.get("内容详述")),
-            "category": extract_text(fields.get("分区")),
-            "time": fields.get("投稿时间"), # 时间戳
             "attachments": attachment_paths
         }
+
+        # 动态遍历飞书返回的所有字段（这就是完整数据了！）
+        for key, value in fields.items():
+            if key == "附件":
+                continue # 附件已经处理过了
+                
+            # 如果发现是富文本格式，自动提取纯文本
+            if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict) and "text" in value[0]:
+                data_entry[key] = extract_text(value)
+            else:
+                # 如果是数字、时间戳、纯文本等，直接原样保留
+                data_entry[key] = value
+
         existing_data.append(data_entry)
 
         # --- 清理飞书 ---
