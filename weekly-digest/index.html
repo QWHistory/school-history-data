@@ -96,7 +96,7 @@
   .search-wrapper svg.search-icon { position: absolute; left: 0.75rem; width: 16px; height: 16px; color: var(--text-tertiary); }
   
   .search-input {
-    width: 100%; padding: 0.5rem 2.2rem 0.5rem 2.2rem;
+    width: 100%; height: 34px; padding: 0 2.2rem;
     border: 1px solid var(--border-color); border-radius: var(--radius-md);
     font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary);
     transition: border-color 0.2s, box-shadow 0.2s; box-shadow: var(--shadow-sm);
@@ -113,10 +113,11 @@
   .btn-clear-search svg { width: 14px; height: 14px; }
 
   .btn-reset-all {
-    display: none;
-    padding: 0.5rem 0.8rem; background: var(--bg-surface); border: 1px solid var(--border-color);
+    display: none; height: 34px; padding: 0 0.8rem; 
+    background: var(--bg-surface); border: 1px solid var(--border-color);
     border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-secondary);
     cursor: pointer; white-space: nowrap; transition: all 0.2s; box-shadow: var(--shadow-sm);
+    align-items: center; justify-content: center;
   }
   .btn-reset-all:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-focus); }
 
@@ -127,38 +128,37 @@
     align-items: center; 
   }
   
+  /* 强制所有筛选组件高度一致 */
   .filter-select {
-    flex: 1; min-width: 120px; padding: 0.45rem 2rem 0.45rem 0.75rem; 
+    flex: 1; min-width: 110px; height: 34px; 
+    padding: 0 2rem 0 0.75rem; 
     border: 1px solid var(--border-color); border-radius: var(--radius-md); 
-    font-size: 0.85rem; background: var(--bg-surface); color: var(--text-primary); 
+    font-size: 0.85rem; background-color: var(--bg-surface); color: var(--text-primary); 
     cursor: pointer; appearance: none; box-shadow: var(--shadow-sm);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 0.9rem;
     transition: border-color 0.2s;
+    line-height: 32px; /* 修正 select 垂直居中 */
   }
   .filter-select:focus { outline: none; border-color: var(--border-focus); }
 
   /* 时间选择器组合 */
   .date-range-group {
-    display: flex; align-items: center; gap: 0.25rem; flex: 1.5; min-width: 220px;
+    display: flex; align-items: center; gap: 0.25rem; 
+    flex: 1.5; min-width: 240px;
   }
+  
   .date-input {
-    flex: 1; 
-    padding: 0.4rem 0.6rem; 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-md); 
-    font-size: 0.85rem; 
-    background: var(--bg-surface); 
-    color: var(--text-primary);
+    flex: 1; height: 34px; padding: 0 0.5rem; 
+    border: 1px solid var(--border-color); border-radius: var(--radius-md); 
+    font-size: 0.85rem; background: var(--bg-surface); color: var(--text-primary);
     box-shadow: var(--shadow-sm);
-    transition: border-color 0.2s;
-    outline: none;
-    font-family: inherit;
+    transition: border-color 0.2s; outline: none; font-family: inherit;
+    line-height: 32px;
   }
   .date-input:focus { border-color: var(--border-focus); }
   .date-input::-webkit-calendar-picker-indicator {
     cursor: pointer; opacity: 0.6; transition: opacity 0.2s;
-    /* 深色模式下反转日历图标颜色 */
     filter: var(--calendar-filter, none); 
   }
   .date-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
@@ -330,6 +330,7 @@
   }
   .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
+  /* 移动端适配 */
   @media (max-width: 600px) {
     .navbar { padding: 0.5rem 1rem; }
     .entry { padding: 1rem; }
@@ -340,8 +341,18 @@
     .modal-header { padding: 1rem; }
     .modal-body { padding: 1rem; }
     .modal-footer { padding: 1rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
-    .date-range-group { min-width: 100%; flex-wrap: wrap; }
-    .date-input { width: 100%; }
+    
+    /* 移动端保证各个控件独占一行，不会挤压错位 */
+    .filter-row > * {
+      width: 100%;
+      flex: none;
+    }
+    .date-range-group {
+      width: 100%;
+    }
+    .date-input {
+      width: 100%;
+    }
   }
 </style>
 </head>
@@ -375,7 +386,7 @@
         <select id="categorySelect" class="filter-select"><option value="全部">全部分类</option></select>
         <select id="contributorSelect" class="filter-select"><option value="全部">全部贡献者</option></select>
         
-        <!-- 时间范围组合：挂两个原生 Date Picker -->
+        <!-- 时间范围组合 -->
         <div class="date-range-group">
           <input type="date" id="startDate" class="date-input" title="开始日期">
           <span class="range-separator">至</span>
@@ -479,7 +490,6 @@
     return s || e || fmt(defaultTime);
   }
   
-  // 提取记录的时间范围（时间戳数组 [min, max]）
   function getRecordTimeRange(item) {
     let times = [];
     if (item["开始时间"]) times.push(item["开始时间"]);
@@ -524,7 +534,7 @@
     
     const resetBtn = document.getElementById("resetAllBtn");
     if (hasActiveFilters()) {
-      resetBtn.style.display = "block";
+      resetBtn.style.display = "flex";
     } else {
       resetBtn.style.display = "none";
     }
@@ -591,7 +601,7 @@
     if (filteredData.length === 0) {
       listContainer.innerHTML = `<div class="empty">
         没有找到匹配的档案记录
-        ${hasActiveFilters() ? `<button class="btn-reset-all" style="display:block" onclick="document.getElementById('resetAllBtn').click()">清除筛选条件</button>` : ''}
+        ${hasActiveFilters() ? `<button class="btn-reset-all" style="display:flex" onclick="document.getElementById('resetAllBtn').click()">清除筛选条件</button>` : ''}
       </div>`;
       loadMoreBtn.style.display = "none";
       return;
@@ -665,19 +675,15 @@
       const matchCategory = currentCategory === "全部" || extractText(item["分区"]) === currentCategory;
       const matchContributor = currentContributor === "全部" || extractText(item["投稿人昵称"]) === currentContributor;
       
-      // 精准时间范围筛选
       let matchTime = true;
       if (currentStartDate || currentEndDate) {
         const recordTime = getRecordTimeRange(item);
         if (!recordTime) {
-          matchTime = false; // 如果设了时间范围，但记录无时间，则隐藏
+          matchTime = false;
         } else {
-          // 将用户选择的起始日期转为 00:00:00 的时间戳
           const filterStart = currentStartDate ? new Date(currentStartDate).getTime() : 0;
-          // 将用户选择的结束日期转为 23:59:59 的时间戳
           const filterEnd = currentEndDate ? new Date(currentEndDate).getTime() + 86399000 : Infinity;
           
-          // 记录的时间段 [recordTime[0], recordTime[1]] 与筛选时间段 [filterStart, filterEnd] 必须有交集
           if (recordTime[1] < filterStart || recordTime[0] > filterEnd) {
             matchTime = false;
           }
@@ -724,7 +730,6 @@
     categories.forEach(cat => { catSelect.innerHTML += `<option value="${cat}">${cat}</option>`; });
     contributors.forEach(con => { conSelect.innerHTML += `<option value="${con}">${con}</option>`; });
 
-    // 从 URL 读取初始状态
     const params = new URLSearchParams(window.location.search);
     currentSearch = params.get("search") || "";
     currentCategory = params.get("category") || "全部";
@@ -733,7 +738,6 @@
     currentEndDate = params.get("dateEnd") || "";
     currentAttachment = params.get("attachment") || "全部";
 
-    // 同步到 UI
     document.getElementById("searchInput").value = currentSearch;
     catSelect.value = currentCategory;
     conSelect.value = currentContributor;
@@ -741,7 +745,6 @@
     document.getElementById("endDate").value = currentEndDate;
     document.getElementById("attachmentSelect").value = currentAttachment;
 
-    // 绑定事件
     catSelect.addEventListener("change", (e) => { currentCategory = e.target.value; applyFilters(); });
     conSelect.addEventListener("change", (e) => { currentContributor = e.target.value; applyFilters(); });
     document.getElementById("startDate").addEventListener("change", (e) => { currentStartDate = e.target.value; applyFilters(); });
