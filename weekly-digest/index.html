@@ -92,35 +92,69 @@
   .btn-primary:hover { background: var(--primary-hover); }
 
   /* ================= 主体布局 ================= */
-  .container { max-width: 840px; margin: 2rem auto; padding: 0 1.5rem; }
+  .container { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
 
-  /* 工具栏 */
+  /* 工具栏区：分为搜索行和筛选行 */
   .toolbar {
-    display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    background: var(--bg-surface);
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* 搜索行 */
+  .search-row {
+    width: 100%;
   }
   .search-wrapper {
-    flex: 1; min-width: 240px; position: relative; display: flex; align-items: center;
+    position: relative; 
+    display: flex; 
+    align-items: center;
   }
   .search-wrapper svg {
     position: absolute; left: 1rem; width: 18px; height: 18px; color: var(--text-tertiary);
   }
   .search-input {
-    width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem;
+    width: 100%; padding: 0.85rem 1rem 0.85rem 2.8rem;
     border: 1px solid var(--border-light); border-radius: var(--radius-md);
-    font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary);
+    font-size: 1rem; background: var(--bg-body); color: var(--text-primary);
     transition: all 0.2s;
   }
-  .search-input:focus { outline: none; border-color: var(--text-tertiary); box-shadow: 0 0 0 3px rgba(128,128,128,0.1); }
+  .search-input:focus { 
+    outline: none; 
+    border-color: var(--primary); 
+    background: var(--bg-surface);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1); 
+  }
 
+  /* 筛选行 */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
   .filter-select {
-    padding: 0.75rem 2.5rem 0.75rem 1rem; border: 1px solid var(--border-light);
-    border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface);
-    color: var(--text-primary); cursor: pointer; appearance: none;
+    flex: 1;
+    min-width: 140px;
+    padding: 0.6rem 2.5rem 0.6rem 1rem; 
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md); 
+    font-size: 0.9rem; 
+    background: var(--bg-surface);
+    color: var(--text-primary); 
+    cursor: pointer; 
+    appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 1rem center; background-size: 1rem;
     transition: all 0.2s;
   }
-  .filter-select:focus { outline: none; border-color: var(--text-tertiary); }
+  .filter-select:hover { border-color: var(--border-hover); }
+  .filter-select:focus { outline: none; border-color: var(--primary); }
 
   /* ================= 卡片 ================= */
   .entry {
@@ -136,9 +170,9 @@
     align-items: flex-start; 
     gap: 1rem; 
     margin-bottom: 0.75rem; 
-    flex-wrap: wrap; /* 防止窄屏挤压 */
+    flex-wrap: wrap;
   }
-  .entry-title { font-size: 1.25rem; font-weight: 600; line-height: 1.4; color: var(--text-primary); word-break: break-word; }
+  .entry-title { font-size: 1.3rem; font-weight: 600; line-height: 1.4; color: var(--text-primary); word-break: break-word; }
   
   .tag {
     background: var(--bg-tag); color: var(--text-secondary);
@@ -207,11 +241,8 @@
       width: 100%;
       justify-content: space-between;
     }
-    .toolbar { 
-      flex-direction: column; 
-    }
-    .filter-select { 
-      width: 100%; 
+    .filter-select {
+      min-width: calc(50% - 0.5rem); /* 手机端一行两个筛选框 */
     }
     .entry-header { 
       flex-direction: column; 
@@ -231,24 +262,38 @@
         <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
         <svg id="icon-moon" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
       </button>
-      <!-- 投稿入口，直接使用你提供的链接 -->
       <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="btn-primary">我要投稿</a>
     </div>
   </nav>
 
   <!-- 主体内容 -->
   <main class="container">
+    <!-- 工具栏：搜索与多维度筛选 -->
     <div class="toolbar">
-      <div class="search-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="搜索标题、内容或贡献者...">
+      <div class="search-row">
+        <div class="search-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          <input type="text" id="searchInput" class="search-input" placeholder="搜索标题、详述或贡献者...">
+        </div>
       </div>
-      <select id="categorySelect" class="filter-select">
-        <option value="全部">全部分类</option>
-      </select>
-      <select id="contributorSelect" class="filter-select">
-        <option value="全部">全部贡献者</option>
-      </select>
+      
+      <div class="filter-row">
+        <select id="categorySelect" class="filter-select">
+          <option value="全部">全部分类</option>
+        </select>
+        <select id="contributorSelect" class="filter-select">
+          <option value="全部">全部贡献者</option>
+        </select>
+        <select id="yearSelect" class="filter-select">
+          <option value="全部">全部年份</option>
+        </select>
+        <select id="attachmentSelect" class="filter-select">
+          <option value="全部">全部附件</option>
+          <option value="图片">包含图片</option>
+          <option value="文档">包含文档</option>
+          <option value="无">无附件</option>
+        </select>
+      </div>
     </div>
 
     <div id="list"></div>
@@ -256,8 +301,6 @@
 
 <script>
   // ================= 核心配置 =================
-  // 注意：加了开头的斜杠，直接从根目录读取。
-  // 无论这个 html 是在 /history/ 还是 /gallery/ 下面，都能直接找到根目录的 data.json
   const DATA_URL = '/data.json';
   const CDN_PREFIX = '/'; 
 
@@ -265,6 +308,8 @@
   let currentSearch = "";
   let currentCategory = "全部";
   let currentContributor = "全部";
+  let currentYear = "全部";
+  let currentAttachment = "全部";
 
   // ================= SVG 图标库 =================
   const Icons = {
@@ -287,7 +332,6 @@
   function isImage(path) { return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(path); }
   function fileName(path) { return path.split("/").pop() || path; }
   
-  // 格式化时间范围
   function formatTimeRange(start, end, defaultTime) {
     const fmt = (ts) => {
       if(!ts) return "";
@@ -301,6 +345,28 @@
     if (s) return s;
     if (e) return e;
     return fmt(defaultTime);
+  }
+
+  // 提取年份
+  function getRecordYear(item) {
+    const ts = item["开始时间"] || item["投稿时间"];
+    if (!ts) return "未知年份";
+    return new Date(ts).getFullYear().toString();
+  }
+
+  // 判断附件类型
+  function getAttachmentType(item) {
+    const atts = item["attachments"] || [];
+    if (atts.length === 0) return "无";
+    let hasImg = false;
+    let hasDoc = false;
+    atts.forEach(p => {
+      if (isImage(p)) hasImg = true;
+      else hasDoc = true;
+    });
+    if (hasImg && hasDoc) return "图文混合";
+    if (hasImg) return "图片";
+    return "文档";
   }
 
   // ================= 渲染逻辑 =================
@@ -362,7 +428,6 @@
       attachments.forEach(path => {
         const a = document.createElement("a");
         a.className = "attachment-item";
-        // 从根目录读取附件
         a.href = CDN_PREFIX + path.replace(/^\//, "");
         a.target = "_blank";
         a.rel = "noopener";
@@ -394,16 +459,32 @@
     listContainer.innerHTML = "";
 
     const filteredData = allData.filter(item => {
+      // 1. 分类匹配
       const matchCategory = currentCategory === "全部" || item["分区"] === currentCategory;
+      
+      // 2. 贡献者匹配
       const matchContributor = currentContributor === "全部" || item["投稿人昵称"] === currentContributor;
       
+      // 3. 年份匹配
+      const matchYear = currentYear === "全部" || getRecordYear(item) === currentYear;
+      
+      // 4. 附件类型匹配
+      let matchAttachment = true;
+      if (currentAttachment !== "全部") {
+        const attType = getAttachmentType(item);
+        if (currentAttachment === "图片") matchAttachment = attType.includes("图片");
+        else if (currentAttachment === "文档") matchAttachment = attType.includes("文档");
+        else if (currentAttachment === "无") matchAttachment = (attType === "无");
+      }
+
+      // 5. 搜索词匹配
       const title = (item["内容标题"] || "").toLowerCase();
       const content = (item["内容详述"] || "").toLowerCase();
       const author = (item["投稿人昵称"] || "").toLowerCase();
       const search = currentSearch.toLowerCase();
       const matchSearch = title.includes(search) || content.includes(search) || author.includes(search);
 
-      return matchCategory && matchContributor && matchSearch;
+      return matchCategory && matchContributor && matchYear && matchAttachment && matchSearch;
     });
 
     // 排序：按开始时间或投稿时间倒序
@@ -421,14 +502,16 @@
     filteredData.forEach(item => listContainer.appendChild(renderEntry(item)));
   }
 
-  // ================= 初始化 =================
+  // ================= 初始化下拉框选项 =================
   function initFilters() {
     const catSelect = document.getElementById("categorySelect");
     const conSelect = document.getElementById("contributorSelect");
+    const yearSelect = document.getElementById("yearSelect");
 
-    // 提取唯一分类和贡献者
+    // 提取唯一分类、贡献者、年份
     const categories = [...new Set(allData.map(i => i["分区"]).filter(Boolean))];
     const contributors = [...new Set(allData.map(i => i["投稿人昵称"]).filter(Boolean))];
+    const years = [...new Set(allData.map(i => getRecordYear(i)).filter(y => y !== "未知年份"))].sort((a,b) => b - a);
 
     categories.forEach(cat => {
       const opt = document.createElement("option");
@@ -442,8 +525,16 @@
       conSelect.appendChild(opt);
     });
 
+    years.forEach(year => {
+      const opt = document.createElement("option");
+      opt.value = year; opt.textContent = year + " 年";
+      yearSelect.appendChild(opt);
+    });
+
     catSelect.addEventListener("change", (e) => { currentCategory = e.target.value; renderList(); });
     conSelect.addEventListener("change", (e) => { currentContributor = e.target.value; renderList(); });
+    yearSelect.addEventListener("change", (e) => { currentYear = e.target.value; renderList(); });
+    document.getElementById("attachmentSelect").addEventListener("change", (e) => { currentAttachment = e.target.value; renderList(); });
   }
 
   function initTheme() {
@@ -451,7 +542,6 @@
     const sunIcon = document.getElementById("icon-sun");
     const moonIcon = document.getElementById("icon-moon");
     
-    // 检查本地存储或系统偏好
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -478,11 +568,10 @@
   }
 
   async function load() {
-    initTheme(); // 先初始化主题防止闪烁
+    initTheme(); 
     const listContainer = document.getElementById("list");
     
     try {
-      // 从根目录请求 data.json
       const res = await fetch(DATA_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       allData = await res.json();
@@ -495,7 +584,6 @@
       initFilters();
       renderList();
 
-      // 搜索防抖
       let timeout = null;
       document.getElementById("searchInput").addEventListener("input", (e) => {
         clearTimeout(timeout);
