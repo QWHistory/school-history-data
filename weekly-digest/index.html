@@ -29,7 +29,9 @@
         .latest-content { padding: 40px; }
         .latest-title { font-size: 2em; margin-bottom: 15px; color: #222; }
         .latest-meta { font-size: 0.9em; color: #888; margin-bottom: 20px; }
-        .latest-desc { font-size: 1.1em; color: #444; }
+        
+        /* 关键修改：识别换行 */
+        .latest-desc { font-size: 1.1em; color: #444; white-space: pre-wrap; }
 
         /* 往期周报：网格排列 */
         .past-section { margin-top: 40px; }
@@ -43,7 +45,31 @@
         .card-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
         .card-title { font-size: 1.2em; margin-bottom: 10px; color: #222; }
         .card-meta { font-size: 0.85em; color: #888; margin-bottom: 15px; }
-        .card-desc { font-size: 0.95em; color: #555; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* 关键修改：识别换行并截断 */
+        .card-desc { font-size: 0.95em; color: #555; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; }
+
+        /* 附件列表样式 */
+        .attachment-list {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+        }
+        .attachment-link {
+            display: inline-block;
+            margin-right: 15px;
+            margin-bottom: 10px;
+            padding: 6px 12px;
+            background: #f0f7ff;
+            color: #1d85d9;
+            border-radius: 6px;
+            font-size: 0.9em;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .attachment-link:hover {
+            background: #e0efff;
+        }
 
         .no-data { text-align: center; color: #999; padding: 50px 0; }
     </style>
@@ -75,20 +101,19 @@
     </div>
 
     <script>
-        // GitHub 配置
         // 配置项
-const GITHUB_USER = "QWHistory";
-const GITHUB_REPO = "school-history-data";
+        const GITHUB_USER = "QWHistory";
+        const GITHUB_REPO = "school-history-data";
 
-// 1. 数据改为直接读取同仓库下的相对路径，走 Cloudflare 稳定线路
-const DATA_URL = "../data.json";
+        // 1. 数据改为直接读取同仓库下的相对路径，走 Cloudflare 稳定线路
+        const DATA_URL = "../data.json";
 
-// 2. 图片的 CDN 地址保留，并增加镜像列表以备不时之需
-const CDN_MIRRORS = [
-    "https://fastly.jsdelivr.net",
-    "https://gcore.jsdelivr.net",
-    "https://jsd.onmicrosoft.cn"
-];
+        // 2. 图片的 CDN 地址保留，并增加镜像列表以备不时之需
+        const CDN_MIRRORS = [
+            "https://fastly.jsdelivr.net",
+            "https://gcore.jsdelivr.net",
+            "https://jsd.onmicrosoft.cn"
+        ];
 
         // 格式化日期为 "X年X月"
         function formatTime(timestamp) {
@@ -97,37 +122,56 @@ const CDN_MIRRORS = [
             return `${date.getFullYear()}年${date.getMonth() + 1}月`;
         }
 
-        // 获取图片 CDN 链接
-        // 获取图片 CDN 链接（此处仅返回主要地址，具体重试逻辑在 img 标签的 onerror 中处理）
-function getImgUrl(path, hostIndex = 0) {
-    if (!path) return "";
-    const cleanPath = path.replace(/^\//, '');
-    const host = CDN_MIRRORS[hostIndex % CDN_MIRRORS.length];
-    return `${host}/gh/${GITHUB_USER}/${GITHUB_REPO}@main/${cleanPath}`;
-}
-
-// 针对图片加载失败，自动切换镜像的回调函数
-window.handleImageError = function(imgElement) {
-    const originalUrl = imgElement.src;
-    const match = originalUrl.match(/\/gh\/(.+)@main\/(.+)/);
-    if (!match) return;
-
-    const currentHost = originalUrl.split('/gh/')[0];
-    let nextIndex = 0;
-    for (let i = 0; i < CDN_MIRRORS.length; i++) {
-        if (CDN_MIRRORS[i] === currentHost) {
-            nextIndex = (i + 1) % CDN_MIRRORS.length;
-            break;
+        // 获取图片/附件 CDN 链接
+        function getImgUrl(path, hostIndex = 0) {
+            if (!path) return "";
+            const cleanPath = path.replace(/^\//, '');
+            const host = CDN_MIRRORS[hostIndex % CDN_MIRRORS.length];
+            return `${host}/gh/${GITHUB_USER}/${GITHUB_REPO}@main/${cleanPath}`;
         }
-    }
-    imgElement.src = `${CDN_MIRRORS[nextIndex]}/gh/${match[1]}@main/${match[2]}`;
-};
 
-        // 提取第一张图片
+        // 针对图片加载失败，自动切换镜像的回调函数
+        window.handleImageError = function(imgElement) {
+            const originalUrl = imgElement.src;
+            const match = originalUrl.match(/\/gh\/(.+)@main\/(.+)/);
+            if (!match) return;
+
+            const currentHost = originalUrl.split('/gh/')[0];
+            let nextIndex = 0;
+            for (let i = 0; i < CDN_MIRRORS.length; i++) {
+                if (CDN_MIRRORS[i] === currentHost) {
+                    nextIndex = (i + 1) % CDN_MIRRORS.length;
+                    break;
+                }
+            }
+            imgElement.src = `${CDN_MIRRORS[nextIndex]}/gh/${match[1]}@main/${match[2]}`;
+        };
+
+        // 提取第一张图片作为封面
         function getFirstImage(attachments) {
             if (!attachments || attachments.length === 0) return "";
             const img = attachments.find(f => /\.(jpg|jpeg|png|webp|gif)$/i.test(f));
             return img ? getImgUrl(img) : "";
+        }
+
+        // 提取非图片附件（如 PDF、Word 等）
+        function getDocAttachments(attachments) {
+            if (!attachments || attachments.length === 0) return [];
+            return attachments.filter(f => !/\.(jpg|jpeg|png|webp|gif)$/i.test(f));
+        }
+
+        // 生成附件下载链接的 HTML
+        function buildDocsHtml(docs) {
+            if (docs.length === 0) return "";
+            let html = `<div class="attachment-list">`;
+            docs.forEach(doc => {
+                // 从路径中提取文件名
+                const fileName = doc.split('/').pop();
+                // 附件同样走 CDN 镜像，如果是 PDF 等，浏览器会尝试预览或下载
+                html += `<a href="${getImgUrl(doc)}" target="_blank" class="attachment-link">📎 ${fileName}</a>`;
+            });
+            html += `</div>`;
+            return html;
         }
 
         async function loadData() {
@@ -139,21 +183,22 @@ window.handleImageError = function(imgElement) {
                 // 按照时间倒序排序（最新的在最前）
                 data.sort((a, b) => (b["投稿时间"] || 0) - (a["投稿时间"] || 0));
 
-                // 简单的分组逻辑：把最新的一条（或最新一周的一组）作为“最新”，剩下的作为“往期”
-                // 因为我们目前不确定每周有几条，这里采用“第一条为最新主推，其余往下排”的杂志逻辑
-                
+                // 第一条作为最新主推，其余作为往期
                 const latestItem = data[0];
                 const pastItems = data.slice(1);
 
                 // 1. 渲染最新一期（放大）
                 document.getElementById('latest-section').style.display = 'block';
                 const latestImg = getFirstImage(latestItem.attachments);
+                const latestDocsHtml = buildDocsHtml(getDocAttachments(latestItem.attachments));
+                
                 document.getElementById('latest-card').innerHTML = `
                     ${latestImg ? `<img src="${latestImg}" class="latest-img" onerror="handleImageError(this)">` : ''}
                     <div class="latest-content">
                         <div class="latest-title">${latestItem["内容标题"] || "无标题"}</div>
                         <div class="latest-meta">投稿人：${latestItem["投稿人昵称"] || "匿名"} | 时间：${formatTime(latestItem["投稿时间"])}</div>
                         <div class="latest-desc">${latestItem["内容详述"] || ""}</div>
+                        ${latestDocsHtml}
                     </div>
                 `;
 
@@ -163,6 +208,8 @@ window.handleImageError = function(imgElement) {
                     const grid = document.getElementById('past-grid');
                     pastItems.forEach(item => {
                         const img = getFirstImage(item.attachments);
+                        const docsHtml = buildDocsHtml(getDocAttachments(item.attachments));
+
                         const card = document.createElement('div');
                         card.className = 'card';
                         card.innerHTML = `
@@ -171,6 +218,7 @@ window.handleImageError = function(imgElement) {
                                 <div class="card-title">${item["内容标题"] || "无标题"}</div>
                                 <div class="card-meta">${item["投稿人昵称"] || "匿名"} · ${formatTime(item["投稿时间"])}</div>
                                 <div class="card-desc">${item["内容详述"] || ""}</div>
+                                ${docsHtml}
                             </div>
                         `;
                         grid.appendChild(card);
@@ -179,7 +227,7 @@ window.handleImageError = function(imgElement) {
 
                 document.getElementById('no-data').style.display = 'none';
             } catch (e) {
-                console.error(e);
+                console.error("数据加载失败:", e);
             }
         }
 
