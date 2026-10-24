@@ -76,9 +76,19 @@
 
     <script>
         // GitHub 配置
-        const GITHUB_USER = "QWHistory";
-        const GITHUB_REPO = "school-history-data";
-        const DATA_URL = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main/data.json`;
+        // 配置项
+const GITHUB_USER = "QWHistory";
+const GITHUB_REPO = "school-history-data";
+
+// 1. 数据改为直接读取同仓库下的相对路径，走 Cloudflare 稳定线路
+const DATA_URL = "../data.json";
+
+// 2. 图片的 CDN 地址保留，并增加镜像列表以备不时之需
+const CDN_MIRRORS = [
+    "https://fastly.jsdelivr.net",
+    "https://gcore.jsdelivr.net",
+    "https://jsd.onmicrosoft.cn"
+];
 
         // 格式化日期为 "X年X月"
         function formatTime(timestamp) {
@@ -88,11 +98,30 @@
         }
 
         // 获取图片 CDN 链接
-        function getImgUrl(path) {
-            if (!path) return "";
-            const cleanPath = path.replace(/^\//, '');
-            return `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main/${cleanPath}`;
+        // 获取图片 CDN 链接（此处仅返回主要地址，具体重试逻辑在 img 标签的 onerror 中处理）
+function getImgUrl(path, hostIndex = 0) {
+    if (!path) return "";
+    const cleanPath = path.replace(/^\//, '');
+    const host = CDN_MIRRORS[hostIndex % CDN_MIRRORS.length];
+    return `${host}/gh/${GITHUB_USER}/${GITHUB_REPO}@main/${cleanPath}`;
+}
+
+// 针对图片加载失败，自动切换镜像的回调函数
+window.handleImageError = function(imgElement) {
+    const originalUrl = imgElement.src;
+    const match = originalUrl.match(/\/gh\/(.+)@main\/(.+)/);
+    if (!match) return;
+
+    const currentHost = originalUrl.split('/gh/')[0];
+    let nextIndex = 0;
+    for (let i = 0; i < CDN_MIRRORS.length; i++) {
+        if (CDN_MIRRORS[i] === currentHost) {
+            nextIndex = (i + 1) % CDN_MIRRORS.length;
+            break;
         }
+    }
+    imgElement.src = `${CDN_MIRRORS[nextIndex]}/gh/${match[1]}@main/${match[2]}`;
+};
 
         // 提取第一张图片
         function getFirstImage(attachments) {
@@ -120,7 +149,7 @@
                 document.getElementById('latest-section').style.display = 'block';
                 const latestImg = getFirstImage(latestItem.attachments);
                 document.getElementById('latest-card').innerHTML = `
-                    ${latestImg ? `<img src="${latestImg}" class="latest-img">` : ''}
+                    ${latestImg ? `<img src="${latestImg}" class="latest-img" onerror="handleImageError(this)">` : ''}
                     <div class="latest-content">
                         <div class="latest-title">${latestItem["内容标题"] || "无标题"}</div>
                         <div class="latest-meta">投稿人：${latestItem["投稿人昵称"] || "匿名"} | 时间：${formatTime(latestItem["投稿时间"])}</div>
@@ -137,7 +166,7 @@
                         const card = document.createElement('div');
                         card.className = 'card';
                         card.innerHTML = `
-                            ${img ? `<img src="${img}" class="card-img">` : '<div class="card-img"></div>'}
+                            ${img ? `<img src="${img}" class="card-img" onerror="handleImageError(this)">` : '<div class="card-img"></div>'}
                             <div class="card-content">
                                 <div class="card-title">${item["内容标题"] || "无标题"}</div>
                                 <div class="card-meta">${item["投稿人昵称"] || "匿名"} · ${formatTime(item["投稿时间"])}</div>
