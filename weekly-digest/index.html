@@ -16,10 +16,14 @@
     --border-focus: #9ca3af;
     --primary: #000000;
     --primary-hover: #333333;
+    
+    /* 修复并补充圆角变量 */
     --radius-sm: 4px;
-    --radius-md: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   }
 
   [data-theme="dark"] {
@@ -34,7 +38,7 @@
     --primary: #f0f6fc;
     --primary-hover: #ffffff;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -103,9 +107,14 @@
   .entry {
     position: relative; background: var(--bg-surface); border: 1px solid var(--border-color);
     border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem;
-    box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    cursor: pointer; /* 整个卡片可点击 */
   }
-  .entry:hover { border-color: var(--border-focus); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .entry:hover { 
+    border-color: var(--border-focus); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+    transform: translateY(-1px);
+  }
 
   .tag {
     position: absolute; top: 1rem; right: 1.25rem;
@@ -135,7 +144,6 @@
     padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);
   }
 
-  /* 正文：限制最多 3 行，超出省略 */
   .entry-body {
     white-space: pre-wrap; word-break: break-word; font-size: 0.9rem;
     color: var(--text-secondary); margin-bottom: 0.75rem;
@@ -182,7 +190,6 @@
   .btn-action.report:hover { color: #ef4444; }
   .btn-action svg { width: 12px; height: 12px; }
 
-  /* ================= 加载更多 ================= */
   .load-more {
     display: block; width: 100%; padding: 0.75rem; margin-top: 1rem;
     background: var(--bg-surface); border: 1px solid var(--border-color);
@@ -201,41 +208,47 @@
 
   /* ================= 详情弹窗 (Modal) ================= */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
     z-index: 1000; display: flex; justify-content: center; align-items: center;
-    opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s;
+    opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
     padding: 1rem;
   }
   .modal-overlay.active { opacity: 1; visibility: visible; }
   
   .modal-content {
     background: var(--bg-surface); border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg); width: 100%; max-width: 700px; max-height: 85vh;
+    border-radius: var(--radius-lg); /* 12px 大圆角，消除违和感 */
+    width: 100%; max-width: 700px; max-height: 85vh;
     box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
-    transform: translateY(10px); transition: transform 0.2s;
+    transform: translateY(20px) scale(0.98); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden; /* 防止内容溢出打破圆角 */
   }
-  .modal-overlay.active .modal-content { transform: translateY(0); }
+  .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
 
   .modal-header {
     padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color);
     display: flex; justify-content: space-between; align-items: flex-start;
+    background: var(--bg-surface);
   }
-  .modal-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); }
+  .modal-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); line-height: 1.4; padding-right: 1rem; }
   .modal-close {
     background: none; border: none; cursor: pointer; color: var(--text-tertiary);
-    padding: 0.25rem; border-radius: var(--radius-sm); transition: background 0.2s;
+    padding: 0.25rem; border-radius: var(--radius-sm); transition: background 0.2s, color 0.2s;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
-  .modal-close svg { width: 20px; height: 20px; }
+  .modal-close svg { width: 22px; height: 22px; }
 
   .modal-body { padding: 1.5rem; overflow-y: auto; }
   .modal-body .entry-meta { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border-color); }
-  .modal-body .entry-body { -webkit-line-clamp: unset; display: block; font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.7; }
+  .modal-body .entry-body { 
+    -webkit-line-clamp: unset; display: block; font-size: 1rem; 
+    margin-bottom: 1.5rem; line-height: 1.7; color: var(--text-primary);
+  }
   
   .modal-footer {
     padding: 1rem 1.5rem; border-top: 1px solid var(--border-color);
     display: flex; justify-content: space-between; align-items: center; background: var(--bg-body);
-    border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg);
   }
 
   /* ================= Toast 提示 ================= */
@@ -253,7 +266,10 @@
     .tag { position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 0.5rem; order: -1; }
     .entry-title { padding-right: 0; font-size: 1rem; }
     .entry-header { display: flex; flex-direction: column-reverse; align-items: flex-start; }
-    .modal-content { max-height: 90vh; }
+    .modal-content { max-height: 90vh; border-radius: var(--radius-lg); }
+    .modal-header { padding: 1rem; }
+    .modal-body { padding: 1rem; }
+    .modal-footer { padding: 1rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
   }
 </style>
 </head>
@@ -305,9 +321,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
-      <div class="modal-body" id="modalBody">
-        <!-- 动态注入详情 -->
-      </div>
+      <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer">
         <div class="footer-contributor" id="modalContributor"></div>
         <button class="btn-action report" id="modalReportBtn"></button>
@@ -315,23 +329,17 @@
     </div>
   </div>
 
-  <!-- 轻提示 -->
   <div class="toast" id="toast"></div>
 
 <script>
   const DATA_URL = '/data.json';
   const CDN_PREFIX = '/'; 
-  const PAGE_SIZE = 10; // 每次加载的数量
+  const PAGE_SIZE = 10;
 
   let allData = [];
   let filteredData = [];
   let displayCount = PAGE_SIZE;
-
-  let currentSearch = "";
-  let currentCategory = "全部";
-  let currentContributor = "全部";
-  let currentYear = "全部";
-  let currentAttachment = "全部";
+  let currentSearch = "", currentCategory = "全部", currentContributor = "全部", currentYear = "全部", currentAttachment = "全部";
 
   const Icons = {
     user: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>`,
@@ -344,7 +352,6 @@
     view: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>`
   };
 
-  // 工具函数
   function getFileIcon(path) {
     const ext = (path.split(".").pop() || "").toLowerCase();
     if (["jpg","jpeg","png","gif","webp","svg"].includes(ext)) return Icons.image;
@@ -382,7 +389,6 @@
     return hasImg && hasDoc ? "图文混合" : (hasImg ? "图片" : "文档");
   }
 
-  // Toast 提示
   function showToast(msg) {
     const toast = document.getElementById("toast");
     toast.textContent = msg;
@@ -390,10 +396,9 @@
     setTimeout(() => toast.classList.remove("show"), 3000);
   }
 
-  // 举报逻辑
-  function handleReport(uid) {
+  function handleReport(e, uid) {
+    e.stopPropagation(); // 阻止触发卡片点击详情
     const msg = `如果您认为该档案存在侵权或违规问题，请联系校史项目总负责人进行处理：\n微信：14778384997\n邮箱：1077401836@qq.com\n\n请提供该条目的唯一编号：${uid}`;
-    // 尝试复制信息
     navigator.clipboard.writeText(msg).then(() => {
       showToast("举报联系方式及编号已复制，请通过微信或邮箱联系。");
     }).catch(() => {
@@ -401,7 +406,6 @@
     });
   }
 
-  // 渲染卡片 HTML
   function createCardHTML(item) {
     const category = extractText(item["分区"]);
     const title = extractText(item["内容标题"]);
@@ -429,7 +433,8 @@
       attachments.forEach(p => {
         const href = CDN_PREFIX + p.replace(/^\//, "");
         const download = isImage(p) ? "" : `download="${fileName(p)}"`;
-        html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" ${download}>${getFileIcon(p)} <span>${fileName(p)}</span></a>`;
+        // 附件链接加 onclick 阻止冒泡，防止点附件弹详情
+        html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" ${download} onclick="event.stopPropagation()">${getFileIcon(p)} <span>${fileName(p)}</span></a>`;
       });
       html += `</div></div>`;
     }
@@ -437,7 +442,6 @@
     html += `<div class="entry-footer">
       <div class="footer-contributor">${contributor ? `${Icons.user} 贡献者：<span>${contributor}</span>` : ''}</div>
       <div class="footer-actions">
-        <button class="btn-action view-btn" data-uid="${uid}">${Icons.view} 详情</button>
         <button class="btn-action report report-btn" data-uid="${uid}">${Icons.warning} 举报</button>
       </div>
     </div>`;
@@ -445,7 +449,6 @@
     return html;
   }
 
-  // 渲染列表
   function renderList() {
     const listContainer = document.getElementById("list");
     const loadMoreBtn = document.getElementById("loadMoreBtn");
@@ -463,18 +466,18 @@
       const card = document.createElement("div");
       card.className = "entry";
       card.innerHTML = createCardHTML(item);
-      listContainer.appendChild(card);
       
-      // 绑定详情点击
-      const viewBtn = card.querySelector(".view-btn");
-      viewBtn.onclick = () => openModal(item);
+      // 卡片整体点击打开详情
+      card.onclick = () => openModal(item);
 
-      // 绑定举报点击
+      // 举报按钮独立绑定，并阻止冒泡
       const reportBtn = card.querySelector(".report-btn");
-      reportBtn.onclick = () => handleReport(extractText(item["UID"]) || "无");
+      const uid = extractText(item["UID"]) || "无";
+      reportBtn.onclick = (e) => handleReport(e, uid);
+
+      listContainer.appendChild(card);
     });
 
-    // 控制“加载更多”按钮显示
     if (displayCount < filteredData.length) {
       loadMoreBtn.style.display = "block";
       loadMoreBtn.textContent = `加载更多 (剩余 ${filteredData.length - displayCount} 条)`;
@@ -483,7 +486,6 @@
     }
   }
 
-  // 打开详情弹窗
   function openModal(item) {
     const modal = document.getElementById("detailModal");
     document.getElementById("modalTitle").textContent = extractText(item["内容标题"]) || "无标题档案";
@@ -518,12 +520,11 @@
     
     const reportBtn = document.getElementById("modalReportBtn");
     reportBtn.innerHTML = `${Icons.warning} 举报该内容`;
-    reportBtn.onclick = () => handleReport(uid);
+    reportBtn.onclick = (e) => handleReport(e, uid);
 
     modal.classList.add("active");
   }
 
-  // 初始化筛选逻辑
   function applyFilters() {
     filteredData = allData.filter(item => {
       const matchCategory = currentCategory === "全部" || extractText(item["分区"]) === currentCategory;
@@ -555,7 +556,7 @@
       return timeB - timeA;
     });
 
-    displayCount = PAGE_SIZE; // 重置显示数量
+    displayCount = PAGE_SIZE; 
     renderList();
   }
 
@@ -619,7 +620,6 @@
       initFilters();
       applyFilters();
 
-      // 绑定搜索防抖
       let timeout = null;
       document.getElementById("searchInput").addEventListener("input", (e) => {
         clearTimeout(timeout);
@@ -629,13 +629,11 @@
         }, 300);
       });
 
-      // 绑定加载更多
       document.getElementById("loadMoreBtn").onclick = () => {
         displayCount += PAGE_SIZE;
         renderList();
       };
 
-      // 绑定弹窗关闭
       const modal = document.getElementById("detailModal");
       document.getElementById("modalClose").onclick = () => modal.classList.remove("active");
       modal.onclick = (e) => { if (e.target === modal) modal.classList.remove("active"); };
