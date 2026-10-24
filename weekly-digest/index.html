@@ -26,6 +26,8 @@
     
     --mark-bg: #fef08a;
     --mark-text: #854d0e;
+    --skeleton-bg: #e5e7eb;
+    --skeleton-shimmer: #f3f4f6;
   }
 
   [data-theme="dark"] {
@@ -44,6 +46,8 @@
     
     --mark-bg: #854d0e;
     --mark-text: #fef08a;
+    --skeleton-bg: #21262d;
+    --skeleton-shimmer: #30363d;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -57,6 +61,10 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* 锁定背景滚动 */
+  body.modal-open { overflow: hidden; }
+
+  /* 自定义滚动条 */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: var(--radius-sm); }
@@ -78,14 +86,16 @@
     display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
   .btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-color); }
+  .btn-icon:active { transform: scale(0.92); }
   .btn-icon svg { width: 18px; height: 18px; }
 
   .btn-primary {
     background: var(--primary); color: var(--bg-surface); text-decoration: none;
     padding: 0.4rem 0.8rem; border-radius: var(--radius-md); font-size: 0.85rem; 
-    font-weight: 500; border: 1px solid var(--primary); transition: background 0.2s;
+    font-weight: 500; border: 1px solid var(--primary); transition: all 0.2s;
   }
   .btn-primary:hover { background: var(--primary-hover); }
+  .btn-primary:active { transform: scale(0.96); }
 
   /* ================= 主体布局 ================= */
   .container { max-width: 900px; margin: 1.5rem auto; padding: 0 1.5rem; }
@@ -120,11 +130,11 @@
     align-items: center; justify-content: center;
   }
   .btn-reset-all:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-focus); }
+  .btn-reset-all:active { transform: scale(0.96); }
 
-  /* ================= 修复错位的筛选工具栏 (使用 Grid 布局) ================= */
+  /* 筛选网格 */
   .filter-row { 
     display: grid; 
-    /* 分配列宽：下拉1份，下拉1份，日期2份，下拉1份 */
     grid-template-columns: 1fr 1fr 2fr 1fr; 
     gap: 0.5rem; 
     align-items: center; 
@@ -145,52 +155,49 @@
   }
   .filter-select:focus { outline: none; border-color: var(--border-focus); }
 
-  /* 时间选择器组合 */
-  .date-range-group {
-    display: flex; 
-    align-items: center; 
-    gap: 0.4rem; 
-    width: 100%;
-    min-width: 0; /* 关键：防止内部日期输入框撑破网格 */
-  }
-  
+  .date-range-group { display: flex; align-items: center; gap: 0.4rem; width: 100%; min-width: 0; }
   .date-input {
-    flex: 1; 
-    width: 100%;
-    min-width: 0; /* 关键：允许日期框被无限压缩，解决重叠问题 */
-    height: 34px; 
-    padding: 0 0.5rem; 
+    flex: 1; width: 100%; min-width: 0; height: 34px; padding: 0 0.5rem; 
     border: 1px solid var(--border-color); border-radius: var(--radius-md); 
     font-size: 0.85rem; background: var(--bg-surface); color: var(--text-primary);
-    box-shadow: var(--shadow-sm);
-    transition: border-color 0.2s; outline: none; font-family: inherit;
+    box-shadow: var(--shadow-sm); transition: border-color 0.2s; outline: none; font-family: inherit;
     line-height: 32px;
   }
   .date-input:focus { border-color: var(--border-focus); }
-  /* 隐藏原生日历图标在极小空间下的多余边距 */
-  .date-input::-webkit-calendar-picker-indicator {
-    cursor: pointer; opacity: 0.6; transition: opacity 0.2s;
-    filter: var(--calendar-filter, none); 
-    padding: 0;
-    margin-left: 2px;
-  }
-  .date-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+  .date-input::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; filter: var(--calendar-filter, none); padding: 0; margin-left: 2px; }
   [data-theme="dark"] { --calendar-filter: invert(1); }
-  
   .range-separator { color: var(--text-tertiary); font-size: 0.85rem; flex-shrink: 0; }
+
+  /* ================= 骨架屏 ================= */
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+  .skeleton-card {
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+    height: 140px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .skeleton-line {
+    background: linear-gradient(90deg, var(--skeleton-bg) 25%, var(--skeleton-shimmer) 50%, var(--skeleton-bg) 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    border-radius: var(--radius-sm);
+    height: 16px;
+  }
+  .skeleton-title { width: 40%; height: 24px; }
+  .skeleton-meta { width: 70%; height: 14px; }
+  .skeleton-body { width: 100%; height: 40px; }
 
   /* ================= 卡片列表 ================= */
   .entry {
     position: relative; background: var(--bg-surface); border: 1px solid var(--border-color);
     border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem;
     box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s ease-out;
-    cursor: pointer;
+    cursor: pointer; user-select: text; /* 允许选中文本 */
   }
-  .entry:hover { 
-    border-color: var(--border-focus); 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-    transform: translateY(-1px);
-  }
+  .entry:hover { border-color: var(--border-focus); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .entry:active { transform: scale(0.995); }
 
   .tag {
     position: absolute; top: 1rem; right: 1.25rem;
@@ -226,21 +233,10 @@
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
 
-  mark {
-    background-color: var(--mark-bg);
-    color: var(--mark-text);
-    padding: 0 2px;
-    border-radius: 2px;
-  }
+  mark { background-color: var(--mark-bg); color: var(--mark-text); padding: 0 2px; border-radius: 2px; }
 
-  .attachments-box {
-    background: var(--bg-body); border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm); padding: 0.6rem 0.75rem; margin-bottom: 0.75rem;
-  }
-  .attachment-title {
-    font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary);
-    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;
-  }
+  .attachments-box { background: var(--bg-body); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem 0.75rem; margin-bottom: 0.75rem; }
+  .attachment-title { font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
   .attachment-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .attachment-item {
     display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.5rem;
@@ -256,30 +252,19 @@
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
     gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color);
   }
-  .footer-contributor {
-    display: flex; align-items: center; gap: 0.3rem;
-    font-size: 0.8rem; color: var(--text-tertiary);
-  }
+  .footer-contributor { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--text-tertiary); }
   .footer-contributor svg { width: 13px; height: 13px; }
   .footer-contributor span { color: var(--text-secondary); font-weight: 500; }
 
   .footer-actions { display: flex; align-items: center; gap: 1rem; }
-  
   .btn-action {
     background: none; border: none; font-size: 0.75rem; color: var(--text-tertiary);
     cursor: pointer; display: flex; align-items: center; gap: 0.25rem; transition: color 0.2s;
+    text-decoration: none; /* for mailto */
   }
   .btn-action:hover { color: var(--primary); }
   .btn-action.report:hover { color: #ef4444; }
   .btn-action svg { width: 12px; height: 12px; }
-
-  .load-more {
-    display: block; width: 100%; padding: 0.75rem; margin-top: 1rem;
-    background: var(--bg-surface); border: 1px solid var(--border-color);
-    border-radius: var(--radius-md); color: var(--text-secondary); font-size: 0.9rem;
-    cursor: pointer; transition: all 0.2s; font-weight: 500;
-  }
-  .load-more:hover { background: var(--bg-hover); color: var(--text-primary); }
 
   .empty {
     text-align: center; padding: 3rem 1rem; color: var(--text-tertiary);
@@ -301,8 +286,7 @@
   
   .modal-content {
     background: var(--bg-surface); border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    width: 100%; max-width: 700px; max-height: 85vh;
+    border-radius: var(--radius-lg); width: 100%; max-width: 700px; max-height: 85vh;
     box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
     transform: translateY(20px) scale(0.98); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
@@ -311,48 +295,37 @@
 
   .modal-header {
     padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color);
-    display: flex; justify-content: space-between; align-items: flex-start;
-    background: var(--bg-surface);
+    display: flex; justify-content: space-between; align-items: flex-start; background: var(--bg-surface);
   }
   .modal-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); line-height: 1.4; padding-right: 1rem; }
   .modal-close {
     background: none; border: none; cursor: pointer; color: var(--text-tertiary);
-    padding: 0.25rem; border-radius: var(--radius-sm); transition: background 0.2s, color 0.2s;
+    padding: 0.25rem; border-radius: var(--radius-sm); transition: all 0.2s;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .modal-close:active { transform: scale(0.9); }
   .modal-close svg { width: 22px; height: 22px; }
 
+  /* 弹窗内滚动条美化 */
   .modal-body { padding: 1.5rem; overflow-y: auto; }
+  .modal-body::-webkit-scrollbar { width: 6px; }
+  .modal-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
   .modal-body .entry-meta { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border-color); }
-  .modal-body .entry-body { 
-    -webkit-line-clamp: unset; display: block; font-size: 1rem; 
-    margin-bottom: 1.5rem; line-height: 1.7; color: var(--text-primary);
-  }
+  .modal-body .entry-body { -webkit-line-clamp: unset; display: block; font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.8; color: var(--text-primary); }
   
   .modal-footer {
     padding: 1rem 1.5rem; border-top: 1px solid var(--border-color);
     display: flex; justify-content: space-between; align-items: center; background: var(--bg-body);
   }
 
-  .toast {
-    position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
-    background: var(--text-primary); color: var(--bg-body); padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; box-shadow: var(--shadow-lg);
-    opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); z-index: 2000;
-  }
-  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+  /* 无限滚动触发点 */
+  #scroll-sentinel { height: 20px; margin-top: 10px; }
 
-  /* 移动端适配：强制单列，恢复 Flex 纵向排列 */
   @media (max-width: 768px) {
-    .filter-row {
-      grid-template-columns: 1fr; /* 变成一列 */
-    }
-    .date-range-group {
-      flex-wrap: nowrap; /* 移动端上日期依然并排，但充满整行宽度 */
-    }
+    .filter-row { grid-template-columns: 1fr; }
+    .date-range-group { flex-wrap: nowrap; }
   }
-  
   @media (max-width: 600px) {
     .navbar { padding: 0.5rem 1rem; }
     .entry { padding: 1rem; }
@@ -396,7 +369,6 @@
         <select id="categorySelect" class="filter-select"><option value="全部">全部分类</option></select>
         <select id="contributorSelect" class="filter-select"><option value="全部">全部贡献者</option></select>
         
-        <!-- 时间范围组合 -->
         <div class="date-range-group">
           <input type="date" id="startDate" class="date-input" title="开始日期">
           <span class="range-separator">至</span>
@@ -413,7 +385,7 @@
     </div>
 
     <div id="list"></div>
-    <button id="loadMoreBtn" class="load-more" style="display: none;">加载更多档案</button>
+    <div id="scroll-sentinel"></div> <!-- 无限滚动触发点 -->
   </main>
 
   <div class="modal-overlay" id="detailModal">
@@ -427,12 +399,10 @@
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer">
         <div class="footer-contributor" id="modalContributor"></div>
-        <button class="btn-action report" id="modalReportBtn"></button>
+        <a class="btn-action report" id="modalReportBtn" href="#" onclick="event.stopPropagation()"></a>
       </div>
     </div>
   </div>
-
-  <div class="toast" id="toast"></div>
 
 <script>
   const DATA_URL = '/data.json';
@@ -442,6 +412,7 @@
   let allData = [];
   let filteredData = [];
   let displayCount = PAGE_SIZE;
+  let isLoading = false; // 防止无限滚动重复触发
   
   let currentSearch = "";
   let currentCategory = "全部";
@@ -460,6 +431,7 @@
     warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`
   };
 
+  // ================= 工具函数 =================
   function getFileIcon(path) {
     const ext = (path.split(".").pop() || "").toLowerCase();
     if (["jpg","jpeg","png","gif","webp","svg"].includes(ext)) return Icons.image;
@@ -469,6 +441,7 @@
   function isImage(path) { return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(path); }
   function fileName(path) { return path.split("/").pop() || path; }
   
+  // 安全提取文本，防止富文本崩溃
   function extractText(val) {
     if (!val) return "";
     if (typeof val === 'string') return val.trim();
@@ -477,12 +450,14 @@
     return String(val).trim();
   }
 
+  // 严格的 XSS 转义
   function escapeHTML(str) {
+    if (!str) return "";
     return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
   }
 
   function highlightText(text, search) {
-    if (!search || !text) return text;
+    if (!search || !text) return escapeHTML(text);
     const escapedText = escapeHTML(text);
     const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(`(${safeSearch})`, 'gi');
@@ -505,7 +480,6 @@
     if (item["开始时间"]) times.push(item["开始时间"]);
     if (item["结束时间"]) times.push(item["结束时间"]);
     if (times.length === 0 && item["投稿时间"]) times.push(item["投稿时间"]);
-    
     if (times.length === 0) return null;
     return [Math.min(...times), Math.max(...times)];
   }
@@ -518,21 +492,13 @@
     return hasImg && hasDoc ? "图文混合" : (hasImg ? "图片" : "文档");
   }
 
-  function showToast(msg) {
-    const toast = document.getElementById("toast");
-    toast.textContent = msg;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 3000);
-  }
-
-  function handleReport(e, uid) {
-    e.stopPropagation(); 
-    const msg = `如果您认为该档案存在侵权或违规问题，请联系校史项目总负责人进行处理：\n微信：14778384997\n邮箱：1077401836@qq.com\n\n请提供该条目的唯一编号：${uid}`;
-    navigator.clipboard.writeText(msg).then(() => {
-      showToast("举报联系方式及编号已复制，请通过微信或邮箱联系。");
-    }).catch(() => {
-      alert(msg);
-    });
+  // ================= 渲染与交互逻辑 =================
+  function generateReportLink(uid) {
+    // 将邮箱硬编码，主题加上统一前缀方便识别，正文带上 UID
+    const email = "1077401836@qq.com";
+    const subject = encodeURIComponent(`[校史档案举报] 发现违规内容 - UID: ${uid}`);
+    const body = encodeURIComponent(`您好，\n\n我认为该档案（UID: ${uid}）存在侵权或违规问题，请核实处理。\n\n补充说明：`);
+    return `mailto:${email}?subject=${subject}&body=${body}`;
   }
 
   function hasActiveFilters() {
@@ -593,53 +559,70 @@
       html += `</div></div>`;
     }
 
+    // 注意：现在的举报按钮是 <a> 标签，直接触发 mailto
+    const reportLink = generateReportLink(uid);
     html += `<div class="entry-footer">
       <div class="footer-contributor">${contributor ? `${Icons.user} 贡献者：<span>${highlightText(contributor, currentSearch)}</span>` : ''}</div>
       <div class="footer-actions">
-        <button class="btn-action report report-btn" data-uid="${uid}">${Icons.warning} 举报</button>
+        <a class="btn-action report" href="${reportLink}" onclick="event.stopPropagation()">${Icons.warning} 举报</a>
       </div>
     </div>`;
 
     return html;
   }
 
+  function appendCards(count) {
+    const listContainer = document.getElementById("list");
+    const nextItems = filteredData.slice(displayCount, displayCount + count);
+    
+    nextItems.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "entry";
+      card.innerHTML = createCardHTML(item);
+      
+      // 监听点击打开详情（带防复制误触判断）
+      card.addEventListener("click", (e) => {
+        // 如果用户选中了文字，不弹窗
+        if (window.getSelection().toString().length > 0) return;
+        // 防止点击附件或举报链接触发弹窗（前面有 event.stopPropagation，这里做双重保险）
+        if (e.target.closest('a')) return;
+        openModal(item);
+      });
+
+      listContainer.appendChild(card);
+    });
+    displayCount += nextItems.length;
+  }
+
   function renderList() {
     const listContainer = document.getElementById("list");
-    const loadMoreBtn = document.getElementById("loadMoreBtn");
     listContainer.innerHTML = "";
-
+    displayCount = 0; // 重置
+    
     if (filteredData.length === 0) {
       listContainer.innerHTML = `<div class="empty">
         没有找到匹配的档案记录
         ${hasActiveFilters() ? `<button class="btn-reset-all" style="display:flex" onclick="document.getElementById('resetAllBtn').click()">清除筛选条件</button>` : ''}
       </div>`;
-      loadMoreBtn.style.display = "none";
       return;
     }
-
-    const itemsToShow = filteredData.slice(0, displayCount);
     
-    itemsToShow.forEach(item => {
-      const card = document.createElement("div");
-      card.className = "entry";
-      card.innerHTML = createCardHTML(item);
-      
-      card.onclick = () => openModal(item);
-
-      const reportBtn = card.querySelector(".report-btn");
-      const uid = extractText(item["UID"]) || "无";
-      reportBtn.onclick = (e) => handleReport(e, uid);
-
-      listContainer.appendChild(card);
-    });
-
-    if (displayCount < filteredData.length) {
-      loadMoreBtn.style.display = "block";
-      loadMoreBtn.textContent = `加载更多 (剩余 ${filteredData.length - displayCount} 条)`;
-    } else {
-      loadMoreBtn.style.display = "none";
-    }
+    appendCards(PAGE_SIZE);
   }
+
+  // 无限滚动逻辑
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !isLoading) {
+      if (displayCount < filteredData.length) {
+        isLoading = true;
+        // 模拟微小延迟让用户体验更好
+        setTimeout(() => {
+          appendCards(PAGE_SIZE);
+          isLoading = false;
+        }, 100);
+      }
+    }
+  }, { rootMargin: "100px" });
 
   function openModal(item) {
     const modal = document.getElementById("detailModal");
@@ -675,16 +658,24 @@
     
     const reportBtn = document.getElementById("modalReportBtn");
     reportBtn.innerHTML = `${Icons.warning} 举报该内容`;
-    reportBtn.onclick = (e) => handleReport(e, uid);
+    reportBtn.href = generateReportLink(uid);
 
     modal.classList.add("active");
+    document.body.classList.add("modal-open"); // 锁定背景滚动
   }
 
+  function closeModal() {
+    document.getElementById("detailModal").classList.remove("active");
+    document.body.classList.remove("modal-open"); // 恢复滚动
+  }
+
+  // ================= 核心筛选逻辑 =================
   function applyFilters() {
     filteredData = allData.filter(item => {
       const matchCategory = currentCategory === "全部" || extractText(item["分区"]) === currentCategory;
       const matchContributor = currentContributor === "全部" || extractText(item["投稿人昵称"]) === currentContributor;
       
+      // 精准时间筛选：优先比对事件发生时间，若仅设了投稿时间，则退而求其次比对投稿时间
       let matchTime = true;
       if (currentStartDate || currentEndDate) {
         const recordTime = getRecordTimeRange(item);
@@ -693,7 +684,6 @@
         } else {
           const filterStart = currentStartDate ? new Date(currentStartDate).getTime() : 0;
           const filterEnd = currentEndDate ? new Date(currentEndDate).getTime() + 86399000 : Infinity;
-          
           if (recordTime[1] < filterStart || recordTime[0] > filterEnd) {
             matchTime = false;
           }
@@ -725,7 +715,6 @@
       return timeB - timeA;
     });
 
-    displayCount = PAGE_SIZE; 
     renderList();
     updateUIState();
   }
@@ -737,9 +726,10 @@
     const categories = [...new Set(allData.map(i => extractText(i["分区"])).filter(Boolean))];
     const contributors = [...new Set(allData.map(i => extractText(i["投稿人昵称"])).filter(Boolean))];
 
-    categories.forEach(cat => { catSelect.innerHTML += `<option value="${cat}">${cat}</option>`; });
-    contributors.forEach(con => { conSelect.innerHTML += `<option value="${con}">${con}</option>`; });
+    categories.forEach(cat => { catSelect.innerHTML += `<option value="${escapeHTML(cat)}">${escapeHTML(cat)}</option>`; });
+    contributors.forEach(con => { conSelect.innerHTML += `<option value="${escapeHTML(con)}">${escapeHTML(con)}</option>`; });
 
+    // 从 URL 读取初始状态
     const params = new URLSearchParams(window.location.search);
     currentSearch = params.get("search") || "";
     currentCategory = params.get("category") || "全部";
@@ -790,6 +780,17 @@
     initTheme(); 
     const listContainer = document.getElementById("list");
     
+    // 渲染骨架屏
+    let skeletonHTML = "";
+    for(let i=0; i<3; i++) {
+      skeletonHTML += `<div class="skeleton-card">
+        <div class="skeleton-line skeleton-title"></div>
+        <div class="skeleton-line skeleton-meta"></div>
+        <div class="skeleton-line skeleton-body"></div>
+      </div>`;
+    }
+    listContainer.innerHTML = skeletonHTML;
+
     try {
       const res = await fetch(DATA_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -802,6 +803,7 @@
 
       initFilters();
       applyFilters();
+      observer.observe(document.getElementById("scroll-sentinel")); // 启动无限滚动监听
 
       let timeout = null;
       const searchInput = document.getElementById("searchInput");
@@ -834,24 +836,22 @@
         applyFilters();
       };
 
-      document.getElementById("loadMoreBtn").onclick = () => {
-        displayCount += PAGE_SIZE;
-        renderList();
-      };
-
       const modal = document.getElementById("detailModal");
-      document.getElementById("modalClose").onclick = () => modal.classList.remove("active");
-      modal.onclick = (e) => { if (e.target === modal) modal.classList.remove("active"); };
+      document.getElementById("modalClose").onclick = closeModal;
+      modal.onclick = (e) => { if (e.target === modal) closeModal(); };
       
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && modal.classList.contains("active")) {
-          modal.classList.remove("active");
+          closeModal();
         }
       });
 
     } catch (e) {
       console.error("数据加载失败:", e);
-      listContainer.innerHTML = '<div class="empty">数据加载失败，请检查根目录下是否存在 data.json。</div>';
+      listContainer.innerHTML = `<div class="empty">
+        数据加载失败，请检查网络或确保 data.json 存在。
+        <button class="btn-reset-all" style="display:flex; margin-top: 10px;" onclick="location.reload()">重试</button>
+      </div>`;
     }
   }
 
