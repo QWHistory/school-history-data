@@ -64,7 +64,6 @@
   /* 锁定背景滚动 */
   body.modal-open { overflow: hidden; }
 
-  /* 自定义滚动条 */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: var(--radius-sm); }
@@ -132,7 +131,6 @@
   .btn-reset-all:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-focus); }
   .btn-reset-all:active { transform: scale(0.96); }
 
-  /* 筛选网格 */
   .filter-row { 
     display: grid; 
     grid-template-columns: 1fr 1fr 2fr 1fr; 
@@ -194,7 +192,7 @@
     position: relative; background: var(--bg-surface); border: 1px solid var(--border-color);
     border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem;
     box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s ease-out;
-    cursor: pointer; user-select: text; /* 允许选中文本 */
+    cursor: pointer; user-select: text; 
   }
   .entry:hover { border-color: var(--border-focus); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
   .entry:active { transform: scale(0.995); }
@@ -242,7 +240,7 @@
     display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.5rem;
     background: var(--bg-surface); border: 1px solid var(--border-color);
     border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary);
-    text-decoration: none; transition: border-color 0.15s;
+    text-decoration: none; transition: border-color 0.15s; cursor: pointer;
   }
   .attachment-item:hover { border-color: var(--border-focus); }
   .attachment-item svg { width: 14px; height: 14px; color: var(--text-secondary); flex-shrink: 0; }
@@ -260,7 +258,7 @@
   .btn-action {
     background: none; border: none; font-size: 0.75rem; color: var(--text-tertiary);
     cursor: pointer; display: flex; align-items: center; gap: 0.25rem; transition: color 0.2s;
-    text-decoration: none; /* for mailto */
+    text-decoration: none;
   }
   .btn-action:hover { color: var(--primary); }
   .btn-action.report:hover { color: #ef4444; }
@@ -307,7 +305,6 @@
   .modal-close:active { transform: scale(0.9); }
   .modal-close svg { width: 22px; height: 22px; }
 
-  /* 弹窗内滚动条美化 */
   .modal-body { padding: 1.5rem; overflow-y: auto; }
   .modal-body::-webkit-scrollbar { width: 6px; }
   .modal-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -319,7 +316,30 @@
     display: flex; justify-content: space-between; align-items: center; background: var(--bg-body);
   }
 
-  /* 无限滚动触发点 */
+  /* ================= 灯箱 (Lightbox) ================= */
+  .lightbox-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+    z-index: 3000; display: flex; justify-content: center; align-items: center;
+    opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+  }
+  .lightbox-overlay.active { opacity: 1; visibility: visible; }
+  
+  .lightbox-img {
+    max-width: 95vw; max-height: 95vh; object-fit: contain;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8); border-radius: 4px;
+    transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .lightbox-overlay.active .lightbox-img { transform: scale(1); }
+  
+  .lightbox-close {
+    position: absolute; top: 20px; right: 20px; 
+    background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 24px; 
+    cursor: pointer; width: 44px; height: 44px; border-radius: 50%; 
+    display: flex; justify-content: center; align-items: center; transition: background 0.2s;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+  .lightbox-close svg { width: 24px; height: 24px; }
+
   #scroll-sentinel { height: 20px; margin-top: 10px; }
 
   @media (max-width: 768px) {
@@ -385,9 +405,10 @@
     </div>
 
     <div id="list"></div>
-    <div id="scroll-sentinel"></div> <!-- 无限滚动触发点 -->
+    <div id="scroll-sentinel"></div>
   </main>
 
+  <!-- 详情弹窗 -->
   <div class="modal-overlay" id="detailModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -404,6 +425,14 @@
     </div>
   </div>
 
+  <!-- 图片灯箱 -->
+  <div class="lightbox-overlay" id="imageLightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+    <img id="lightboxImg" class="lightbox-img" src="" alt="图片预览" onclick="event.stopPropagation()">
+  </div>
+
 <script>
   const DATA_URL = '/data.json';
   const CDN_PREFIX = '/'; 
@@ -412,7 +441,7 @@
   let allData = [];
   let filteredData = [];
   let displayCount = PAGE_SIZE;
-  let isLoading = false; // 防止无限滚动重复触发
+  let isLoading = false;
   
   let currentSearch = "";
   let currentCategory = "全部";
@@ -441,7 +470,6 @@
   function isImage(path) { return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(path); }
   function fileName(path) { return path.split("/").pop() || path; }
   
-  // 安全提取文本，防止富文本崩溃
   function extractText(val) {
     if (!val) return "";
     if (typeof val === 'string') return val.trim();
@@ -450,7 +478,6 @@
     return String(val).trim();
   }
 
-  // 严格的 XSS 转义
   function escapeHTML(str) {
     if (!str) return "";
     return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
@@ -492,9 +519,26 @@
     return hasImg && hasDoc ? "图文混合" : (hasImg ? "图片" : "文档");
   }
 
+  // ================= 灯箱控制 =================
+  function openLightbox(src) {
+    const lb = document.getElementById("imageLightbox");
+    document.getElementById("lightboxImg").src = src;
+    lb.classList.add("active");
+    document.body.classList.add("modal-open"); // 锁滚动
+  }
+
+  function closeLightbox(e) {
+    if (e) e.stopPropagation();
+    const lb = document.getElementById("imageLightbox");
+    lb.classList.remove("active");
+    // 如果详情弹窗没有打开，才恢复背景滚动
+    if (!document.getElementById("detailModal").classList.contains("active")) {
+      document.body.classList.remove("modal-open");
+    }
+  }
+
   // ================= 渲染与交互逻辑 =================
   function generateReportLink(uid) {
-    // 将邮箱硬编码，主题加上统一前缀方便识别，正文带上 UID
     const email = "1077401836@qq.com";
     const subject = encodeURIComponent(`[校史档案举报] 发现违规内容 - UID: ${uid}`);
     const body = encodeURIComponent(`您好，\n\n我认为该档案（UID: ${uid}）存在侵权或违规问题，请核实处理。\n\n补充说明：`);
@@ -553,13 +597,18 @@
       html += `<div class="attachments-box"><div class="attachment-title">附件 (${attachments.length})</div><div class="attachment-grid">`;
       attachments.forEach(p => {
         const href = CDN_PREFIX + p.replace(/^\//, "");
-        const download = isImage(p) ? "" : `download="${fileName(p)}"`;
-        html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" ${download} onclick="event.stopPropagation()">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+        const isImg = isImage(p);
+        // 图片附件：点击触发灯箱
+        if (isImg) {
+          html += `<a class="attachment-item" href="javascript:void(0)" onclick="event.preventDefault(); event.stopPropagation(); openLightbox('${href}')">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+        } else {
+          // 非图片附件：依然走新标签页下载
+          html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" download="${fileName(p)}" onclick="event.stopPropagation()">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+        }
       });
       html += `</div></div>`;
     }
 
-    // 注意：现在的举报按钮是 <a> 标签，直接触发 mailto
     const reportLink = generateReportLink(uid);
     html += `<div class="entry-footer">
       <div class="footer-contributor">${contributor ? `${Icons.user} 贡献者：<span>${highlightText(contributor, currentSearch)}</span>` : ''}</div>
@@ -580,11 +629,8 @@
       card.className = "entry";
       card.innerHTML = createCardHTML(item);
       
-      // 监听点击打开详情（带防复制误触判断）
       card.addEventListener("click", (e) => {
-        // 如果用户选中了文字，不弹窗
         if (window.getSelection().toString().length > 0) return;
-        // 防止点击附件或举报链接触发弹窗（前面有 event.stopPropagation，这里做双重保险）
         if (e.target.closest('a')) return;
         openModal(item);
       });
@@ -597,7 +643,7 @@
   function renderList() {
     const listContainer = document.getElementById("list");
     listContainer.innerHTML = "";
-    displayCount = 0; // 重置
+    displayCount = 0; 
     
     if (filteredData.length === 0) {
       listContainer.innerHTML = `<div class="empty">
@@ -610,12 +656,10 @@
     appendCards(PAGE_SIZE);
   }
 
-  // 无限滚动逻辑
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !isLoading) {
       if (displayCount < filteredData.length) {
         isLoading = true;
-        // 模拟微小延迟让用户体验更好
         setTimeout(() => {
           appendCards(PAGE_SIZE);
           isLoading = false;
@@ -647,8 +691,12 @@
       bodyHtml += `<div class="attachments-box"><div class="attachment-title">附件 (${attachments.length})</div><div class="attachment-grid">`;
       attachments.forEach(p => {
         const href = CDN_PREFIX + p.replace(/^\//, "");
-        const download = isImage(p) ? "" : `download="${fileName(p)}"`;
-        bodyHtml += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" ${download}>${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+        const isImg = isImage(p);
+        if (isImg) {
+          bodyHtml += `<a class="attachment-item" href="javascript:void(0)" onclick="event.preventDefault(); openLightbox('${href}')">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+        } else {
+          bodyHtml += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" download="${fileName(p)}">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+        }
       });
       bodyHtml += `</div></div>`;
     }
@@ -661,21 +709,19 @@
     reportBtn.href = generateReportLink(uid);
 
     modal.classList.add("active");
-    document.body.classList.add("modal-open"); // 锁定背景滚动
+    document.body.classList.add("modal-open");
   }
 
   function closeModal() {
     document.getElementById("detailModal").classList.remove("active");
-    document.body.classList.remove("modal-open"); // 恢复滚动
+    document.body.classList.remove("modal-open");
   }
 
-  // ================= 核心筛选逻辑 =================
   function applyFilters() {
     filteredData = allData.filter(item => {
       const matchCategory = currentCategory === "全部" || extractText(item["分区"]) === currentCategory;
       const matchContributor = currentContributor === "全部" || extractText(item["投稿人昵称"]) === currentContributor;
       
-      // 精准时间筛选：优先比对事件发生时间，若仅设了投稿时间，则退而求其次比对投稿时间
       let matchTime = true;
       if (currentStartDate || currentEndDate) {
         const recordTime = getRecordTimeRange(item);
@@ -729,7 +775,6 @@
     categories.forEach(cat => { catSelect.innerHTML += `<option value="${escapeHTML(cat)}">${escapeHTML(cat)}</option>`; });
     contributors.forEach(con => { conSelect.innerHTML += `<option value="${escapeHTML(con)}">${escapeHTML(con)}</option>`; });
 
-    // 从 URL 读取初始状态
     const params = new URLSearchParams(window.location.search);
     currentSearch = params.get("search") || "";
     currentCategory = params.get("category") || "全部";
@@ -780,7 +825,6 @@
     initTheme(); 
     const listContainer = document.getElementById("list");
     
-    // 渲染骨架屏
     let skeletonHTML = "";
     for(let i=0; i<3; i++) {
       skeletonHTML += `<div class="skeleton-card">
@@ -803,7 +847,7 @@
 
       initFilters();
       applyFilters();
-      observer.observe(document.getElementById("scroll-sentinel")); // 启动无限滚动监听
+      observer.observe(document.getElementById("scroll-sentinel"));
 
       let timeout = null;
       const searchInput = document.getElementById("searchInput");
@@ -841,8 +885,12 @@
       modal.onclick = (e) => { if (e.target === modal) closeModal(); };
       
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && modal.classList.contains("active")) {
-          closeModal();
+        if (e.key === "Escape") {
+          if (document.getElementById("imageLightbox").classList.contains("active")) {
+            closeLightbox();
+          } else if (modal.classList.contains("active")) {
+            closeModal();
+          }
         }
       });
 
