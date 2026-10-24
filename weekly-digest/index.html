@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>校史档案 - 历史长廊</title>
 <style>
-  /* ================= 颜色与基础变量 ================= */
   :root {
     --bg-body: #fafafa;
     --bg-surface: #ffffff;
@@ -15,18 +14,15 @@
     --text-tertiary: #9ca3af;
     --border-color: #e5e7eb;
     --border-focus: #9ca3af;
-    --primary: #000000; /* 极简黑主色调 */
+    --primary: #000000;
     --primary-hover: #333333;
-    
-    /* 核心：强制统一为小圆角 */
     --radius-sm: 4px;
     --radius-md: 6px;
-    
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   }
 
   [data-theme="dark"] {
-    --bg-body: #0d1117; /* GitHub 暗色底 */
+    --bg-body: #0d1117;
     --bg-surface: #161b22;
     --bg-hover: #21262d;
     --text-primary: #c9d1d9;
@@ -36,286 +32,173 @@
     --border-focus: #8b949e;
     --primary: #f0f6fc;
     --primary-hover: #ffffff;
-    
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-body);
     color: var(--text-primary);
     line-height: 1.6;
-    transition: background-color 0.2s, color 0.2s;
     padding-bottom: 4rem;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ================= 顶部导航栏 ================= */
   .navbar {
-    position: sticky;
-    top: 0;
-    background-color: var(--bg-body);
+    position: sticky; top: 0; background-color: var(--bg-body);
     border-bottom: 1px solid var(--border-color);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100;
-    flex-wrap: wrap;
-    gap: 1rem;
+    padding: 1rem 2rem; display: flex; justify-content: space-between;
+    align-items: center; z-index: 100; flex-wrap: wrap; gap: 1rem;
   }
-  .nav-brand { 
-    font-size: 1.15rem; 
-    font-weight: 600; 
-    letter-spacing: -0.02em; 
-  }
-  .nav-actions { 
-    display: flex; 
-    align-items: center; 
-    gap: 1rem; 
-  }
+  .nav-brand { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.02em; }
+  .nav-actions { display: flex; align-items: center; gap: 1rem; }
   
   .btn-icon {
-    background: none; 
-    border: 1px solid transparent; 
-    cursor: pointer; 
-    color: var(--text-secondary);
-    padding: 0.4rem; 
-    border-radius: var(--radius-md); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    transition: all 0.2s;
+    background: none; border: 1px solid transparent; cursor: pointer; 
+    color: var(--text-secondary); padding: 0.4rem; border-radius: var(--radius-md); 
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
-  .btn-icon:hover { 
-    background: var(--bg-hover); 
-    color: var(--text-primary); 
-    border-color: var(--border-color);
-  }
+  .btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-color); }
   .btn-icon svg { width: 18px; height: 18px; }
 
   .btn-primary {
-    background: var(--primary); 
-    color: var(--bg-surface); 
-    text-decoration: none;
-    padding: 0.45rem 1rem; 
-    border-radius: var(--radius-md); 
-    font-size: 0.85rem; 
-    font-weight: 500;
-    border: 1px solid var(--primary);
-    transition: background 0.2s;
+    background: var(--primary); color: var(--bg-surface); text-decoration: none;
+    padding: 0.45rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; 
+    font-weight: 500; border: 1px solid var(--primary); transition: background 0.2s;
   }
   .btn-primary:hover { background: var(--primary-hover); }
 
-  /* ================= 主体布局 ================= */
   .container { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
+  .toolbar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
 
-  /* 工具栏：去掉大外框，更扁平 */
-  .toolbar {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 2rem;
-  }
-
-  /* 搜索行 */
-  .search-row { width: 100%; }
-  .search-wrapper {
-    position: relative; 
-    display: flex; 
-    align-items: center;
-  }
-  .search-wrapper svg {
-    position: absolute; left: 0.75rem; width: 16px; height: 16px; color: var(--text-tertiary);
-  }
+  .search-wrapper { position: relative; display: flex; align-items: center; }
+  .search-wrapper svg { position: absolute; left: 0.75rem; width: 16px; height: 16px; color: var(--text-tertiary); }
   .search-input {
-    width: 100%; 
-    padding: 0.6rem 1rem 0.6rem 2.2rem;
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-md);
-    font-size: 0.9rem; 
-    background: var(--bg-surface); 
-    color: var(--text-primary);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    box-shadow: var(--shadow-sm);
+    width: 100%; padding: 0.6rem 1rem 0.6rem 2.2rem;
+    border: 1px solid var(--border-color); border-radius: var(--radius-md);
+    font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary);
+    transition: border-color 0.2s, box-shadow 0.2s; box-shadow: var(--shadow-sm);
   }
-  .search-input:focus { 
-    outline: none; 
-    border-color: var(--border-focus); 
-    box-shadow: 0 0 0 2px rgba(128,128,128,0.1); 
-  }
-  .search-input::placeholder { color: var(--text-tertiary); }
+  .search-input:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 2px rgba(128,128,128,0.1); }
 
-  /* 筛选行 */
-  .filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
   .filter-select {
-    flex: 1;
-    min-width: 130px;
-    padding: 0.5rem 2rem 0.5rem 0.75rem; 
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md); 
-    font-size: 0.85rem; 
-    background: var(--bg-surface);
-    color: var(--text-primary); 
-    cursor: pointer; 
-    appearance: none;
-    box-shadow: var(--shadow-sm);
-    /* 更微小的下拉箭头 */
+    flex: 1; min-width: 130px; padding: 0.5rem 2rem 0.5rem 0.75rem; 
+    border: 1px solid var(--border-color); border-radius: var(--radius-md); 
+    font-size: 0.85rem; background: var(--bg-surface); color: var(--text-primary); 
+    cursor: pointer; appearance: none; box-shadow: var(--shadow-sm);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat; 
-    background-position: right 0.75rem center; 
-    background-size: 0.9rem;
+    background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 0.9rem;
     transition: border-color 0.2s;
   }
-  .filter-select:hover { border-color: var(--border-focus); }
   .filter-select:focus { outline: none; border-color: var(--border-focus); }
 
-  /* ================= 卡片 (硬朗线框风) ================= */
   .entry {
-    background: var(--bg-surface); 
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md); 
-    padding: 1.25rem 1.5rem; 
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow-sm); 
-    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative; 
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .entry:hover { 
-    border-color: var(--border-focus);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  .entry:hover { border-color: var(--border-focus); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+  .tag {
+    position: absolute; top: 1.25rem; right: 1.5rem;
+    background: var(--bg-body); color: var(--text-secondary);
+    padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.75rem;
+    font-weight: 500; border: 1px solid var(--border-color); white-space: nowrap;
   }
 
-  .entry-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: flex-start; 
-    gap: 1rem; 
-    margin-bottom: 0.5rem; 
-    flex-wrap: wrap;
-  }
   .entry-title { 
-    font-size: 1.1rem; 
-    font-weight: 600; 
-    line-height: 1.4; 
-    color: var(--text-primary); 
-    word-break: break-word; 
-  }
-  
-  /* 标签：去胶囊化，改为小圆角线框 */
-  .tag {
-    background: var(--bg-body); 
-    color: var(--text-secondary);
-    padding: 0.15rem 0.4rem; 
-    border-radius: var(--radius-sm); 
-    font-size: 0.75rem;
-    font-weight: 500; 
-    border: 1px solid var(--border-color);
-    white-space: nowrap;
+    font-size: 1.1rem; font-weight: 600; line-height: 1.4; 
+    color: var(--text-primary); word-break: break-word; 
+    padding-right: 80px;
+    margin-bottom: 0.5rem;
   }
 
   .entry-meta {
-    display: flex; 
-    flex-wrap: wrap; 
-    align-items: center; 
-    gap: 1rem;
-    font-size: 0.8rem; 
-    color: var(--text-secondary); 
-    margin-bottom: 1rem;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
+    font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;
   }
   .meta-item { display: flex; align-items: center; gap: 0.3rem; }
   .meta-item svg { width: 13px; height: 13px; color: var(--text-tertiary); }
-  .meta-contributor { font-weight: 500; color: var(--text-primary); }
+  .meta-strong { font-weight: 500; color: var(--text-primary); }
+
+  /* 档案唯一编号样式 */
+  .uid-badge {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.75rem; color: var(--text-secondary);
+    background: var(--bg-body); border: 1px solid var(--border-color);
+    padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);
+  }
 
   .entry-body {
-    white-space: pre-wrap; 
-    word-break: break-word; 
-    font-size: 0.9rem;
-    color: var(--text-secondary); 
-    margin-bottom: 1.25rem;
+    white-space: pre-wrap; word-break: break-word; font-size: 0.9rem;
+    color: var(--text-secondary); margin-bottom: 1rem;
   }
 
-  /* 附件 */
   .attachments-box {
-    background: var(--bg-body); 
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm); 
-    padding: 0.75rem;
+    background: var(--bg-body); border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); padding: 0.75rem;
   }
   .attachment-title {
-    font-size: 0.7rem; 
-    font-weight: 600; 
-    color: var(--text-tertiary);
-    text-transform: uppercase; 
-    letter-spacing: 0.05em; 
-    margin-bottom: 0.5rem;
+    font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
   }
   .attachment-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .attachment-item {
-    display: inline-flex; 
-    align-items: center; 
-    gap: 0.4rem; 
-    padding: 0.4rem 0.6rem;
-    background: var(--bg-surface); 
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm); 
-    font-size: 0.8rem; 
-    color: var(--text-primary);
-    text-decoration: none; 
-    transition: border-color 0.15s;
+    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem;
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary);
+    text-decoration: none; transition: border-color 0.15s;
   }
   .attachment-item:hover { border-color: var(--border-focus); }
   .attachment-item svg { width: 14px; height: 14px; color: var(--text-secondary); flex-shrink: 0; }
   .attachment-item span { max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* 底部操作区 (举报) */
   .entry-footer {
-    margin-top: 0.75rem; 
-    display: flex; 
-    justify-content: flex-end;
+    margin-top: 1rem; display: flex; justify-content: space-between; 
+    align-items: center; flex-wrap: wrap; gap: 0.5rem;
   }
+  .footer-contributor {
+    display: flex; align-items: center; gap: 0.3rem;
+    font-size: 0.8rem; color: var(--text-tertiary);
+  }
+  .footer-contributor svg { width: 13px; height: 13px; }
+  .footer-contributor span { color: var(--text-secondary); font-weight: 500; }
+
   .btn-report {
-    background: none; 
-    border: none; 
-    font-size: 0.75rem; 
-    color: var(--text-tertiary);
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    gap: 0.25rem;
-    transition: color 0.2s;
+    background: none; border: none; font-size: 0.75rem; color: var(--text-tertiary);
+    cursor: pointer; display: flex; align-items: center; gap: 0.25rem; transition: color 0.2s;
   }
   .btn-report:hover { color: #ef4444; }
   .btn-report svg { width: 12px; height: 12px; }
 
   .empty {
-    text-align: center; 
-    padding: 3rem 1rem; 
-    color: var(--text-tertiary);
-    background: var(--bg-surface); 
-    border-radius: var(--radius-md); 
-    border: 1px dashed var(--border-color);
-    font-size: 0.9rem;
+    text-align: center; padding: 3rem 1rem; color: var(--text-tertiary);
+    background: var(--bg-surface); border-radius: var(--radius-md); 
+    border: 1px dashed var(--border-color); font-size: 0.9rem;
   }
 
-  /* 响应式适配 */
+  .entry-meta:empty, .entry-body:empty, .attachments-box:empty, .entry-footer:empty {
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .navbar { padding: 0.75rem 1rem; }
-    .filter-select {
-      min-width: calc(50% - 0.5rem); 
-    }
-    .entry-header { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+    .filter-select { min-width: calc(50% - 0.5rem); }
+    .entry-title { padding-right: 0; margin-bottom: 0.25rem; }
+    .tag { position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 0.5rem; order: -1; }
+    .entry-header { display: flex; flex-direction: column-reverse; align-items: flex-start; }
+    .entry-footer { flex-direction: column; align-items: flex-start; }
+    .btn-report { margin-top: 0.5rem; }
   }
 </style>
 </head>
 <body>
 
-  <!-- 顶部导航 -->
   <nav class="navbar">
     <div class="nav-brand">校史档案</div>
     <div class="nav-actions">
@@ -327,27 +210,19 @@
     </div>
   </nav>
 
-  <!-- 主体内容 -->
   <main class="container">
-    <!-- 工具栏：无外框，融入背景 -->
     <div class="toolbar">
       <div class="search-row">
         <div class="search-wrapper">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-          <input type="text" id="searchInput" class="search-input" placeholder="搜索标题、详述或贡献者...">
+          <input type="text" id="searchInput" class="search-input" placeholder="搜索标题、详述、有关人、贡献者或编号...">
         </div>
       </div>
       
       <div class="filter-row">
-        <select id="categorySelect" class="filter-select">
-          <option value="全部">全部分类</option>
-        </select>
-        <select id="contributorSelect" class="filter-select">
-          <option value="全部">全部贡献者</option>
-        </select>
-        <select id="yearSelect" class="filter-select">
-          <option value="全部">全部年份</option>
-        </select>
+        <select id="categorySelect" class="filter-select"><option value="全部">全部分类</option></select>
+        <select id="contributorSelect" class="filter-select"><option value="全部">全部贡献者</option></select>
+        <select id="yearSelect" class="filter-select"><option value="全部">全部年份</option></select>
         <select id="attachmentSelect" class="filter-select">
           <option value="全部">全部附件</option>
           <option value="图片">包含图片</option>
@@ -373,6 +248,7 @@
 
   const Icons = {
     user: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>`,
+    users: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`,
     clock: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
     image: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`,
     doc: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>`,
@@ -424,47 +300,76 @@
     return "文档";
   }
 
+  function extractText(val) {
+    if (!val) return "";
+    if (typeof val === 'string') return val.trim();
+    if (Array.isArray(val)) {
+      return val.map(v => {
+        if (typeof v === 'string') return v;
+        if (v && v.type === 'text') return v.text;
+        if (v && v.name) return v.name;
+        return "";
+      }).join("").trim();
+    }
+    if (val && val.text) return val.text.trim();
+    return String(val).trim();
+  }
+
   function renderEntry(item) {
     const card = document.createElement("div");
     card.className = "entry";
 
-    const header = document.createElement("div");
-    header.className = "entry-header";
-    const titleDiv = document.createElement("div");
-    titleDiv.className = "entry-title";
-    titleDiv.textContent = item["内容标题"] || "无标题";
-    header.appendChild(titleDiv);
-
-    if (item["分区"]) {
+    const category = extractText(item["分区"]);
+    if (category) {
       const tag = document.createElement("span");
       tag.className = "tag";
-      tag.textContent = item["分区"];
-      header.appendChild(tag);
+      tag.textContent = category;
+      card.appendChild(tag);
     }
-    card.appendChild(header);
 
-    const timeStr = formatTimeRange(item["开始时间"], item["结束时间"], item["投稿时间"]);
+    const titleText = extractText(item["内容标题"]);
+    if (titleText) {
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "entry-title";
+      titleDiv.textContent = titleText;
+      card.appendChild(titleDiv);
+    }
+
     const meta = document.createElement("div");
     meta.className = "entry-meta";
     
-    if (item["投稿人昵称"]) {
-      const authorSpan = document.createElement("span");
-      authorSpan.className = "meta-item";
-      authorSpan.innerHTML = `${Icons.user} <span class="meta-contributor">贡献者：${item["投稿人昵称"]}</span>`;
-      meta.appendChild(authorSpan);
+    // 唯一编号 (UID)
+    const uid = extractText(item["UID"]) || "无编号";
+    const uidSpan = document.createElement("span");
+    uidSpan.className = "meta-item";
+    uidSpan.innerHTML = `<span class="uid-badge">ID: ${uid}</span>`;
+    meta.appendChild(uidSpan);
+
+    const relatedPeople = extractText(item["内容主要参与人"]);
+    if (relatedPeople) {
+      const relatedSpan = document.createElement("span");
+      relatedSpan.className = "meta-item";
+      relatedSpan.innerHTML = `${Icons.users} <span>有关人：<span class="meta-strong">${relatedPeople}</span></span>`;
+      meta.appendChild(relatedSpan);
     }
+
+    const timeStr = formatTimeRange(item["开始时间"], item["结束时间"], item["投稿时间"]);
     if (timeStr) {
       const timeSpan = document.createElement("span");
       timeSpan.className = "meta-item";
       timeSpan.innerHTML = `${Icons.clock} <span>${timeStr}</span>`;
       meta.appendChild(timeSpan);
     }
+    
     card.appendChild(meta);
 
-    const body = document.createElement("div");
-    body.className = "entry-body";
-    body.textContent = item["内容详述"] || "暂无详细内容。";
-    card.appendChild(body);
+    const bodyText = extractText(item["内容详述"]);
+    if (bodyText) {
+      const body = document.createElement("div");
+      body.className = "entry-body";
+      body.textContent = bodyText;
+      card.appendChild(body);
+    }
 
     const attachments = item["attachments"];
     if (Array.isArray(attachments) && attachments.length > 0) {
@@ -489,13 +394,24 @@
 
     const footer = document.createElement("div");
     footer.className = "entry-footer";
+
+    const contributor = extractText(item["投稿人昵称"]);
+    if (contributor) {
+      const conDiv = document.createElement("div");
+      conDiv.className = "footer-contributor";
+      conDiv.innerHTML = `${Icons.user} 贡献者：<span>${contributor}</span>`;
+      footer.appendChild(conDiv);
+    }
+
     const reportBtn = document.createElement("button");
     reportBtn.className = "btn-report";
     reportBtn.innerHTML = `${Icons.warning} 举报该内容`;
+    // 更新举报联系方式
     reportBtn.onclick = () => {
-      alert("如果您认为该档案存在侵权或违规问题，请联系校史项目总负责人进行处理。\n（请在联系时提供该条目的标题截图）");
+      alert(`如果您认为该档案存在侵权或违规问题，请联系校史项目总负责人进行处理：\n\n微信：14778384997\n邮箱：1077401836@qq.com\n\n（请在联系时提供该条目的唯一编号：${uid}）`);
     };
     footer.appendChild(reportBtn);
+    
     card.appendChild(footer);
 
     return card;
@@ -506,8 +422,8 @@
     listContainer.innerHTML = "";
 
     const filteredData = allData.filter(item => {
-      const matchCategory = currentCategory === "全部" || item["分区"] === currentCategory;
-      const matchContributor = currentContributor === "全部" || item["投稿人昵称"] === currentContributor;
+      const matchCategory = currentCategory === "全部" || extractText(item["分区"]) === currentCategory;
+      const matchContributor = currentContributor === "全部" || extractText(item["投稿人昵称"]) === currentContributor;
       const matchYear = currentYear === "全部" || getRecordYear(item) === currentYear;
       
       let matchAttachment = true;
@@ -518,11 +434,15 @@
         else if (currentAttachment === "无") matchAttachment = (attType === "无");
       }
 
-      const title = (item["内容标题"] || "").toLowerCase();
-      const content = (item["内容详述"] || "").toLowerCase();
-      const author = (item["投稿人昵称"] || "").toLowerCase();
+      // 搜索匹配（加入 UID 匹配）
+      const title = extractText(item["内容标题"]).toLowerCase();
+      const content = extractText(item["内容详述"]).toLowerCase();
+      const author = extractText(item["投稿人昵称"]).toLowerCase();
+      const related = extractText(item["内容主要参与人"]).toLowerCase();
+      const uidSearch = extractText(item["UID"]).toLowerCase();
       const search = currentSearch.toLowerCase();
-      const matchSearch = title.includes(search) || content.includes(search) || author.includes(search);
+      
+      const matchSearch = title.includes(search) || content.includes(search) || author.includes(search) || related.includes(search) || uidSearch.includes(search);
 
       return matchCategory && matchContributor && matchYear && matchAttachment && matchSearch;
     });
@@ -546,8 +466,8 @@
     const conSelect = document.getElementById("contributorSelect");
     const yearSelect = document.getElementById("yearSelect");
 
-    const categories = [...new Set(allData.map(i => i["分区"]).filter(Boolean))];
-    const contributors = [...new Set(allData.map(i => i["投稿人昵称"]).filter(Boolean))];
+    const categories = [...new Set(allData.map(i => extractText(i["分区"])).filter(Boolean))];
+    const contributors = [...new Set(allData.map(i => extractText(i["投稿人昵称"])).filter(Boolean))];
     const years = [...new Set(allData.map(i => getRecordYear(i)).filter(y => y !== "未知年份"))].sort((a,b) => b - a);
 
     categories.forEach(cat => {
