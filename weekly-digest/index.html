@@ -19,6 +19,7 @@
     --radius-sm: 4px;
     --radius-md: 6px;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
   [data-theme="dark"] {
@@ -33,12 +34,13 @@
     --primary: #f0f6fc;
     --primary-hover: #ffffff;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-body);
     color: var(--text-primary);
     line-height: 1.5;
@@ -73,7 +75,6 @@
 
   /* ================= 主体布局 ================= */
   .container { max-width: 900px; margin: 1.5rem auto; padding: 0 1.5rem; }
-  
   .toolbar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
 
   .search-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
@@ -86,47 +87,26 @@
   }
   .search-input:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 2px rgba(128,128,128,0.1); }
 
-  /* 筛选行：自然折行 */
-  .filter-row { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 0.5rem; 
-  }
-  
+  .filter-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .filter-select {
-    flex: 1; 
-    min-width: 120px; 
-    padding: 0.45rem 2rem 0.45rem 0.75rem; 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius-md); 
-    font-size: 0.85rem; 
-    background: var(--bg-surface); 
-    color: var(--text-primary); 
-    cursor: pointer; 
-    appearance: none; 
-    box-shadow: var(--shadow-sm);
+    flex: 1; min-width: 120px; padding: 0.45rem 2rem 0.45rem 0.75rem; 
+    border: 1px solid var(--border-color); border-radius: var(--radius-md); 
+    font-size: 0.85rem; background: var(--bg-surface); color: var(--text-primary); 
+    cursor: pointer; appearance: none; box-shadow: var(--shadow-sm);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat; 
-    background-position: right 0.75rem center; 
-    background-size: 0.9rem;
+    background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 0.9rem;
     transition: border-color 0.2s;
   }
   .filter-select:focus { outline: none; border-color: var(--border-focus); }
 
-  /* ================= 卡片设计 ================= */
+  /* ================= 卡片列表 ================= */
   .entry {
-    position: relative; 
-    background: var(--bg-surface); 
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md); 
-    padding: 1rem 1.25rem; 
-    margin-bottom: 0.75rem;
-    box-shadow: var(--shadow-sm); 
-    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative; background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+    box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s;
   }
   .entry:hover { border-color: var(--border-focus); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
-  /* 右上角标签 */
   .tag {
     position: absolute; top: 1rem; right: 1.25rem;
     background: var(--bg-body); color: var(--text-secondary);
@@ -135,26 +115,14 @@
   }
 
   .entry-title { 
-    font-size: 1.05rem; 
-    font-weight: 600; 
-    line-height: 1.4; 
-    color: var(--text-primary); 
-    padding-right: 80px; 
-    margin-bottom: 0.4rem;
-    word-break: break-word;
+    font-size: 1.05rem; font-weight: 600; line-height: 1.4; color: var(--text-primary); 
+    padding-right: 80px; margin-bottom: 0.4rem; word-break: break-word;
   }
 
-  /* 元数据区：自然折行，紧凑间距 */
   .entry-meta {
-    display: flex; 
-    flex-wrap: wrap; 
-    align-items: center; 
-    gap: 0.5rem 0.75rem;
-    font-size: 0.8rem; 
-    color: var(--text-secondary); 
-    margin-bottom: 0.75rem;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem;
+    font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;
   }
-
   .meta-item { display: flex; align-items: center; gap: 0.3rem; }
   .meta-item svg { width: 13px; height: 13px; color: var(--text-tertiary); flex-shrink: 0; }
   .meta-strong { font-weight: 500; color: var(--text-primary); }
@@ -167,20 +135,16 @@
     padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);
   }
 
-  /* 正文：自然展示 */
+  /* 正文：限制最多 3 行，超出省略 */
   .entry-body {
-    white-space: pre-wrap; 
-    word-break: break-word; 
-    font-size: 0.9rem;
-    color: var(--text-secondary); 
-    margin-bottom: 0.75rem;
+    white-space: pre-wrap; word-break: break-word; font-size: 0.9rem;
+    color: var(--text-secondary); margin-bottom: 0.75rem;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
 
-  /* 附件 */
   .attachments-box {
     background: var(--bg-body); border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm); padding: 0.6rem 0.75rem;
-    margin-bottom: 0.75rem;
+    border-radius: var(--radius-sm); padding: 0.6rem 0.75rem; margin-bottom: 0.75rem;
   }
   .attachment-title {
     font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary);
@@ -197,15 +161,9 @@
   .attachment-item svg { width: 14px; height: 14px; color: var(--text-secondary); flex-shrink: 0; }
   .attachment-item span { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* 底部：左右两端对齐，自然折行 */
   .entry-footer {
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    flex-wrap: wrap; 
-    gap: 0.5rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border-color);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+    gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color);
   }
   .footer-contributor {
     display: flex; align-items: center; gap: 0.3rem;
@@ -214,12 +172,24 @@
   .footer-contributor svg { width: 13px; height: 13px; }
   .footer-contributor span { color: var(--text-secondary); font-weight: 500; }
 
-  .btn-report {
+  .footer-actions { display: flex; align-items: center; gap: 1rem; }
+  
+  .btn-action {
     background: none; border: none; font-size: 0.75rem; color: var(--text-tertiary);
     cursor: pointer; display: flex; align-items: center; gap: 0.25rem; transition: color 0.2s;
   }
-  .btn-report:hover { color: #ef4444; }
-  .btn-report svg { width: 12px; height: 12px; }
+  .btn-action:hover { color: var(--primary); }
+  .btn-action.report:hover { color: #ef4444; }
+  .btn-action svg { width: 12px; height: 12px; }
+
+  /* ================= 加载更多 ================= */
+  .load-more {
+    display: block; width: 100%; padding: 0.75rem; margin-top: 1rem;
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); color: var(--text-secondary); font-size: 0.9rem;
+    cursor: pointer; transition: all 0.2s; font-weight: 500;
+  }
+  .load-more:hover { background: var(--bg-hover); color: var(--text-primary); }
 
   .empty {
     text-align: center; padding: 3rem 1rem; color: var(--text-tertiary);
@@ -227,9 +197,55 @@
     border: 1px dashed var(--border-color); font-size: 0.9rem;
   }
 
-  .entry-meta:empty, .entry-body:empty, .attachments-box:empty, .entry-footer:empty {
-    display: none;
+  .entry-meta:empty, .entry-body:empty, .attachments-box:empty, .entry-footer:empty { display: none; }
+
+  /* ================= 详情弹窗 (Modal) ================= */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
+    z-index: 1000; display: flex; justify-content: center; align-items: center;
+    opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s;
+    padding: 1rem;
   }
+  .modal-overlay.active { opacity: 1; visibility: visible; }
+  
+  .modal-content {
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg); width: 100%; max-width: 700px; max-height: 85vh;
+    box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
+    transform: translateY(10px); transition: transform 0.2s;
+  }
+  .modal-overlay.active .modal-content { transform: translateY(0); }
+
+  .modal-header {
+    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color);
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .modal-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); }
+  .modal-close {
+    background: none; border: none; cursor: pointer; color: var(--text-tertiary);
+    padding: 0.25rem; border-radius: var(--radius-sm); transition: background 0.2s;
+  }
+  .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .modal-close svg { width: 20px; height: 20px; }
+
+  .modal-body { padding: 1.5rem; overflow-y: auto; }
+  .modal-body .entry-meta { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border-color); }
+  .modal-body .entry-body { -webkit-line-clamp: unset; display: block; font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.7; }
+  
+  .modal-footer {
+    padding: 1rem 1.5rem; border-top: 1px solid var(--border-color);
+    display: flex; justify-content: space-between; align-items: center; background: var(--bg-body);
+    border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg);
+  }
+
+  /* ================= Toast 提示 ================= */
+  .toast {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+    background: var(--text-primary); color: var(--bg-body); padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; box-shadow: var(--shadow-lg);
+    opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); z-index: 2000;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 600px) {
     .navbar { padding: 0.5rem 1rem; }
@@ -237,6 +253,7 @@
     .tag { position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 0.5rem; order: -1; }
     .entry-title { padding-right: 0; font-size: 1rem; }
     .entry-header { display: flex; flex-direction: column-reverse; align-items: flex-start; }
+    .modal-content { max-height: 90vh; }
   }
 </style>
 </head>
@@ -276,13 +293,40 @@
     </div>
 
     <div id="list"></div>
+    <button id="loadMoreBtn" class="load-more" style="display: none;">加载更多档案</button>
   </main>
+
+  <!-- 详情弹窗 -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">档案详情</div>
+        <button class="modal-close" id="modalClose">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- 动态注入详情 -->
+      </div>
+      <div class="modal-footer">
+        <div class="footer-contributor" id="modalContributor"></div>
+        <button class="btn-action report" id="modalReportBtn"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 轻提示 -->
+  <div class="toast" id="toast"></div>
 
 <script>
   const DATA_URL = '/data.json';
   const CDN_PREFIX = '/'; 
+  const PAGE_SIZE = 10; // 每次加载的数量
 
   let allData = [];
+  let filteredData = [];
+  let displayCount = PAGE_SIZE;
+
   let currentSearch = "";
   let currentCategory = "全部";
   let currentContributor = "全部";
@@ -296,175 +340,192 @@
     image: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`,
     doc: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>`,
     archive: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>`,
-    warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`
+    warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`,
+    view: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>`
   };
 
+  // 工具函数
   function getFileIcon(path) {
     const ext = (path.split(".").pop() || "").toLowerCase();
     if (["jpg","jpeg","png","gif","webp","svg"].includes(ext)) return Icons.image;
     if (["zip","rar","7z"].includes(ext)) return Icons.archive;
     return Icons.doc;
   }
-
   function isImage(path) { return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(path); }
   function fileName(path) { return path.split("/").pop() || path; }
-  
+  function extractText(val) {
+    if (!val) return "";
+    if (typeof val === 'string') return val.trim();
+    if (Array.isArray(val)) return val.map(v => v && v.type === 'text' ? v.text : (v.name || "")).join("").trim();
+    if (val && val.text) return val.text.trim();
+    return String(val).trim();
+  }
   function formatTimeRange(start, end, defaultTime) {
     const fmt = (ts) => {
       if(!ts) return "";
       const d = new Date(ts);
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
     }
-    const s = fmt(start);
-    const e = fmt(end);
+    const s = fmt(start), e = fmt(end);
     if (s && e && s !== e) return `${s} 至 ${e}`;
-    if (s) return s;
-    if (e) return e;
-    return fmt(defaultTime);
+    return s || e || fmt(defaultTime);
   }
-
   function getRecordYear(item) {
     const ts = item["开始时间"] || item["投稿时间"];
-    if (!ts) return "未知年份";
-    return new Date(ts).getFullYear().toString();
+    return ts ? new Date(ts).getFullYear().toString() : "未知年份";
   }
-
   function getAttachmentType(item) {
     const atts = item["attachments"] || [];
     if (atts.length === 0) return "无";
-    let hasImg = false;
-    let hasDoc = false;
-    atts.forEach(p => {
-      if (isImage(p)) hasImg = true;
-      else hasDoc = true;
+    let hasImg = false, hasDoc = false;
+    atts.forEach(p => isImage(p) ? hasImg = true : hasDoc = true);
+    return hasImg && hasDoc ? "图文混合" : (hasImg ? "图片" : "文档");
+  }
+
+  // Toast 提示
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+  }
+
+  // 举报逻辑
+  function handleReport(uid) {
+    const msg = `如果您认为该档案存在侵权或违规问题，请联系校史项目总负责人进行处理：\n微信：14778384997\n邮箱：1077401836@qq.com\n\n请提供该条目的唯一编号：${uid}`;
+    // 尝试复制信息
+    navigator.clipboard.writeText(msg).then(() => {
+      showToast("举报联系方式及编号已复制，请通过微信或邮箱联系。");
+    }).catch(() => {
+      alert(msg);
     });
-    if (hasImg && hasDoc) return "图文混合";
-    if (hasImg) return "图片";
-    return "文档";
   }
 
-  function extractText(val) {
-    if (!val) return "";
-    if (typeof val === 'string') return val.trim();
-    if (Array.isArray(val)) {
-      return val.map(v => {
-        if (typeof v === 'string') return v;
-        if (v && v.type === 'text') return v.text;
-        if (v && v.name) return v.name;
-        return "";
-      }).join("").trim();
-    }
-    if (val && val.text) return val.text.trim();
-    return String(val).trim();
-  }
-
-  function renderEntry(item) {
-    const card = document.createElement("div");
-    card.className = "entry";
-
+  // 渲染卡片 HTML
+  function createCardHTML(item) {
     const category = extractText(item["分区"]);
-    if (category) {
-      const tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = category;
-      card.appendChild(tag);
-    }
-
-    const titleText = extractText(item["内容标题"]);
-    if (titleText) {
-      const titleDiv = document.createElement("div");
-      titleDiv.className = "entry-title";
-      titleDiv.textContent = titleText;
-      card.appendChild(titleDiv);
-    }
-
-    const meta = document.createElement("div");
-    meta.className = "entry-meta";
-    
+    const title = extractText(item["内容标题"]);
     const uid = extractText(item["UID"]) || "无";
-    const uidSpan = document.createElement("span");
-    uidSpan.className = "meta-item";
-    uidSpan.innerHTML = `<span class="uid-badge">ID: ${uid}</span>`;
-    meta.appendChild(uidSpan);
-
-    const relatedPeople = extractText(item["内容主要参与人"]);
-    if (relatedPeople) {
-      const relatedSpan = document.createElement("span");
-      relatedSpan.className = "meta-item";
-      relatedSpan.innerHTML = `${Icons.users} <span>有关人：<span class="meta-strong">${relatedPeople}</span></span>`;
-      meta.appendChild(relatedSpan);
-    }
-
+    const related = extractText(item["内容主要参与人"]);
     const timeStr = formatTimeRange(item["开始时间"], item["结束时间"], item["投稿时间"]);
-    if (timeStr) {
-      const timeSpan = document.createElement("span");
-      timeSpan.className = "meta-item";
-      timeSpan.innerHTML = `${Icons.clock} <span>${timeStr}</span>`;
-      meta.appendChild(timeSpan);
-    }
-    
-    card.appendChild(meta);
-
-    const bodyText = extractText(item["内容详述"]);
-    if (bodyText) {
-      const body = document.createElement("div");
-      body.className = "entry-body";
-      body.textContent = bodyText;
-      card.appendChild(body);
-    }
-
-    const attachments = item["attachments"];
-    if (Array.isArray(attachments) && attachments.length > 0) {
-      const box = document.createElement("div");
-      box.className = "attachments-box";
-      box.innerHTML = `<div class="attachment-title">附件 (${attachments.length})</div>`;
-      const grid = document.createElement("div");
-      grid.className = "attachment-grid";
-      attachments.forEach(path => {
-        const a = document.createElement("a");
-        a.className = "attachment-item";
-        a.href = CDN_PREFIX + path.replace(/^\//, "");
-        a.target = "_blank";
-        a.rel = "noopener";
-        if (!isImage(path)) a.setAttribute("download", fileName(path));
-        a.innerHTML = `${getFileIcon(path)} <span>${fileName(path)}</span>`;
-        grid.appendChild(a);
-      });
-      box.appendChild(grid);
-      card.appendChild(box);
-    }
-
-    const footer = document.createElement("div");
-    footer.className = "entry-footer";
-
+    const body = extractText(item["内容详述"]);
     const contributor = extractText(item["投稿人昵称"]);
-    if (contributor) {
-      const conDiv = document.createElement("div");
-      conDiv.className = "footer-contributor";
-      conDiv.innerHTML = `${Icons.user} 贡献者：<span>${contributor}</span>`;
-      footer.appendChild(conDiv);
-    } else {
-      footer.appendChild(document.createElement("div"));
+    
+    let html = "";
+    if (category) html += `<span class="tag">${category}</span>`;
+    if (title) html += `<div class="entry-title">${title}</div>`;
+
+    html += `<div class="entry-meta">`;
+    html += `<span class="meta-item"><span class="uid-badge">ID: ${uid}</span></span>`;
+    if (related) html += `<span class="meta-item">${Icons.users} <span>有关人：<span class="meta-strong">${related}</span></span></span>`;
+    if (timeStr) html += `<span class="meta-item">${Icons.clock} <span>${timeStr}</span></span>`;
+    html += `</div>`;
+
+    if (body) html += `<div class="entry-body">${body}</div>`;
+
+    const attachments = item["attachments"] || [];
+    if (attachments.length > 0) {
+      html += `<div class="attachments-box"><div class="attachment-title">附件 (${attachments.length})</div><div class="attachment-grid">`;
+      attachments.forEach(p => {
+        const href = CDN_PREFIX + p.replace(/^\//, "");
+        const download = isImage(p) ? "" : `download="${fileName(p)}"`;
+        html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" ${download}>${getFileIcon(p)} <span>${fileName(p)}</span></a>`;
+      });
+      html += `</div></div>`;
     }
 
-    const reportBtn = document.createElement("button");
-    reportBtn.className = "btn-report";
-    reportBtn.innerHTML = `${Icons.warning} 举报`;
-    reportBtn.onclick = () => {
-      alert(`如果您认为该档案存在侵权或违规问题，请联系校史项目总负责人进行处理：\n\n微信：14778384997\n邮箱：1077401836@qq.com\n\n（请在联系时提供该条目的唯一编号：${uid}）`);
-    };
-    footer.appendChild(reportBtn);
-    
-    card.appendChild(footer);
+    html += `<div class="entry-footer">
+      <div class="footer-contributor">${contributor ? `${Icons.user} 贡献者：<span>${contributor}</span>` : ''}</div>
+      <div class="footer-actions">
+        <button class="btn-action view-btn" data-uid="${uid}">${Icons.view} 详情</button>
+        <button class="btn-action report report-btn" data-uid="${uid}">${Icons.warning} 举报</button>
+      </div>
+    </div>`;
 
-    return card;
+    return html;
   }
 
+  // 渲染列表
   function renderList() {
     const listContainer = document.getElementById("list");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
     listContainer.innerHTML = "";
 
-    const filteredData = allData.filter(item => {
+    if (filteredData.length === 0) {
+      listContainer.innerHTML = '<div class="empty">没有找到匹配的档案记录</div>';
+      loadMoreBtn.style.display = "none";
+      return;
+    }
+
+    const itemsToShow = filteredData.slice(0, displayCount);
+    
+    itemsToShow.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "entry";
+      card.innerHTML = createCardHTML(item);
+      listContainer.appendChild(card);
+      
+      // 绑定详情点击
+      const viewBtn = card.querySelector(".view-btn");
+      viewBtn.onclick = () => openModal(item);
+
+      // 绑定举报点击
+      const reportBtn = card.querySelector(".report-btn");
+      reportBtn.onclick = () => handleReport(extractText(item["UID"]) || "无");
+    });
+
+    // 控制“加载更多”按钮显示
+    if (displayCount < filteredData.length) {
+      loadMoreBtn.style.display = "block";
+      loadMoreBtn.textContent = `加载更多 (剩余 ${filteredData.length - displayCount} 条)`;
+    } else {
+      loadMoreBtn.style.display = "none";
+    }
+  }
+
+  // 打开详情弹窗
+  function openModal(item) {
+    const modal = document.getElementById("detailModal");
+    document.getElementById("modalTitle").textContent = extractText(item["内容标题"]) || "无标题档案";
+    
+    const uid = extractText(item["UID"]) || "无";
+    const related = extractText(item["内容主要参与人"]);
+    const timeStr = formatTimeRange(item["开始时间"], item["结束时间"], item["投稿时间"]);
+    const body = extractText(item["内容详述"]);
+    const contributor = extractText(item["投稿人昵称"]);
+
+    let bodyHtml = `<div class="entry-meta">`;
+    bodyHtml += `<span class="meta-item"><span class="uid-badge">ID: ${uid}</span></span>`;
+    if (related) bodyHtml += `<span class="meta-item">${Icons.users} <span>有关人：<span class="meta-strong">${related}</span></span></span>`;
+    if (timeStr) bodyHtml += `<span class="meta-item">${Icons.clock} <span>${timeStr}</span></span>`;
+    bodyHtml += `</div>`;
+
+    if (body) bodyHtml += `<div class="entry-body">${body}</div>`;
+
+    const attachments = item["attachments"] || [];
+    if (attachments.length > 0) {
+      bodyHtml += `<div class="attachments-box"><div class="attachment-title">附件 (${attachments.length})</div><div class="attachment-grid">`;
+      attachments.forEach(p => {
+        const href = CDN_PREFIX + p.replace(/^\//, "");
+        const download = isImage(p) ? "" : `download="${fileName(p)}"`;
+        bodyHtml += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" ${download}>${getFileIcon(p)} <span>${fileName(p)}</span></a>`;
+      });
+      bodyHtml += `</div></div>`;
+    }
+    
+    document.getElementById("modalBody").innerHTML = bodyHtml;
+    document.getElementById("modalContributor").innerHTML = contributor ? `${Icons.user} 贡献者：<span>${contributor}</span>` : '';
+    
+    const reportBtn = document.getElementById("modalReportBtn");
+    reportBtn.innerHTML = `${Icons.warning} 举报该内容`;
+    reportBtn.onclick = () => handleReport(uid);
+
+    modal.classList.add("active");
+  }
+
+  // 初始化筛选逻辑
+  function applyFilters() {
+    filteredData = allData.filter(item => {
       const matchCategory = currentCategory === "全部" || extractText(item["分区"]) === currentCategory;
       const matchContributor = currentContributor === "全部" || extractText(item["投稿人昵称"]) === currentContributor;
       const matchYear = currentYear === "全部" || getRecordYear(item) === currentYear;
@@ -477,14 +538,13 @@
         else if (currentAttachment === "无") matchAttachment = (attType === "无");
       }
 
-      const title = extractText(item["内容标题"]).toLowerCase();
-      const content = extractText(item["内容详述"]).toLowerCase();
-      const author = extractText(item["投稿人昵称"]).toLowerCase();
-      const related = extractText(item["内容主要参与人"]).toLowerCase();
-      const uidSearch = extractText(item["UID"]).toLowerCase();
       const search = currentSearch.toLowerCase();
-      
-      const matchSearch = title.includes(search) || content.includes(search) || author.includes(search) || related.includes(search) || uidSearch.includes(search);
+      const matchSearch = !search || 
+        extractText(item["内容标题"]).toLowerCase().includes(search) ||
+        extractText(item["内容详述"]).toLowerCase().includes(search) ||
+        extractText(item["投稿人昵称"]).toLowerCase().includes(search) ||
+        extractText(item["内容主要参与人"]).toLowerCase().includes(search) ||
+        extractText(item["UID"]).toLowerCase().includes(search);
 
       return matchCategory && matchContributor && matchYear && matchAttachment && matchSearch;
     });
@@ -495,12 +555,8 @@
       return timeB - timeA;
     });
 
-    if (filteredData.length === 0) {
-      listContainer.innerHTML = '<div class="empty">没有找到匹配的档案记录</div>';
-      return;
-    }
-
-    filteredData.forEach(item => listContainer.appendChild(renderEntry(item)));
+    displayCount = PAGE_SIZE; // 重置显示数量
+    renderList();
   }
 
   function initFilters() {
@@ -512,28 +568,14 @@
     const contributors = [...new Set(allData.map(i => extractText(i["投稿人昵称"])).filter(Boolean))];
     const years = [...new Set(allData.map(i => getRecordYear(i)).filter(y => y !== "未知年份"))].sort((a,b) => b - a);
 
-    categories.forEach(cat => {
-      const opt = document.createElement("option");
-      opt.value = cat; opt.textContent = cat;
-      catSelect.appendChild(opt);
-    });
+    categories.forEach(cat => { catSelect.innerHTML += `<option value="${cat}">${cat}</option>`; });
+    contributors.forEach(con => { conSelect.innerHTML += `<option value="${con}">${con}</option>`; });
+    years.forEach(year => { yearSelect.innerHTML += `<option value="${year}">${year} 年</option>`; });
 
-    contributors.forEach(con => {
-      const opt = document.createElement("option");
-      opt.value = con; opt.textContent = con;
-      conSelect.appendChild(opt);
-    });
-
-    years.forEach(year => {
-      const opt = document.createElement("option");
-      opt.value = year; opt.textContent = year + " 年";
-      yearSelect.appendChild(opt);
-    });
-
-    catSelect.addEventListener("change", (e) => { currentCategory = e.target.value; renderList(); });
-    conSelect.addEventListener("change", (e) => { currentContributor = e.target.value; renderList(); });
-    yearSelect.addEventListener("change", (e) => { currentYear = e.target.value; renderList(); });
-    document.getElementById("attachmentSelect").addEventListener("change", (e) => { currentAttachment = e.target.value; renderList(); });
+    catSelect.addEventListener("change", (e) => { currentCategory = e.target.value; applyFilters(); });
+    conSelect.addEventListener("change", (e) => { currentContributor = e.target.value; applyFilters(); });
+    yearSelect.addEventListener("change", (e) => { currentYear = e.target.value; applyFilters(); });
+    document.getElementById("attachmentSelect").addEventListener("change", (e) => { currentAttachment = e.target.value; applyFilters(); });
   }
 
   function initTheme() {
@@ -541,13 +583,9 @@
     const sunIcon = document.getElementById("icon-sun");
     const moonIcon = document.getElementById("icon-moon");
     
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.setAttribute('data-theme', 'dark');
-      sunIcon.style.display = "none";
-      moonIcon.style.display = "block";
+      sunIcon.style.display = "none"; moonIcon.style.display = "block";
     }
 
     toggleBtn.addEventListener("click", () => {
@@ -555,13 +593,11 @@
       if (isDark) {
         document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('theme', 'light');
-        sunIcon.style.display = "block";
-        moonIcon.style.display = "none";
+        sunIcon.style.display = "block"; moonIcon.style.display = "none";
       } else {
         document.documentElement.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
-        sunIcon.style.display = "none";
-        moonIcon.style.display = "block";
+        sunIcon.style.display = "none"; moonIcon.style.display = "block";
       }
     });
   }
@@ -581,16 +617,28 @@
       }
 
       initFilters();
-      renderList();
+      applyFilters();
 
+      // 绑定搜索防抖
       let timeout = null;
       document.getElementById("searchInput").addEventListener("input", (e) => {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           currentSearch = e.target.value.trim();
-          renderList();
+          applyFilters();
         }, 300);
       });
+
+      // 绑定加载更多
+      document.getElementById("loadMoreBtn").onclick = () => {
+        displayCount += PAGE_SIZE;
+        renderList();
+      };
+
+      // 绑定弹窗关闭
+      const modal = document.getElementById("detailModal");
+      document.getElementById("modalClose").onclick = () => modal.classList.remove("active");
+      modal.onclick = (e) => { if (e.target === modal) modal.classList.remove("active"); };
 
     } catch (e) {
       console.error("数据加载失败:", e);
