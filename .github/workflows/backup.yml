@@ -1,0 +1,37 @@
+name: Weekly Data Backup
+
+on:
+  schedule:
+    # 每周一 UTC 0 点（北京时间周一早上 8 点）自动运行
+    - cron: '0 0 * * 1'
+  workflow_dispatch: # 允许你随时手动点击备份
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 需要写入权限来创建 Release
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Backup Archive
+        run: |
+          # 获取当前日期作为文件名
+          DATE=$(date +'%Y-%m-%d')
+          # 将 data.json 和 images 文件夹打包为 tar.gz
+          tar -czvf backup-$DATE.tar.gz data.json images/
+          echo "BACKUP_FILE=backup-$DATE.tar.gz" >> $GITHUB_ENV
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: backup-${{ github.run_id }}
+          name: 📦 数据备份 ${{ env.BACKUP_FILE }}
+          body: "自动化容灾备份。包含截至今日的所有 data.json 和 images 附件。"
+          files: ${{ env.BACKUP_FILE }}
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
