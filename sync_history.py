@@ -13,6 +13,11 @@ GITHUB_PAT = os.environ.get("GH_PAT")
 REPO_OWNER = "QWHistory"                  
 REPO_NAME = "school-history-data"  
 
+# 附件大小限制 (单位：MB)
+MAX_FILE_SIZE_MB = 10
+MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+# ============================================
+
 FEISHU_API = "https://open.feishu.cn/open-apis"
 
 def get_feishu_token():
@@ -43,7 +48,6 @@ def download_file(token, file_token, filename):
     return None
 
 def get_github_file(file_path):
-    """获取 GitHub 上已有的文件内容，用于合并数据"""
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{file_path}"
     headers = {"Authorization": f"Bearer {GITHUB_PAT}", "Accept": "application/vnd.github+json"}
     res = requests.get(url, headers=headers)
@@ -68,7 +72,6 @@ def delete_feishu_record(token, record_id):
     requests.post(url, headers=headers, json={"records": [record_id]})
 
 def extract_text(field_value):
-    """飞书富文本提取纯文本的辅助函数"""
     if isinstance(field_value, list):
         return "".join([item.get("text", "") for item in field_value if isinstance(item, dict) and item.get("type") == "text"])
     elif isinstance(field_value, str):
@@ -78,6 +81,9 @@ def extract_text(field_value):
 def main():
     print("1. 正在获取飞书 Token...")
     token = get_feishu_token()
+    if not token:
+        print("❌ Token 获取失败，请检查 App ID 和 Secret")
+        return
     
     print("2. 正在查询待同步的记录...")
     records = fetch_approved_records(token)
@@ -101,7 +107,14 @@ def main():
         for att in attachments:
             file_token = att["file_token"]
             filename = att["name"]
-            print(f"   -> 正在下载并上传附件: {filename} ...")
+            file_size = att.get("size", 0) # 飞书返回的文件大小（字节）
+            
+            # 🔥 核心过滤逻辑：检查文件大小
+            if file_size > MAX_FILE_SIZE_BYTES:
+                print(f"      ⚠️ 附件 {filename} 大小 {(file_size / 1024 / 1024):.2f} MB 超过限制 ({MAX_FILE_SIZE_MB} MB)，已跳过上传。")
+                continue # 跳过该文件，不下载，不加入 attachment_paths
+
+            print(f"   -> 正在下载并上传附件: {filename} ({(file_size / 1024 / 1024):.2f} MB) ...")
             
             b64_data = download_file(token, file_token, filename)
             if b64_data:
@@ -110,26 +123,24 @@ def main():
                 if success:
                     print(f"      ✅ 附件已上传至 GitHub")
                     attachment_paths.append(github_path)
+                else:
+                    print(f"      ❌ 附件上传失败")
 
-               # --- 处理数据并合并 (动态提取所有列) ---
+        # --- 处理数据并合并 (动态提取所有列) ---
         print(f"   -> 正在处理数据...")
         
-        # 先放几个基础的核心字段（保持和之前兼容）
         data_entry = {
             "id": record_id,
             "attachments": attachment_paths
         }
 
-        # 动态遍历飞书返回的所有字段（这就是完整数据了！）
         for key, value in fields.items():
             if key == "附件":
-                continue # 附件已经处理过了
+                continue 
                 
-            # 如果发现是富文本格式，自动提取纯文本
             if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict) and "text" in value[0]:
                 data_entry[key] = extract_text(value)
             else:
-                # 如果是数字、时间戳、纯文本等，直接原样保留
                 data_entry[key] = value
 
         existing_data.append(data_entry)
@@ -140,8 +151,7 @@ def main():
 
     # --- 统一推送 data.json ---
     print("3. 正在更新 GitHub 上的 data.json...")
-    # 按照时间倒序排列（最新的在最前）
-    existing_data.sort(key=lambda x: x.get("time", 0), reverse=True)
+    existing_data.sort(key=lambda x: x.get("投稿时间", 0), reverse=True)
     
     json_str = json.dumps(existing_data, ensure_ascii=False, indent=2)
     json_b64 = base64.b64encode(json_str.encode('utf-8')).decode('utf-8')
