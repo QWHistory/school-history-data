@@ -1,7 +1,160 @@
 <!DOCTYPE html>
-<html>
-<head><title>校史项目</title></head>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园周报 - 历史记忆</title>
+    <style>
+        /* 基础样式与重置 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #fafafa; color: #333; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        
+        /* 顶部标题 */
+        .header { text-align: center; margin-bottom: 50px; }
+        .header h1 { font-size: 2.5em; color: #111; font-weight: 800; letter-spacing: 2px; }
+        .header p { color: #666; margin-top: 10px; }
+
+        /* 最新一周：大图放大突出 */
+        .latest-section { margin-bottom: 60px; }
+        .latest-label { font-size: 1.2em; font-weight: bold; color: #e74c3c; margin-bottom: 20px; display: flex; align-items: center; }
+        .latest-label::after { content: ""; flex: 1; height: 2px; background: #ffeaea; margin-left: 15px; }
+        
+        .latest-card { 
+            background: #fff; border-radius: 16px; overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: transform 0.3s;
+        }
+        .latest-card:hover { transform: translateY(-5px); }
+        .latest-img { width: 100%; height: 450px; object-fit: cover; background: #eee; }
+        .latest-content { padding: 40px; }
+        .latest-title { font-size: 2em; margin-bottom: 15px; color: #222; }
+        .latest-meta { font-size: 0.9em; color: #888; margin-bottom: 20px; }
+        .latest-desc { font-size: 1.1em; color: #444; }
+
+        /* 往期周报：网格排列 */
+        .past-section { margin-top: 40px; }
+        .past-label { font-size: 1.2em; font-weight: bold; color: #555; margin-bottom: 20px; display: flex; align-items: center; }
+        .past-label::after { content: ""; flex: 1; height: 1px; background: #ddd; margin-left: 15px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; }
+        .card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+        .card-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 1.2em; margin-bottom: 10px; color: #222; }
+        .card-meta { font-size: 0.85em; color: #888; margin-bottom: 15px; }
+        .card-desc { font-size: 0.95em; color: #555; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .no-data { text-align: center; color: #999; padding: 50px 0; }
+    </style>
+</head>
 <body>
-    <h1>史记</h1>
+    <div class="container">
+        <div class="header">
+            <h1>时光周报</h1>
+            <p>每周精选 · 校园记忆</p>
+        </div>
+
+        <!-- 最新一周区域 -->
+        <div class="latest-section" id="latest-section" style="display:none;">
+            <div class="latest-label">最新一期</div>
+            <div class="latest-card" id="latest-card">
+                <!-- 内容通过 JS 注入 -->
+            </div>
+        </div>
+
+        <!-- 往期周报区域 -->
+        <div class="past-section" id="past-section" style="display:none;">
+            <div class="past-label">往期回顾</div>
+            <div class="grid" id="past-grid">
+                <!-- 内容通过 JS 注入 -->
+            </div>
+        </div>
+
+        <div class="no-data" id="no-data">暂无数据，请等待飞书同步...</div>
+    </div>
+
+    <script>
+        // GitHub 配置
+        const GITHUB_USER = "QWHistory";
+        const GITHUB_REPO = "school-history-data";
+        const DATA_URL = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main/data.json`;
+
+        // 格式化日期为 "X年X月"
+        function formatTime(timestamp) {
+            if (!timestamp) return "未知日期";
+            const date = new Date(timestamp);
+            return `${date.getFullYear()}年${date.getMonth() + 1}月`;
+        }
+
+        // 获取图片 CDN 链接
+        function getImgUrl(path) {
+            if (!path) return "";
+            const cleanPath = path.replace(/^\//, '');
+            return `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@main/${cleanPath}`;
+        }
+
+        // 提取第一张图片
+        function getFirstImage(attachments) {
+            if (!attachments || attachments.length === 0) return "";
+            const img = attachments.find(f => /\.(jpg|jpeg|png|webp|gif)$/i.test(f));
+            return img ? getImgUrl(img) : "";
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch(DATA_URL);
+                const data = await res.json();
+                if (!data || data.length === 0) return;
+
+                // 按照时间倒序排序（最新的在最前）
+                data.sort((a, b) => (b["投稿时间"] || 0) - (a["投稿时间"] || 0));
+
+                // 简单的分组逻辑：把最新的一条（或最新一周的一组）作为“最新”，剩下的作为“往期”
+                // 因为我们目前不确定每周有几条，这里采用“第一条为最新主推，其余往下排”的杂志逻辑
+                
+                const latestItem = data[0];
+                const pastItems = data.slice(1);
+
+                // 1. 渲染最新一期（放大）
+                document.getElementById('latest-section').style.display = 'block';
+                const latestImg = getFirstImage(latestItem.attachments);
+                document.getElementById('latest-card').innerHTML = `
+                    ${latestImg ? `<img src="${latestImg}" class="latest-img">` : ''}
+                    <div class="latest-content">
+                        <div class="latest-title">${latestItem["内容标题"] || "无标题"}</div>
+                        <div class="latest-meta">投稿人：${latestItem["投稿人昵称"] || "匿名"} | 时间：${formatTime(latestItem["投稿时间"])}</div>
+                        <div class="latest-desc">${latestItem["内容详述"] || ""}</div>
+                    </div>
+                `;
+
+                // 2. 渲染往期回顾
+                if (pastItems.length > 0) {
+                    document.getElementById('past-section').style.display = 'block';
+                    const grid = document.getElementById('past-grid');
+                    pastItems.forEach(item => {
+                        const img = getFirstImage(item.attachments);
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = `
+                            ${img ? `<img src="${img}" class="card-img">` : '<div class="card-img"></div>'}
+                            <div class="card-content">
+                                <div class="card-title">${item["内容标题"] || "无标题"}</div>
+                                <div class="card-meta">${item["投稿人昵称"] || "匿名"} · ${formatTime(item["投稿时间"])}</div>
+                                <div class="card-desc">${item["内容详述"] || ""}</div>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                }
+
+                document.getElementById('no-data').style.display = 'none';
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        loadData();
+    </script>
 </body>
 </html>
