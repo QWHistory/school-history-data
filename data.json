@@ -1,27 +1,5 @@
 [
   {
-    "id": "reczz28R69n3fcHF",
-    "title": "bt",
-    "author": "tgr",
-    "content": "xs1\nxs2",
-    "category": "重大事件",
-    "time": 1792812281000,
-    "attachments": [
-      "images/sample.md"
-    ]
-  },
-  {
-    "id": "reczz28R5slufowI",
-    "title": "标题",
-    "author": "昵称",
-    "content": "详述",
-    "category": "校园建设",
-    "time": 1792811314000,
-    "attachments": [
-      "images/sample.pdf"
-    ]
-  },
-  {
     "id": "reczz28R6R8dPHzq",
     "attachments": [
       "images/sample.txt"
