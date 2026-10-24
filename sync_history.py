@@ -10,6 +10,9 @@ APP_TOKEN = os.environ.get("FEISHU_APP_TOKEN")
 TABLE_ID = os.environ.get("FEISHU_TABLE_ID")
 GITHUB_PAT = os.environ.get("GH_PAT")
 
+REPO_OWNER = "QWHistory"                  
+REPO_NAME = "school-history-data"  
+
 FEISHU_API = "https://open.feishu.cn/open-apis"
 
 def get_feishu_token():
