@@ -41,23 +41,24 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-body);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: 1.5;
     padding-bottom: 4rem;
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ================= 顶部导航 ================= */
   .navbar {
     position: sticky; top: 0; background-color: var(--bg-body);
     border-bottom: 1px solid var(--border-color);
-    padding: 1rem 2rem; display: flex; justify-content: space-between;
-    align-items: center; z-index: 100; flex-wrap: wrap; gap: 1rem;
+    padding: 0.75rem 1.5rem; display: flex; justify-content: space-between;
+    align-items: center; z-index: 100;
   }
-  .nav-brand { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.02em; }
-  .nav-actions { display: flex; align-items: center; gap: 1rem; }
+  .nav-brand { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.02em; }
+  .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
   
   .btn-icon {
     background: none; border: 1px solid transparent; cursor: pointer; 
-    color: var(--text-secondary); padding: 0.4rem; border-radius: var(--radius-md); 
+    color: var(--text-secondary); padding: 0.35rem; border-radius: var(--radius-md); 
     display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
   .btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-color); }
@@ -65,113 +66,160 @@
 
   .btn-primary {
     background: var(--primary); color: var(--bg-surface); text-decoration: none;
-    padding: 0.45rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; 
+    padding: 0.4rem 0.8rem; border-radius: var(--radius-md); font-size: 0.85rem; 
     font-weight: 500; border: 1px solid var(--primary); transition: background 0.2s;
   }
   .btn-primary:hover { background: var(--primary-hover); }
 
-  .container { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
-  .toolbar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+  /* ================= 主体布局 ================= */
+  .container { max-width: 900px; margin: 1.5rem auto; padding: 0 1.5rem; }
+  
+  /* 工具栏：强制不换行 */
+  .toolbar { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
 
-  .search-wrapper { position: relative; display: flex; align-items: center; }
+  .search-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
   .search-wrapper svg { position: absolute; left: 0.75rem; width: 16px; height: 16px; color: var(--text-tertiary); }
   .search-input {
-    width: 100%; padding: 0.6rem 1rem 0.6rem 2.2rem;
+    width: 100%; padding: 0.5rem 1rem 0.5rem 2.2rem;
     border: 1px solid var(--border-color); border-radius: var(--radius-md);
     font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary);
     transition: border-color 0.2s, box-shadow 0.2s; box-shadow: var(--shadow-sm);
   }
   .search-input:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 2px rgba(128,128,128,0.1); }
 
-  .filter-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  /* 筛选行：强制不换行，溢出滚动 */
+  .filter-row { 
+    display: flex; 
+    flex-wrap: nowrap; 
+    gap: 0.5rem; 
+    overflow-x: auto; 
+    padding-bottom: 0.25rem;
+  }
+  /* 隐藏滚动条让视觉更干净 */
+  .filter-row::-webkit-scrollbar { display: none; }
+  
   .filter-select {
-    flex: 1; min-width: 130px; padding: 0.5rem 2rem 0.5rem 0.75rem; 
+    flex: 1; min-width: 110px; padding: 0.45rem 1.8rem 0.45rem 0.6rem; 
     border: 1px solid var(--border-color); border-radius: var(--radius-md); 
     font-size: 0.85rem; background: var(--bg-surface); color: var(--text-primary); 
     cursor: pointer; appearance: none; box-shadow: var(--shadow-sm);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 0.9rem;
+    background-repeat: no-repeat; background-position: right 0.6rem center; background-size: 0.9rem;
     transition: border-color 0.2s;
   }
   .filter-select:focus { outline: none; border-color: var(--border-focus); }
 
+  /* ================= 卡片设计 ================= */
   .entry {
     position: relative; 
     background: var(--bg-surface); border: 1px solid var(--border-color);
-    border-radius: var(--radius-md); padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+    border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 0.75rem;
     box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s;
   }
   .entry:hover { border-color: var(--border-focus); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
   .tag {
-    position: absolute; top: 1.25rem; right: 1.5rem;
+    position: absolute; top: 1.25rem; right: 1.25rem;
     background: var(--bg-body); color: var(--text-secondary);
-    padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.75rem;
+    padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.75rem;
     font-weight: 500; border: 1px solid var(--border-color); white-space: nowrap;
   }
 
   .entry-title { 
     font-size: 1.1rem; font-weight: 600; line-height: 1.4; 
-    color: var(--text-primary); word-break: break-word; 
+    color: var(--text-primary); 
     padding-right: 80px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    /* 标题超长省略 */
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
+  /* 元数据区：强制一行，超长省略 */
   .entry-meta {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
-    font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;
+    display: flex; 
+    flex-wrap: nowrap; 
+    align-items: center; 
+    gap: 1rem;
+    font-size: 0.8rem; 
+    color: var(--text-secondary); 
+    margin-bottom: 0.75rem;
+    overflow-x: auto;
+    white-space: nowrap;
   }
-  .meta-item { display: flex; align-items: center; gap: 0.3rem; }
+  .entry-meta::-webkit-scrollbar { display: none; }
+
+  .meta-item { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
   .meta-item svg { width: 13px; height: 13px; color: var(--text-tertiary); }
   .meta-strong { font-weight: 500; color: var(--text-primary); }
 
-  /* 档案唯一编号样式 */
   .uid-badge {
     display: inline-flex; align-items: center; gap: 0.2rem;
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     font-size: 0.75rem; color: var(--text-secondary);
     background: var(--bg-body); border: 1px solid var(--border-color);
     padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);
+    flex-shrink: 0;
   }
 
+  /* 正文：保留换行，但限制最多 4 行，超出省略 */
   .entry-body {
-    white-space: pre-wrap; word-break: break-word; font-size: 0.9rem;
-    color: var(--text-secondary); margin-bottom: 1rem;
+    white-space: pre-wrap; 
+    word-break: break-word; 
+    font-size: 0.9rem;
+    color: var(--text-secondary); 
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
+  /* 附件：强制一行 */
   .attachments-box {
     background: var(--bg-body); border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm); padding: 0.75rem;
+    border-radius: var(--radius-sm); padding: 0.6rem 0.75rem;
+    margin-bottom: 0.75rem;
   }
   .attachment-title {
     font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary);
-    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;
   }
-  .attachment-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .attachment-grid { 
+    display: flex; flex-wrap: nowrap; gap: 0.5rem; overflow-x: auto; 
+  }
+  .attachment-grid::-webkit-scrollbar { height: 4px; }
+  .attachment-grid::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+  
   .attachment-item {
-    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem;
+    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.5rem;
     background: var(--bg-surface); border: 1px solid var(--border-color);
     border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary);
     text-decoration: none; transition: border-color 0.15s;
+    flex-shrink: 0;
   }
   .attachment-item:hover { border-color: var(--border-focus); }
   .attachment-item svg { width: 14px; height: 14px; color: var(--text-secondary); flex-shrink: 0; }
-  .attachment-item span { max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .attachment-item span { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+  /* 底部：强制单行展示 */
   .entry-footer {
-    margin-top: 1rem; display: flex; justify-content: space-between; 
-    align-items: center; flex-wrap: wrap; gap: 0.5rem;
+    display: flex; justify-content: space-between; 
+    align-items: center; gap: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
   }
   .footer-contributor {
     display: flex; align-items: center; gap: 0.3rem;
     font-size: 0.8rem; color: var(--text-tertiary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .footer-contributor svg { width: 13px; height: 13px; }
+  .footer-contributor svg { width: 13px; height: 13px; flex-shrink: 0; }
   .footer-contributor span { color: var(--text-secondary); font-weight: 500; }
 
   .btn-report {
     background: none; border: none; font-size: 0.75rem; color: var(--text-tertiary);
     cursor: pointer; display: flex; align-items: center; gap: 0.25rem; transition: color 0.2s;
+    flex-shrink: 0;
   }
   .btn-report:hover { color: #ef4444; }
   .btn-report svg { width: 12px; height: 12px; }
@@ -182,18 +230,19 @@
     border: 1px dashed var(--border-color); font-size: 0.9rem;
   }
 
+  /* 去除空白区块 */
   .entry-meta:empty, .entry-body:empty, .attachments-box:empty, .entry-footer:empty {
     display: none;
   }
 
-  @media (max-width: 768px) {
-    .navbar { padding: 0.75rem 1rem; }
-    .filter-select { min-width: calc(50% - 0.5rem); }
-    .entry-title { padding-right: 0; margin-bottom: 0.25rem; }
-    .tag { position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 0.5rem; order: -1; }
-    .entry-header { display: flex; flex-direction: column-reverse; align-items: flex-start; }
-    .entry-footer { flex-direction: column; align-items: flex-start; }
-    .btn-report { margin-top: 0.5rem; }
+  /* 手机端适度缩小字号，依然保持单行 */
+  @media (max-width: 600px) {
+    .navbar { padding: 0.5rem 1rem; }
+    .entry { padding: 1rem; }
+    .tag { top: 1rem; right: 1rem; }
+    .entry-title { padding-right: 60px; font-size: 1rem; }
+    .entry-meta { gap: 0.5rem; }
+    .filter-select { font-size: 0.8rem; min-width: 90px; }
   }
 </style>
 </head>
@@ -338,13 +387,14 @@
     const meta = document.createElement("div");
     meta.className = "entry-meta";
     
-    // 唯一编号 (UID)
-    const uid = extractText(item["UID"]) || "无编号";
+    // 唯一编号
+    const uid = extractText(item["UID"]) || "无";
     const uidSpan = document.createElement("span");
     uidSpan.className = "meta-item";
     uidSpan.innerHTML = `<span class="uid-badge">ID: ${uid}</span>`;
     meta.appendChild(uidSpan);
 
+    // 有关人
     const relatedPeople = extractText(item["内容主要参与人"]);
     if (relatedPeople) {
       const relatedSpan = document.createElement("span");
@@ -353,6 +403,7 @@
       meta.appendChild(relatedSpan);
     }
 
+    // 时间
     const timeStr = formatTimeRange(item["开始时间"], item["结束时间"], item["投稿时间"]);
     if (timeStr) {
       const timeSpan = document.createElement("span");
@@ -363,6 +414,7 @@
     
     card.appendChild(meta);
 
+    // 正文（限制行数）
     const bodyText = extractText(item["内容详述"]);
     if (bodyText) {
       const body = document.createElement("div");
@@ -371,6 +423,7 @@
       card.appendChild(body);
     }
 
+    // 附件区
     const attachments = item["attachments"];
     if (Array.isArray(attachments) && attachments.length > 0) {
       const box = document.createElement("div");
@@ -392,6 +445,7 @@
       card.appendChild(box);
     }
 
+    // 底部
     const footer = document.createElement("div");
     footer.className = "entry-footer";
 
@@ -401,12 +455,14 @@
       conDiv.className = "footer-contributor";
       conDiv.innerHTML = `${Icons.user} 贡献者：<span>${contributor}</span>`;
       footer.appendChild(conDiv);
+    } else {
+      // 如果没有贡献者，放一个空 div 占位，确保举报按钮靠右
+      footer.appendChild(document.createElement("div"));
     }
 
     const reportBtn = document.createElement("button");
     reportBtn.className = "btn-report";
-    reportBtn.innerHTML = `${Icons.warning} 举报该内容`;
-    // 更新举报联系方式
+    reportBtn.innerHTML = `${Icons.warning} 举报`;
     reportBtn.onclick = () => {
       alert(`如果您认为该档案存在侵权或违规问题，请联系校史项目总负责人进行处理：\n\n微信：14778384997\n邮箱：1077401836@qq.com\n\n（请在联系时提供该条目的唯一编号：${uid}）`);
     };
@@ -434,7 +490,6 @@
         else if (currentAttachment === "无") matchAttachment = (attType === "无");
       }
 
-      // 搜索匹配（加入 UID 匹配）
       const title = extractText(item["内容标题"]).toLowerCase();
       const content = extractText(item["内容详述"]).toLowerCase();
       const author = extractText(item["投稿人昵称"]).toLowerCase();
