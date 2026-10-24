@@ -5,37 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>校史档案 - 历史长廊</title>
 <style>
-  /* ================= 颜色变量 (亮暗模式) ================= */
+  /* ================= 颜色与基础变量 ================= */
   :root {
-    --bg-body: #f9fafb;
+    --bg-body: #fafafa;
     --bg-surface: #ffffff;
-    --bg-tag: #f3f4f6;
+    --bg-hover: #f3f4f6;
     --text-primary: #111827;
     --text-secondary: #4b5563;
     --text-tertiary: #9ca3af;
-    --border-light: #e5e7eb;
-    --border-hover: #d1d5db;
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-    --radius-md: 8px;
-    --radius-lg: 12px;
+    --border-color: #e5e7eb;
+    --border-focus: #9ca3af;
+    --primary: #000000; /* 极简黑主色调 */
+    --primary-hover: #333333;
+    
+    /* 核心：强制统一为小圆角 */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   }
 
   [data-theme="dark"] {
-    --bg-body: #111827;
-    --bg-surface: #1f2937;
-    --bg-tag: #374151;
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-tertiary: #9ca3af;
-    --border-light: #374151;
-    --border-hover: #4b5563;
-    --primary: #3b82f6;
-    --primary-hover: #60a5fa;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --bg-body: #0d1117; /* GitHub 暗色底 */
+    --bg-surface: #161b22;
+    --bg-hover: #21262d;
+    --text-primary: #c9d1d9;
+    --text-secondary: #8b949e;
+    --text-tertiary: #6e7681;
+    --border-color: #30363d;
+    --border-focus: #8b949e;
+    --primary: #f0f6fc;
+    --primary-hover: #ffffff;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,8 +47,9 @@
     background-color: var(--bg-body);
     color: var(--text-primary);
     line-height: 1.6;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.2s, color 0.2s;
     padding-bottom: 4rem;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* ================= 顶部导航栏 ================= */
@@ -54,7 +57,7 @@
     position: sticky;
     top: 0;
     background-color: var(--bg-body);
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-color);
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -64,10 +67,9 @@
     gap: 1rem;
   }
   .nav-brand { 
-    font-size: 1.25rem; 
-    font-weight: 700; 
+    font-size: 1.15rem; 
+    font-weight: 600; 
     letter-spacing: -0.02em; 
-    white-space: nowrap; 
   }
   .nav-actions { 
     display: flex; 
@@ -76,179 +78,238 @@
   }
   
   .btn-icon {
-    background: none; border: none; cursor: pointer; color: var(--text-secondary);
-    padding: 0.5rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, color 0.2s;
+    background: none; 
+    border: 1px solid transparent; 
+    cursor: pointer; 
+    color: var(--text-secondary);
+    padding: 0.4rem; 
+    border-radius: var(--radius-md); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    transition: all 0.2s;
   }
-  .btn-icon:hover { background: var(--bg-tag); color: var(--text-primary); }
-  .btn-icon svg { width: 20px; height: 20px; }
+  .btn-icon:hover { 
+    background: var(--bg-hover); 
+    color: var(--text-primary); 
+    border-color: var(--border-color);
+  }
+  .btn-icon svg { width: 18px; height: 18px; }
 
   .btn-primary {
-    background: var(--primary); color: #fff; text-decoration: none;
-    padding: 0.5rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500;
+    background: var(--primary); 
+    color: var(--bg-surface); 
+    text-decoration: none;
+    padding: 0.45rem 1rem; 
+    border-radius: var(--radius-md); 
+    font-size: 0.85rem; 
+    font-weight: 500;
+    border: 1px solid var(--primary);
     transition: background 0.2s;
-    white-space: nowrap;
   }
   .btn-primary:hover { background: var(--primary-hover); }
 
   /* ================= 主体布局 ================= */
   .container { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
 
-  /* 工具栏区：分为搜索行和筛选行 */
+  /* 工具栏：去掉大外框，更扁平 */
   .toolbar {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     margin-bottom: 2rem;
-    background: var(--bg-surface);
-    padding: 1.25rem;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-sm);
   }
 
   /* 搜索行 */
-  .search-row {
-    width: 100%;
-  }
+  .search-row { width: 100%; }
   .search-wrapper {
     position: relative; 
     display: flex; 
     align-items: center;
   }
   .search-wrapper svg {
-    position: absolute; left: 1rem; width: 18px; height: 18px; color: var(--text-tertiary);
+    position: absolute; left: 0.75rem; width: 16px; height: 16px; color: var(--text-tertiary);
   }
   .search-input {
-    width: 100%; padding: 0.85rem 1rem 0.85rem 2.8rem;
-    border: 1px solid var(--border-light); border-radius: var(--radius-md);
-    font-size: 1rem; background: var(--bg-body); color: var(--text-primary);
-    transition: all 0.2s;
+    width: 100%; 
+    padding: 0.6rem 1rem 0.6rem 2.2rem;
+    border: 1px solid var(--border-color); 
+    border-radius: var(--radius-md);
+    font-size: 0.9rem; 
+    background: var(--bg-surface); 
+    color: var(--text-primary);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-sm);
   }
   .search-input:focus { 
     outline: none; 
-    border-color: var(--primary); 
-    background: var(--bg-surface);
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.1); 
+    border-color: var(--border-focus); 
+    box-shadow: 0 0 0 2px rgba(128,128,128,0.1); 
   }
+  .search-input::placeholder { color: var(--text-tertiary); }
 
   /* 筛选行 */
   .filter-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.75rem;
   }
   .filter-select {
     flex: 1;
-    min-width: 140px;
-    padding: 0.6rem 2.5rem 0.6rem 1rem; 
-    border: 1px solid var(--border-light);
+    min-width: 130px;
+    padding: 0.5rem 2rem 0.5rem 0.75rem; 
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md); 
-    font-size: 0.9rem; 
+    font-size: 0.85rem; 
     background: var(--bg-surface);
     color: var(--text-primary); 
     cursor: pointer; 
     appearance: none;
+    box-shadow: var(--shadow-sm);
+    /* 更微小的下拉箭头 */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 1rem center; background-size: 1rem;
-    transition: all 0.2s;
+    background-repeat: no-repeat; 
+    background-position: right 0.75rem center; 
+    background-size: 0.9rem;
+    transition: border-color 0.2s;
   }
-  .filter-select:hover { border-color: var(--border-hover); }
-  .filter-select:focus { outline: none; border-color: var(--primary); }
+  .filter-select:hover { border-color: var(--border-focus); }
+  .filter-select:focus { outline: none; border-color: var(--border-focus); }
 
-  /* ================= 卡片 ================= */
+  /* ================= 卡片 (硬朗线框风) ================= */
   .entry {
-    background: var(--bg-surface); border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.25rem;
-    box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    background: var(--bg-surface); 
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); 
+    padding: 1.25rem 1.5rem; 
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm); 
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .entry:hover { box-shadow: var(--shadow-md); border-color: var(--border-hover); transform: translateY(-1px); }
+  .entry:hover { 
+    border-color: var(--border-focus);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
 
   .entry-header { 
     display: flex; 
     justify-content: space-between; 
     align-items: flex-start; 
     gap: 1rem; 
-    margin-bottom: 0.75rem; 
+    margin-bottom: 0.5rem; 
     flex-wrap: wrap;
   }
-  .entry-title { font-size: 1.3rem; font-weight: 600; line-height: 1.4; color: var(--text-primary); word-break: break-word; }
+  .entry-title { 
+    font-size: 1.1rem; 
+    font-weight: 600; 
+    line-height: 1.4; 
+    color: var(--text-primary); 
+    word-break: break-word; 
+  }
   
+  /* 标签：去胶囊化，改为小圆角线框 */
   .tag {
-    background: var(--bg-tag); color: var(--text-secondary);
-    padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem;
-    font-weight: 500; white-space: nowrap; border: 1px solid var(--border-light);
+    background: var(--bg-body); 
+    color: var(--text-secondary);
+    padding: 0.15rem 0.4rem; 
+    border-radius: var(--radius-sm); 
+    font-size: 0.75rem;
+    font-weight: 500; 
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
   }
 
   .entry-meta {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem;
-    font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;
+    display: flex; 
+    flex-wrap: wrap; 
+    align-items: center; 
+    gap: 1rem;
+    font-size: 0.8rem; 
+    color: var(--text-secondary); 
+    margin-bottom: 1rem;
   }
-  .meta-item { display: flex; align-items: center; gap: 0.35rem; }
-  .meta-item svg { width: 14px; height: 14px; color: var(--text-tertiary); }
+  .meta-item { display: flex; align-items: center; gap: 0.3rem; }
+  .meta-item svg { width: 13px; height: 13px; color: var(--text-tertiary); }
   .meta-contributor { font-weight: 500; color: var(--text-primary); }
 
   .entry-body {
-    white-space: pre-wrap; word-break: break-word; font-size: 0.95rem;
-    color: var(--text-secondary); margin-bottom: 1.5rem;
+    white-space: pre-wrap; 
+    word-break: break-word; 
+    font-size: 0.9rem;
+    color: var(--text-secondary); 
+    margin-bottom: 1.25rem;
   }
 
   /* 附件 */
   .attachments-box {
-    background: var(--bg-body); border: 1px solid var(--border-light);
-    border-radius: var(--radius-md); padding: 1rem;
+    background: var(--bg-body); 
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); 
+    padding: 0.75rem;
   }
   .attachment-title {
-    font-size: 0.75rem; font-weight: 600; color: var(--text-tertiary);
-    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;
+    font-size: 0.7rem; 
+    font-weight: 600; 
+    color: var(--text-tertiary);
+    text-transform: uppercase; 
+    letter-spacing: 0.05em; 
+    margin-bottom: 0.5rem;
   }
-  .attachment-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .attachment-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .attachment-item {
-    display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem;
-    background: var(--bg-surface); border: 1px solid var(--border-light);
-    border-radius: 6px; font-size: 0.85rem; color: var(--text-primary);
-    text-decoration: none; transition: all 0.15s;
+    display: inline-flex; 
+    align-items: center; 
+    gap: 0.4rem; 
+    padding: 0.4rem 0.6rem;
+    background: var(--bg-surface); 
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); 
+    font-size: 0.8rem; 
+    color: var(--text-primary);
+    text-decoration: none; 
+    transition: border-color 0.15s;
   }
-  .attachment-item:hover { border-color: var(--text-tertiary); }
-  .attachment-item svg { width: 16px; height: 16px; color: var(--text-secondary); flex-shrink: 0; }
+  .attachment-item:hover { border-color: var(--border-focus); }
+  .attachment-item svg { width: 14px; height: 14px; color: var(--text-secondary); flex-shrink: 0; }
   .attachment-item span { max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* 底部操作区 (举报) */
   .entry-footer {
-    margin-top: 1rem; display: flex; justify-content: flex-end;
+    margin-top: 0.75rem; 
+    display: flex; 
+    justify-content: flex-end;
   }
   .btn-report {
-    background: none; border: none; font-size: 0.75rem; color: var(--text-tertiary);
-    cursor: pointer; display: flex; align-items: center; gap: 0.25rem;
+    background: none; 
+    border: none; 
+    font-size: 0.75rem; 
+    color: var(--text-tertiary);
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 0.25rem;
     transition: color 0.2s;
   }
   .btn-report:hover { color: #ef4444; }
   .btn-report svg { width: 12px; height: 12px; }
 
   .empty {
-    text-align: center; padding: 4rem 2rem; color: var(--text-tertiary);
-    background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px dashed var(--border-light);
+    text-align: center; 
+    padding: 3rem 1rem; 
+    color: var(--text-tertiary);
+    background: var(--bg-surface); 
+    border-radius: var(--radius-md); 
+    border: 1px dashed var(--border-color);
+    font-size: 0.9rem;
   }
 
   /* 响应式适配 */
   @media (max-width: 768px) {
-    .navbar {
-      padding: 1rem;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .nav-actions {
-      width: 100%;
-      justify-content: space-between;
-    }
+    .navbar { padding: 0.75rem 1rem; }
     .filter-select {
-      min-width: calc(50% - 0.5rem); /* 手机端一行两个筛选框 */
+      min-width: calc(50% - 0.5rem); 
     }
-    .entry-header { 
-      flex-direction: column; 
-      align-items: flex-start; 
-      gap: 0.5rem;
-    }
+    .entry-header { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
   }
 </style>
 </head>
@@ -268,7 +329,7 @@
 
   <!-- 主体内容 -->
   <main class="container">
-    <!-- 工具栏：搜索与多维度筛选 -->
+    <!-- 工具栏：无外框，融入背景 -->
     <div class="toolbar">
       <div class="search-row">
         <div class="search-wrapper">
@@ -300,7 +361,6 @@
   </main>
 
 <script>
-  // ================= 核心配置 =================
   const DATA_URL = '/data.json';
   const CDN_PREFIX = '/'; 
 
@@ -311,7 +371,6 @@
   let currentYear = "全部";
   let currentAttachment = "全部";
 
-  // ================= SVG 图标库 =================
   const Icons = {
     user: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>`,
     clock: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
@@ -321,7 +380,6 @@
     warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`
   };
 
-  // ================= 工具函数 =================
   function getFileIcon(path) {
     const ext = (path.split(".").pop() || "").toLowerCase();
     if (["jpg","jpeg","png","gif","webp","svg"].includes(ext)) return Icons.image;
@@ -340,21 +398,18 @@
     }
     const s = fmt(start);
     const e = fmt(end);
-    
     if (s && e && s !== e) return `${s} 至 ${e}`;
     if (s) return s;
     if (e) return e;
     return fmt(defaultTime);
   }
 
-  // 提取年份
   function getRecordYear(item) {
     const ts = item["开始时间"] || item["投稿时间"];
     if (!ts) return "未知年份";
     return new Date(ts).getFullYear().toString();
   }
 
-  // 判断附件类型
   function getAttachmentType(item) {
     const atts = item["attachments"] || [];
     if (atts.length === 0) return "无";
@@ -369,15 +424,12 @@
     return "文档";
   }
 
-  // ================= 渲染逻辑 =================
   function renderEntry(item) {
     const card = document.createElement("div");
     card.className = "entry";
 
-    // 1. 标题与分类
     const header = document.createElement("div");
     header.className = "entry-header";
-    
     const titleDiv = document.createElement("div");
     titleDiv.className = "entry-title";
     titleDiv.textContent = item["内容标题"] || "无标题";
@@ -391,7 +443,6 @@
     }
     card.appendChild(header);
 
-    // 2. 元信息 (贡献者、时间)
     const timeStr = formatTimeRange(item["开始时间"], item["结束时间"], item["投稿时间"]);
     const meta = document.createElement("div");
     meta.className = "entry-meta";
@@ -410,19 +461,16 @@
     }
     card.appendChild(meta);
 
-    // 3. 正文
     const body = document.createElement("div");
     body.className = "entry-body";
     body.textContent = item["内容详述"] || "暂无详细内容。";
     card.appendChild(body);
 
-    // 4. 附件
     const attachments = item["attachments"];
     if (Array.isArray(attachments) && attachments.length > 0) {
       const box = document.createElement("div");
       box.className = "attachments-box";
       box.innerHTML = `<div class="attachment-title">附件 (${attachments.length})</div>`;
-      
       const grid = document.createElement("div");
       grid.className = "attachment-grid";
       attachments.forEach(path => {
@@ -439,7 +487,6 @@
       card.appendChild(box);
     }
 
-    // 5. 底部操作 (举报)
     const footer = document.createElement("div");
     footer.className = "entry-footer";
     const reportBtn = document.createElement("button");
@@ -459,16 +506,10 @@
     listContainer.innerHTML = "";
 
     const filteredData = allData.filter(item => {
-      // 1. 分类匹配
       const matchCategory = currentCategory === "全部" || item["分区"] === currentCategory;
-      
-      // 2. 贡献者匹配
       const matchContributor = currentContributor === "全部" || item["投稿人昵称"] === currentContributor;
-      
-      // 3. 年份匹配
       const matchYear = currentYear === "全部" || getRecordYear(item) === currentYear;
       
-      // 4. 附件类型匹配
       let matchAttachment = true;
       if (currentAttachment !== "全部") {
         const attType = getAttachmentType(item);
@@ -477,7 +518,6 @@
         else if (currentAttachment === "无") matchAttachment = (attType === "无");
       }
 
-      // 5. 搜索词匹配
       const title = (item["内容标题"] || "").toLowerCase();
       const content = (item["内容详述"] || "").toLowerCase();
       const author = (item["投稿人昵称"] || "").toLowerCase();
@@ -487,7 +527,6 @@
       return matchCategory && matchContributor && matchYear && matchAttachment && matchSearch;
     });
 
-    // 排序：按开始时间或投稿时间倒序
     filteredData.sort((a, b) => {
       const timeA = a["开始时间"] || a["投稿时间"] || 0;
       const timeB = b["开始时间"] || b["投稿时间"] || 0;
@@ -502,13 +541,11 @@
     filteredData.forEach(item => listContainer.appendChild(renderEntry(item)));
   }
 
-  // ================= 初始化下拉框选项 =================
   function initFilters() {
     const catSelect = document.getElementById("categorySelect");
     const conSelect = document.getElementById("contributorSelect");
     const yearSelect = document.getElementById("yearSelect");
 
-    // 提取唯一分类、贡献者、年份
     const categories = [...new Set(allData.map(i => i["分区"]).filter(Boolean))];
     const contributors = [...new Set(allData.map(i => i["投稿人昵称"]).filter(Boolean))];
     const years = [...new Set(allData.map(i => getRecordYear(i)).filter(y => y !== "未知年份"))].sort((a,b) => b - a);
