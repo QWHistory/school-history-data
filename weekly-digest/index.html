@@ -6,199 +6,352 @@
 <title>校史档案 - 历史长廊</title>
 <style>
   :root {
-    --bg-body: #fafafa; --bg-surface: #ffffff; --bg-hover: #f3f4f6;
-    --text-primary: #111827; --text-secondary: #4b5563; --text-tertiary: #9ca3af;
-    --border-color: #e5e7eb; --border-focus: #9ca3af;
-    --primary: #000000; --primary-hover: #333333;
-    --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+    --bg-body: #fafafa;
+    --bg-surface: #ffffff;
+    --bg-hover: #f3f4f6;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-tertiary: #9ca3af;
+    --border-color: #e5e7eb;
+    --border-focus: #9ca3af;
+    --primary: #000000;
+    --primary-hover: #333333;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
     --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    --mark-bg: #fef08a; --mark-text: #854d0e;
-    --skeleton-bg: #e5e7eb; --skeleton-shimmer: #f3f4f6;
+    --mark-bg: #fef08a;
+    --mark-text: #854d0e;
+    --skeleton-bg: #e5e7eb;
+    --skeleton-shimmer: #f3f4f6;
   }
+
   [data-theme="dark"] {
-    --bg-body: #0d1117; --bg-surface: #161b22; --bg-hover: #21262d;
-    --text-primary: #c9d1d9; --text-secondary: #8b949e; --text-tertiary: #6e7681;
-    --border-color: #30363d; --border-focus: #8b949e;
-    --primary: #f0f6fc; --primary-hover: #ffffff;
+    --bg-body: #0d1117;
+    --bg-surface: #161b22;
+    --bg-hover: #21262d;
+    --text-primary: #c9d1d9;
+    --text-secondary: #8b949e;
+    --text-tertiary: #6e7681;
+    --border-color: #30363d;
+    --border-focus: #8b949e;
+    --primary: #f0f6fc;
+    --primary-hover: #ffffff;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    --mark-bg: #854d0e; --mark-text: #fef08a;
-    --skeleton-bg: #21262d; --skeleton-shimmer: #30363d;
+    --mark-bg: #854d0e;
+    --mark-text: #fef08a;
+    --skeleton-bg: #21262d;
+    --skeleton-shimmer: #30363d;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: var(--bg-body); color: var(--text-primary); line-height: 1.5;
-    padding-bottom: 4rem; -webkit-font-smoothing: antialiased;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    line-height: 1.5;
+    padding-bottom: 4rem;
+    -webkit-font-smoothing: antialiased;
   }
+
   body.modal-open { overflow: hidden; }
+
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: var(--radius-sm); }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
-  
+
+  /* 顶部导航栏 */
   .navbar {
-    position: sticky; top: 0; background-color: var(--bg-body); border-bottom: 1px solid var(--border-color);
-    padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; flex-wrap: wrap; gap: 0.5rem;
+    position: sticky; top: 0; background-color: var(--bg-body);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 1.5rem; display: flex; justify-content: space-between;
+    align-items: center; z-index: 100; flex-wrap: wrap; gap: 0.5rem;
   }
   .nav-brand { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.02em; }
   .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+
   .btn-icon {
-    background: none; border: 1px solid transparent; cursor: pointer; color: var(--text-secondary);
-    padding: 0.35rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    background: none; border: 1px solid transparent; cursor: pointer;
+    color: var(--text-secondary); padding: 0.35rem; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
   .btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-color); }
   .btn-icon:active { transform: scale(0.92); }
   .btn-icon svg { width: 18px; height: 18px; }
+
   .btn-primary {
     background: var(--primary); color: var(--bg-surface); text-decoration: none;
-    padding: 0.4rem 0.8rem; border-radius: var(--radius-md); font-size: 0.85rem; 
+    padding: 0.4rem 0.8rem; border-radius: var(--radius-md); font-size: 0.85rem;
     font-weight: 500; border: 1px solid var(--primary); transition: all 0.2s;
   }
   .btn-primary:hover { background: var(--primary-hover); }
   .btn-primary:active { transform: scale(0.96); }
-  
+
+  /* 主内容区 */
   .container { max-width: 900px; margin: 1.5rem auto; padding: 0 1.5rem; }
   .toolbar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+
   .search-row { display: flex; gap: 0.5rem; align-items: center; }
   .search-wrapper { position: relative; display: flex; align-items: center; flex: 1; }
   .search-wrapper svg.search-icon { position: absolute; left: 0.75rem; width: 16px; height: 16px; color: var(--text-tertiary); }
+
   .search-input {
-    width: 100%; height: 34px; padding: 0 2.2rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);
-    font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary); transition: border-color 0.2s, box-shadow 0.2s; box-shadow: var(--shadow-sm);
+    width: 100%; height: 34px; padding: 0 2.2rem;
+    border: 1px solid var(--border-color); border-radius: var(--radius-md);
+    font-size: 0.9rem; background: var(--bg-surface); color: var(--text-primary);
+    transition: border-color 0.2s, box-shadow 0.2s; box-shadow: var(--shadow-sm);
   }
   .search-input:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 2px rgba(128,128,128,0.1); }
+
   .btn-clear-search {
-    position: absolute; right: 0.5rem; display: none; background: none; border: none; color: var(--text-tertiary);
-    cursor: pointer; padding: 0.2rem; border-radius: 50%; align-items: center; justify-content: center; transition: all 0.2s;
+    position: absolute; right: 0.5rem; display: none;
+    background: none; border: none; color: var(--text-tertiary);
+    cursor: pointer; padding: 0.2rem; border-radius: 50%;
+    align-items: center; justify-content: center; transition: all 0.2s;
   }
   .btn-clear-search:hover { background: var(--bg-hover); color: var(--text-primary); }
   .btn-clear-search svg { width: 14px; height: 14px; }
+
   .btn-reset-all {
-    display: none; height: 34px; padding: 0 0.8rem; background: var(--bg-surface); border: 1px solid var(--border-color);
+    display: none; height: 34px; padding: 0 0.8rem;
+    background: var(--bg-surface); border: 1px solid var(--border-color);
     border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-secondary);
-    cursor: pointer; white-space: nowrap; transition: all 0.2s; box-shadow: var(--shadow-sm); align-items: center; justify-content: center;
+    cursor: pointer; white-space: nowrap; transition: all 0.2s; box-shadow: var(--shadow-sm);
+    align-items: center; justify-content: center;
   }
   .btn-reset-all:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-focus); }
   .btn-reset-all:active { transform: scale(0.96); }
-  
-  .filter-row { display: grid; grid-template-columns: 1fr 1fr 2fr 1fr; gap: 0.5rem; align-items: center; width: 100%; }
+
+  /* 筛选网格布局 */
+  .filter-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr 1fr;
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+  }
+
   .filter-select {
-    width: 100%; height: 34px; padding: 0 2rem 0 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); 
-    font-size: 0.85rem; background-color: var(--bg-surface); color: var(--text-primary); cursor: pointer; appearance: none; box-shadow: var(--shadow-sm);
+    width: 100%; height: 34px;
+    padding: 0 2rem 0 0.75rem;
+    border: 1px solid var(--border-color); border-radius: var(--radius-md);
+    font-size: 0.85rem; background-color: var(--bg-surface); color: var(--text-primary);
+    cursor: pointer; appearance: none; box-shadow: var(--shadow-sm);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 0.9rem; transition: border-color 0.2s; line-height: 32px; text-overflow: ellipsis;
+    background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 0.9rem;
+    transition: border-color 0.2s;
+    line-height: 32px;
+    text-overflow: ellipsis;
   }
   .filter-select:focus { outline: none; border-color: var(--border-focus); }
+
   .date-range-group { display: flex; align-items: center; gap: 0.4rem; width: 100%; min-width: 0; }
   .date-input {
-    flex: 1; width: 100%; min-width: 0; height: 34px; padding: 0 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); 
-    font-size: 0.85rem; background: var(--bg-surface); color: var(--text-primary); box-shadow: var(--shadow-sm); transition: border-color 0.2s; outline: none; font-family: inherit; line-height: 32px;
+    flex: 1; width: 100%; min-width: 0; height: 34px; padding: 0 0.5rem;
+    border: 1px solid var(--border-color); border-radius: var(--radius-md);
+    font-size: 0.85rem; background: var(--bg-surface); color: var(--text-primary);
+    box-shadow: var(--shadow-sm); transition: border-color 0.2s; outline: none; font-family: inherit;
+    line-height: 32px;
   }
   .date-input:focus { border-color: var(--border-focus); }
   .date-input::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; filter: var(--calendar-filter, none); padding: 0; margin-left: 2px; }
   [data-theme="dark"] { --calendar-filter: invert(1); }
   .range-separator { color: var(--text-tertiary); font-size: 0.85rem; flex-shrink: 0; }
-  
-  @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-  .skeleton-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem; height: 140px; display: flex; flex-direction: column; gap: 12px; }
-  .skeleton-line { background: linear-gradient(90deg, var(--skeleton-bg) 25%, var(--skeleton-shimmer) 50%, var(--skeleton-bg) 75%); background-size: 1000px 100%; animation: shimmer 2s infinite linear; border-radius: var(--radius-sm); height: 16px; }
+
+  /* 骨架屏加载动画 */
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+  .skeleton-card {
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+    height: 140px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .skeleton-line {
+    background: linear-gradient(90deg, var(--skeleton-bg) 25%, var(--skeleton-shimmer) 50%, var(--skeleton-bg) 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    border-radius: var(--radius-sm);
+    height: 16px;
+  }
   .skeleton-title { width: 40%; height: 24px; }
   .skeleton-meta { width: 70%; height: 14px; }
   .skeleton-body { width: 100%; height: 40px; }
-  
+
+  /* 档案卡片 */
   .entry {
-    position: relative; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); 
-    padding: 1rem 1.25rem; margin-bottom: 0.75rem; box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s ease-out; cursor: pointer; user-select: text; 
+    position: relative; background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+    box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s ease-out;
+    cursor: pointer; user-select: text;
   }
   .entry:hover { border-color: var(--border-focus); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
   .entry:active { transform: scale(0.995); }
+
   .tag {
-    position: absolute; top: 1rem; right: 1.25rem; background: var(--bg-body); color: var(--text-secondary);
-    padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 500; border: 1px solid var(--border-color); white-space: nowrap;
+    position: absolute; top: 1rem; right: 1.25rem;
+    background: var(--bg-body); color: var(--text-secondary);
+    padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.75rem;
+    font-weight: 500; border: 1px solid var(--border-color); white-space: nowrap;
   }
-  .entry-title { font-size: 1.05rem; font-weight: 600; line-height: 1.4; color: var(--text-primary); padding-right: 80px; margin-bottom: 0.4rem; word-break: break-word; }
-  .entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
+
+  .entry-title {
+    font-size: 1.05rem; font-weight: 600; line-height: 1.4; color: var(--text-primary);
+    padding-right: 80px; margin-bottom: 0.4rem; word-break: break-word;
+  }
+
+  .entry-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem;
+    font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;
+  }
   .meta-item { display: flex; align-items: center; gap: 0.3rem; }
   .meta-item svg { width: 13px; height: 13px; color: var(--text-tertiary); flex-shrink: 0; }
   .meta-strong { font-weight: 500; color: var(--text-primary); }
+
   .uid-badge {
-    display: inline-flex; align-items: center; gap: 0.2rem; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    font-size: 0.75rem; color: var(--text-secondary); background: var(--bg-body); border: 1px solid var(--border-color); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.75rem; color: var(--text-secondary);
+    background: var(--bg-body); border: 1px solid var(--border-color);
+    padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);
   }
-  .entry-body { white-space: pre-wrap; word-break: break-word; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .entry-body {
+    white-space: pre-wrap; word-break: break-word; font-size: 0.9rem;
+    color: var(--text-secondary); margin-bottom: 0.75rem;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
   mark { background-color: var(--mark-bg); color: var(--mark-text); padding: 0 2px; border-radius: 2px; }
-  .attachments-box { background: var(--bg-body); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem 0.75rem; margin-bottom: 0.75rem; }
-  .attachment-title { font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+
+  /* 附件区域 */
+  .attachments-box {
+    background: var(--bg-body); border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); padding: 0.6rem 0.75rem; margin-bottom: 0.75rem;
+  }
+  .attachment-title {
+    font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;
+  }
   .attachment-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .attachment-item {
-    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.5rem; background: var(--bg-surface); border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary); text-decoration: none; transition: border-color 0.15s; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.5rem;
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary);
+    text-decoration: none; transition: border-color 0.15s; cursor: pointer;
   }
   .attachment-item:hover { border-color: var(--border-focus); }
   .attachment-item svg { width: 14px; height: 14px; color: var(--text-secondary); flex-shrink: 0; }
   .attachment-item span { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .entry-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); }
-  .footer-contributor { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--text-tertiary); }
+
+  .entry-footer {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+    gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color);
+  }
+  .footer-contributor {
+    display: flex; align-items: center; gap: 0.3rem;
+    font-size: 0.8rem; color: var(--text-tertiary);
+  }
   .footer-contributor svg { width: 13px; height: 13px; }
   .footer-contributor span { color: var(--text-secondary); font-weight: 500; }
+
   .footer-actions { display: flex; align-items: center; gap: 1rem; }
   .btn-action {
-    background: none; border: none; font-size: 0.75rem; color: var(--text-tertiary); cursor: pointer; display: flex; align-items: center; gap: 0.25rem; transition: color 0.2s; text-decoration: none;
+    background: none; border: none; font-size: 0.75rem; color: var(--text-tertiary);
+    cursor: pointer; display: flex; align-items: center; gap: 0.25rem; transition: color 0.2s;
+    text-decoration: none;
   }
   .btn-action:hover { color: var(--primary); }
   .btn-action.report:hover { color: #ef4444; }
   .btn-action svg { width: 12px; height: 12px; }
+
   .empty {
-    text-align: center; padding: 3rem 1rem; color: var(--text-tertiary); background: var(--bg-surface); border-radius: var(--radius-md); border: 1px dashed var(--border-color); font-size: 0.9rem;
+    text-align: center; padding: 3rem 1rem; color: var(--text-tertiary);
+    background: var(--bg-surface); border-radius: var(--radius-md);
+    border: 1px dashed var(--border-color); font-size: 0.9rem;
     display: flex; flex-direction: column; align-items: center; gap: 1rem;
   }
+
   .entry-meta:empty, .entry-body:empty, .attachments-box:empty, .entry-footer:empty { display: none; }
-  
+
+  /* 详情弹窗 */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 1000; display: flex; justify-content: center; align-items: center;
-    opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; padding: 1rem;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
+    z-index: 1000; display: flex; justify-content: center; align-items: center;
+    opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+    padding: 1rem;
   }
   .modal-overlay.active { opacity: 1; visibility: visible; }
+
   .modal-content {
-    background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 700px; max-height: 85vh;
-    box-shadow: var(--shadow-lg); display: flex; flex-direction: column; transform: translateY(20px) scale(0.98); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden;
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg); width: 100%; max-width: 700px; max-height: 85vh;
+    box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
+    transform: translateY(20px) scale(0.98); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
   }
   .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-  .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start; background: var(--bg-surface); }
+
+  .modal-header {
+    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color);
+    display: flex; justify-content: space-between; align-items: flex-start; background: var(--bg-surface);
+  }
   .modal-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); line-height: 1.4; padding-right: 1rem; }
   .modal-close {
-    background: none; border: none; cursor: pointer; color: var(--text-tertiary); padding: 0.25rem; border-radius: var(--radius-sm); transition: all 0.2s;
+    background: none; border: none; cursor: pointer; color: var(--text-tertiary);
+    padding: 0.25rem; border-radius: var(--radius-sm); transition: all 0.2s;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
   .modal-close:active { transform: scale(0.9); }
   .modal-close svg { width: 22px; height: 22px; }
+
   .modal-body { padding: 1.5rem; overflow-y: auto; }
   .modal-body::-webkit-scrollbar { width: 6px; }
   .modal-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
   .modal-body .entry-meta { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border-color); }
   .modal-body .entry-body { -webkit-line-clamp: unset; display: block; font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.8; color: var(--text-primary); }
-  .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-body); }
-  
+
+  .modal-footer {
+    padding: 1rem 1.5rem; border-top: 1px solid var(--border-color);
+    display: flex; justify-content: space-between; align-items: center; background: var(--bg-body);
+  }
+
+  /* 图片灯箱 */
   .lightbox-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 3000; display: flex; justify-content: center; align-items: center;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+    z-index: 3000; display: flex; justify-content: center; align-items: center;
     opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
   }
   .lightbox-overlay.active { opacity: 1; visibility: visible; }
-  .lightbox-img { max-width: 95vw; max-height: 95vh; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border-radius: 4px; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+  .lightbox-img {
+    max-width: 95vw; max-height: 95vh; object-fit: contain;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8); border-radius: 4px;
+    transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
   .lightbox-overlay.active .lightbox-img { transform: scale(1); }
+
   .lightbox-close {
-    position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 24px; 
-    cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: background 0.2s;
+    position: absolute; top: 20px; right: 20px;
+    background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 24px;
+    cursor: pointer; width: 44px; height: 44px; border-radius: 50%;
+    display: flex; justify-content: center; align-items: center; transition: background 0.2s;
   }
   .lightbox-close:hover { background: rgba(255,255,255,0.2); }
   .lightbox-close svg { width: 24px; height: 24px; }
-  
+
   #scroll-sentinel { height: 20px; margin-top: 10px; }
-  
-  @media (max-width: 768px) { .filter-row { grid-template-columns: 1fr; } .date-range-group { flex-wrap: nowrap; } }
+
+  @media (max-width: 768px) {
+    .filter-row { grid-template-columns: 1fr; }
+    .date-range-group { flex-wrap: nowrap; }
+  }
   @media (max-width: 600px) {
     .navbar { padding: 0.5rem 1rem; }
     .entry { padding: 1rem; }
@@ -213,6 +366,7 @@
 </style>
 </head>
 <body>
+
   <nav class="navbar">
     <div class="nav-brand">校史档案</div>
     <div class="nav-actions">
@@ -223,6 +377,7 @@
       <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="btn-primary">我要投稿</a>
     </div>
   </nav>
+
   <main class="container">
     <div class="toolbar">
       <div class="search-row">
@@ -235,6 +390,7 @@
         </div>
         <button class="btn-reset-all" id="resetAllBtn">重置</button>
       </div>
+
       <div class="filter-row">
         <select id="categorySelect" class="filter-select"><option value="全部">全部分类</option></select>
         <select id="contributorSelect" class="filter-select"><option value="全部">全部贡献者</option></select>
@@ -251,9 +407,12 @@
         </select>
       </div>
     </div>
+
     <div id="list"></div>
     <div id="scroll-sentinel"></div>
   </main>
+
+  <!-- 详情弹窗 -->
   <div class="modal-overlay" id="detailModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -269,26 +428,35 @@
       </div>
     </div>
   </div>
+
+  <!-- 图片灯箱 -->
   <div class="lightbox-overlay" id="imageLightbox" onclick="closeLightbox(event)">
     <button class="lightbox-close" onclick="closeLightbox(event)">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
     </button>
     <img id="lightboxImg" class="lightbox-img" src="" alt="图片预览" onclick="event.stopPropagation()">
   </div>
+
 <script>
+  // ======================= 常量与全局状态 =======================
   const DATA_URL = '/data.json';
-  const CDN_PREFIX = '/'; 
+  const CDN_PREFIX = '/';
   const PAGE_SIZE = 10;
-  const MAX_RENDER = 200; // 修复：最大渲染上限
+  const MAX_RENDER = 200;
 
-  let allData = [];
-  let filteredData = [];
-  let displayCount = PAGE_SIZE;
-  let isLoading = false;
-  
-  let currentSearch = "", currentCategory = "全部", currentContributor = "全部", currentStartDate = "", currentEndDate = "", currentAttachment = "全部";
+  let allRecords = [];
+  let filteredRecords = [];
+  let displayedCount = PAGE_SIZE;
+  let isLoadingMore = false;
 
-  const Icons = {
+  let searchQuery = '';
+  let activeCategory = '全部';
+  let activeContributor = '全部';
+  let startDateFilter = '';
+  let endDateFilter = '';
+  let activeAttachmentType = '全部';
+
+  const SVG_ICONS = {
     user: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>`,
     users: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`,
     clock: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
@@ -298,358 +466,537 @@
     warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`
   };
 
+  // ======================= 工具函数 =======================
   function getFileIcon(path) {
-    const ext = (path.split(".").pop() || "").toLowerCase();
-    if (["jpg","jpeg","png","gif","webp","svg"].includes(ext)) return Icons.image;
-    if (["zip","rar","7z"].includes(ext)) return Icons.archive;
-    return Icons.doc;
+    const ext = (path.split('.').pop() || '').toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) return SVG_ICONS.image;
+    if (['zip', 'rar', '7z'].includes(ext)) return SVG_ICONS.archive;
+    return SVG_ICONS.doc;
   }
-  function isImage(path) { return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(path); }
-  function fileName(path) { 
-    let name = path.split("/").pop() || path;
-    // 移除 Python 脚本强制加上的 UID 前缀 (如果有)
+
+  function isImageFile(path) {
+    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(path);
+  }
+
+  function getDisplayFileName(path) {
+    let name = path.split('/').pop() || path;
+    // 移除同步脚本添加的 record_id 前缀
     return name.replace(/^rec[a-zA-Z0-9]+_/, '');
   }
-  
-  function extractText(val) {
-    if (!val) return "";
-    if (typeof val === 'string') return val.trim();
-    if (Array.isArray(val)) return val.map(v => v && v.type === 'text' ? v.text : (v.name || "")).join("").trim();
-    if (val && val.text) return val.text.trim();
-    return String(val).trim();
+
+  function extractPlainText(value) {
+    if (!value) return '';
+    if (typeof value === 'string') return value.trim();
+    if (Array.isArray(value)) {
+      return value
+        .map(item => (item && item.type === 'text' ? item.text : (item.name || '')))
+        .join('')
+        .trim();
+    }
+    if (value && value.text) return value.text.trim();
+    return String(value).trim();
   }
+
   function escapeHTML(str) {
-    if (!str) return "";
-    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag]));
   }
-  function highlightText(text, search) {
-    if (!search || !text) return escapeHTML(text);
+
+  function highlightMatch(text, query) {
+    if (!query || !text) return escapeHTML(text);
     const escapedText = escapeHTML(text);
-    const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(${safeSearch})`, 'gi');
+    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${safeQuery})`, 'gi');
     return escapedText.replace(regex, '<mark>$1</mark>');
   }
-  function formatTimeRange(start, end, defaultTime) {
+
+  function formatTimeRange(startTs, endTs, fallbackTs) {
     const fmt = (ts) => {
-      if(!ts) return "";
+      if (!ts) return '';
       const d = new Date(ts);
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-    }
-    const s = fmt(start), e = fmt(end);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+    const s = fmt(startTs);
+    const e = fmt(endTs);
     if (s && e && s !== e) return `${s} 至 ${e}`;
-    return s || e || fmt(defaultTime);
+    return s || e || fmt(fallbackTs);
   }
-  function getRecordTimeRange(item) {
-    let times = [];
-    if (item["开始时间"]) times.push(item["开始时间"]);
-    if (item["结束时间"]) times.push(item["结束时间"]);
-    if (times.length === 0 && item["投稿时间"]) times.push(item["投稿时间"]);
+
+  function getRecordTimeRange(record) {
+    const times = [];
+    if (record['开始时间']) times.push(record['开始时间']);
+    if (record['结束时间']) times.push(record['结束时间']);
+    if (times.length === 0 && record['投稿时间']) times.push(record['投稿时间']);
     if (times.length === 0) return null;
     return [Math.min(...times), Math.max(...times)];
   }
-  function getAttachmentType(item) {
-    const atts = item["attachments"] || [];
-    if (atts.length === 0) return "无";
-    let hasImg = false, hasDoc = false;
-    atts.forEach(p => isImage(p) ? hasImg = true : hasDoc = true);
-    return hasImg && hasDoc ? "图文混合" : (hasImg ? "图片" : "文档");
+
+  function getAttachmentCategory(record) {
+    const atts = record['attachments'] || [];
+    if (atts.length === 0) return '无';
+    let hasImg = false;
+    let hasDoc = false;
+    atts.forEach(p => (isImageFile(p) ? (hasImg = true) : (hasDoc = true)));
+    return hasImg && hasDoc ? '图文混合' : (hasImg ? '图片' : '文档');
   }
-  
+
+  // ======================= 灯箱控制 =======================
   function openLightbox(src) {
-    const lb = document.getElementById("imageLightbox");
-    document.getElementById("lightboxImg").src = src;
-    lb.classList.add("active");
-    document.body.classList.add("modal-open");
+    const lb = document.getElementById('imageLightbox');
+    document.getElementById('lightboxImg').src = src;
+    lb.classList.add('active');
+    document.body.classList.add('modal-open');
   }
-  function closeLightbox(e) {
-    if (e) e.stopPropagation();
-    const lb = document.getElementById("imageLightbox");
-    lb.classList.remove("active");
-    if (!document.getElementById("detailModal").classList.contains("active")) {
-      document.body.classList.remove("modal-open");
+
+  function closeLightbox(event) {
+    if (event) event.stopPropagation();
+    const lb = document.getElementById('imageLightbox');
+    lb.classList.remove('active');
+    if (!document.getElementById('detailModal').classList.contains('active')) {
+      document.body.classList.remove('modal-open');
     }
   }
+
+  // ======================= 举报链接生成 =======================
   function generateReportLink(uid) {
-    const email = "1077401836@qq.com";
+    const email = '1077401836@qq.com';
     const subject = encodeURIComponent(`[校史档案举报] 发现违规内容 - UID: ${uid}`);
     const body = encodeURIComponent(`您好，\n\n我认为该档案（UID: ${uid}）存在侵权或违规问题，请核实处理。\n\n补充说明：`);
     return `mailto:${email}?subject=${subject}&body=${body}`;
   }
+
+  // ======================= UI 状态同步 =======================
   function hasActiveFilters() {
-    return currentSearch !== "" || currentCategory !== "全部" || currentContributor !== "全部" || currentStartDate !== "" || currentEndDate !== "" || currentAttachment !== "全部";
-  }
-  function updateUIState() {
-    document.getElementById("clearSearchBtn").style.display = currentSearch ? "flex" : "none";
-    document.getElementById("resetAllBtn").style.display = hasActiveFilters() ? "flex" : "none";
-    const params = new URLSearchParams();
-    if (currentSearch) params.set("search", currentSearch);
-    if (currentCategory !== "全部") params.set("category", currentCategory);
-    if (currentContributor !== "全部") params.set("contributor", currentContributor);
-    if (currentStartDate) params.set("dateStart", currentStartDate);
-    if (currentEndDate) params.set("dateEnd", currentEndDate);
-    if (currentAttachment !== "全部") params.set("attachment", currentAttachment);
-    window.history.replaceState({}, '', params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname);
+    return searchQuery !== '' ||
+      activeCategory !== '全部' ||
+      activeContributor !== '全部' ||
+      startDateFilter !== '' ||
+      endDateFilter !== '' ||
+      activeAttachmentType !== '全部';
   }
 
-  function createCardHTML(item) {
-    const category = extractText(item["分区"]);
-    const title = extractText(item["内容标题"]);
-    const uid = extractText(item["UID"]) || "无";
-    const related = extractText(item["内容主要参与人"]);
-    const timeStr = formatTimeRange(item["开始时间"], item["结束时间"], item["投稿时间"]);
-    const body = extractText(item["内容详述"]);
-    const contributor = extractText(item["投稿人昵称"]);
-    
-    let html = "";
+  function syncUIState() {
+    document.getElementById('clearSearchBtn').style.display = searchQuery ? 'flex' : 'none';
+    document.getElementById('resetAllBtn').style.display = hasActiveFilters() ? 'flex' : 'none';
+
+    const params = new URLSearchParams();
+    if (searchQuery) params.set('search', searchQuery);
+    if (activeCategory !== '全部') params.set('category', activeCategory);
+    if (activeContributor !== '全部') params.set('contributor', activeContributor);
+    if (startDateFilter) params.set('dateStart', startDateFilter);
+    if (endDateFilter) params.set('dateEnd', endDateFilter);
+    if (activeAttachmentType !== '全部') params.set('attachment', activeAttachmentType);
+
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+  }
+
+  // ======================= 卡片 HTML 生成 =======================
+  function buildCardHTML(record) {
+    const category = extractPlainText(record['分区']);
+    const title = extractPlainText(record['内容标题']);
+    const uid = extractPlainText(record['UID']) || '无';
+    const relatedPeople = extractPlainText(record['内容主要参与人']);
+    const timeRange = formatTimeRange(record['开始时间'], record['结束时间'], record['投稿时间']);
+    const body = extractPlainText(record['内容详述']);
+    const contributor = extractPlainText(record['投稿人昵称']);
+
+    let html = '';
     if (category) html += `<span class="tag">${escapeHTML(category)}</span>`;
-    if (title) html += `<div class="entry-title">${highlightText(title, currentSearch)}</div>`;
+    if (title) html += `<div class="entry-title">${highlightMatch(title, searchQuery)}</div>`;
 
     html += `<div class="entry-meta">`;
-    html += `<span class="meta-item"><span class="uid-badge">ID: ${highlightText(uid, currentSearch)}</span></span>`;
-    if (related) html += `<span class="meta-item">${Icons.users} <span>有关人：<span class="meta-strong">${highlightText(related, currentSearch)}</span></span></span>`;
-    if (timeStr) html += `<span class="meta-item">${Icons.clock} <span>${timeStr}</span></span>`;
+    html += `<span class="meta-item"><span class="uid-badge">ID: ${highlightMatch(uid, searchQuery)}</span></span>`;
+    if (relatedPeople) {
+      html += `<span class="meta-item">${SVG_ICONS.users} <span>有关人：<span class="meta-strong">${highlightMatch(relatedPeople, searchQuery)}</span></span></span>`;
+    }
+    if (timeRange) {
+      html += `<span class="meta-item">${SVG_ICONS.clock} <span>${timeRange}</span></span>`;
+    }
     html += `</div>`;
 
-    if (body) html += `<div class="entry-body">${highlightText(body, currentSearch)}</div>`;
+    if (body) html += `<div class="entry-body">${highlightMatch(body, searchQuery)}</div>`;
 
-    const attachments = item["attachments"] || [];
+    const attachments = record['attachments'] || [];
     if (attachments.length > 0) {
       html += `<div class="attachments-box"><div class="attachment-title">附件 (${attachments.length})</div><div class="attachment-grid">`;
-      attachments.forEach(p => {
-        const href = CDN_PREFIX + p.replace(/^\//, "");
-        if (isImage(p)) {
-          html += `<a class="attachment-item" href="javascript:void(0)" onclick="event.preventDefault(); event.stopPropagation(); openLightbox('${href}')">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+      attachments.forEach(filePath => {
+        const href = CDN_PREFIX + filePath.replace(/^\//, '');
+        const displayName = escapeHTML(getDisplayFileName(filePath));
+        if (isImageFile(filePath)) {
+          html += `<a class="attachment-item" href="javascript:void(0)" onclick="event.preventDefault(); event.stopPropagation(); openLightbox('${href}')">${getFileIcon(filePath)} <span>${displayName}</span></a>`;
         } else {
-          html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" download="${fileName(p)}" onclick="event.stopPropagation()">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+          html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" download="${getDisplayFileName(filePath)}" onclick="event.stopPropagation()">${getFileIcon(filePath)} <span>${displayName}</span></a>`;
         }
       });
       html += `</div></div>`;
     }
 
     html += `<div class="entry-footer">
-      <div class="footer-contributor">${contributor ? `${Icons.user} 贡献者：<span>${highlightText(contributor, currentSearch)}</span>` : ''}</div>
-      <div class="footer-actions"><a class="btn-action report" href="${generateReportLink(uid)}" onclick="event.stopPropagation()">${Icons.warning} 举报</a></div>
+      <div class="footer-contributor">${contributor ? `${SVG_ICONS.user} 贡献者：<span>${highlightMatch(contributor, searchQuery)}</span>` : ''}</div>
+      <div class="footer-actions">
+        <a class="btn-action report" href="${generateReportLink(uid)}" onclick="event.stopPropagation()">${SVG_ICONS.warning} 举报</a>
+      </div>
     </div>`;
+
     return html;
   }
 
+  // ======================= 列表渲染与无限滚动 =======================
   function appendCards(count) {
-    const listContainer = document.getElementById("list");
-    const nextItems = filteredData.slice(displayCount, displayCount + count);
-    nextItems.forEach(item => {
-      const card = document.createElement("div");
-      card.className = "entry";
-      card.innerHTML = createCardHTML(item);
-      card.addEventListener("click", (e) => {
+    const listContainer = document.getElementById('list');
+    const nextBatch = filteredRecords.slice(displayedCount, displayedCount + count);
+
+    nextBatch.forEach(record => {
+      const card = document.createElement('div');
+      card.className = 'entry';
+      card.innerHTML = buildCardHTML(record);
+
+      card.addEventListener('click', (e) => {
         if (window.getSelection().toString().length > 0) return;
         if (e.target.closest('a')) return;
-        openModal(item);
+        openDetailModal(record);
       });
+
       listContainer.appendChild(card);
     });
-    displayCount += nextItems.length;
+
+    displayedCount += nextBatch.length;
   }
 
-  function renderList() {
-    const listContainer = document.getElementById("list");
-    const sentinel = document.getElementById("scroll-sentinel");
-    listContainer.innerHTML = "";
-    sentinel.innerHTML = "";
-    displayCount = 0; 
-    
-    if (filteredData.length === 0) {
-      listContainer.innerHTML = `<div class="empty">没有找到匹配的档案记录${hasActiveFilters() ? `<button class="btn-reset-all" style="display:flex" onclick="document.getElementById('resetAllBtn').click()">清除筛选条件</button>` : ''}</div>`;
+  function renderRecordList() {
+    const listContainer = document.getElementById('list');
+    const sentinel = document.getElementById('scroll-sentinel');
+    listContainer.innerHTML = '';
+    sentinel.innerHTML = '';
+    displayedCount = 0;
+
+    if (filteredRecords.length === 0) {
+      listContainer.innerHTML = `<div class="empty">
+        没有找到匹配的档案记录
+        ${hasActiveFilters() ? `<button class="btn-reset-all" style="display:flex" onclick="document.getElementById('resetAllBtn').click()">清除筛选条件</button>` : ''}
+      </div>`;
       return;
     }
+
     appendCards(PAGE_SIZE);
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !isLoading) {
-      // 修复：增加 200 条渲染上限
-      if (displayCount >= MAX_RENDER) {
-         document.getElementById("scroll-sentinel").innerHTML = '<div style="text-align:center;color:#999;font-size:0.85rem;padding:10px;">仅展示最新 200 条，请使用搜索或筛选查找更早记录</div>';
-         return;
+  const scrollObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !isLoadingMore) {
+      if (displayedCount >= MAX_RENDER) {
+        document.getElementById('scroll-sentinel').innerHTML =
+          '<div style="text-align:center;color:#999;font-size:0.85rem;padding:10px;">仅展示最新 200 条，请使用搜索或筛选查找更早记录</div>';
+        return;
       }
-      if (displayCount < filteredData.length) {
-        isLoading = true;
+      if (displayedCount < filteredRecords.length) {
+        isLoadingMore = true;
         setTimeout(() => {
           appendCards(PAGE_SIZE);
-          isLoading = false;
+          isLoadingMore = false;
         }, 100);
       }
     }
-  }, { rootMargin: "100px" });
+  }, { rootMargin: '100px' });
 
-  function openModal(item) {
-    const modal = document.getElementById("detailModal");
-    document.getElementById("modalTitle").innerHTML = highlightText(extractText(item["内容标题"]) || "无标题档案", currentSearch);
-    
-    const uid = extractText(item["UID"]) || "无";
-    const related = extractText(item["内容主要参与人"]);
-    const timeStr = formatTimeRange(item["开始时间"], item["结束时间"], item["投稿时间"]);
-    const body = extractText(item["内容详述"]);
-    const contributor = extractText(item["投稿人昵称"]);
+  // ======================= 详情弹窗 =======================
+  function openDetailModal(record) {
+    const modal = document.getElementById('detailModal');
+    document.getElementById('modalTitle').innerHTML =
+      highlightMatch(extractPlainText(record['内容标题']) || '无标题档案', searchQuery);
+
+    const uid = extractPlainText(record['UID']) || '无';
+    const relatedPeople = extractPlainText(record['内容主要参与人']);
+    const timeRange = formatTimeRange(record['开始时间'], record['结束时间'], record['投稿时间']);
+    const body = extractPlainText(record['内容详述']);
+    const contributor = extractPlainText(record['投稿人昵称']);
 
     let bodyHtml = `<div class="entry-meta">`;
-    bodyHtml += `<span class="meta-item"><span class="uid-badge">ID: ${highlightText(uid, currentSearch)}</span></span>`;
-    if (related) bodyHtml += `<span class="meta-item">${Icons.users} <span>有关人：<span class="meta-strong">${highlightText(related, currentSearch)}</span></span></span>`;
-    if (timeStr) bodyHtml += `<span class="meta-item">${Icons.clock} <span>${timeStr}</span></span>`;
+    bodyHtml += `<span class="meta-item"><span class="uid-badge">ID: ${highlightMatch(uid, searchQuery)}</span></span>`;
+    if (relatedPeople) {
+      bodyHtml += `<span class="meta-item">${SVG_ICONS.users} <span>有关人：<span class="meta-strong">${highlightMatch(relatedPeople, searchQuery)}</span></span></span>`;
+    }
+    if (timeRange) {
+      bodyHtml += `<span class="meta-item">${SVG_ICONS.clock} <span>${timeRange}</span></span>`;
+    }
     bodyHtml += `</div>`;
 
-    if (body) bodyHtml += `<div class="entry-body">${highlightText(body, currentSearch)}</div>`;
+    if (body) bodyHtml += `<div class="entry-body">${highlightMatch(body, searchQuery)}</div>`;
 
-    const attachments = item["attachments"] || [];
+    const attachments = record['attachments'] || [];
     if (attachments.length > 0) {
       bodyHtml += `<div class="attachments-box"><div class="attachment-title">附件 (${attachments.length})</div><div class="attachment-grid">`;
-      attachments.forEach(p => {
-        const href = CDN_PREFIX + p.replace(/^\//, "");
-        if (isImage(p)) {
-          bodyHtml += `<a class="attachment-item" href="javascript:void(0)" onclick="event.preventDefault(); openLightbox('${href}')">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+      attachments.forEach(filePath => {
+        const href = CDN_PREFIX + filePath.replace(/^\//, '');
+        const displayName = escapeHTML(getDisplayFileName(filePath));
+        if (isImageFile(filePath)) {
+          bodyHtml += `<a class="attachment-item" href="javascript:void(0)" onclick="event.preventDefault(); openLightbox('${href}')">${getFileIcon(filePath)} <span>${displayName}</span></a>`;
         } else {
-          bodyHtml += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" download="${fileName(p)}">${getFileIcon(p)} <span>${escapeHTML(fileName(p))}</span></a>`;
+          bodyHtml += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" download="${getDisplayFileName(filePath)}">${getFileIcon(filePath)} <span>${displayName}</span></a>`;
         }
       });
       bodyHtml += `</div></div>`;
     }
-    
-    document.getElementById("modalBody").innerHTML = bodyHtml;
-    document.getElementById("modalContributor").innerHTML = contributor ? `${Icons.user} 贡献者：<span>${highlightText(contributor, currentSearch)}</span>` : '';
-    
-    const reportBtn = document.getElementById("modalReportBtn");
-    reportBtn.innerHTML = `${Icons.warning} 举报该内容`;
+
+    document.getElementById('modalBody').innerHTML = bodyHtml;
+    document.getElementById('modalContributor').innerHTML =
+      contributor ? `${SVG_ICONS.user} 贡献者：<span>${highlightMatch(contributor, searchQuery)}</span>` : '';
+
+    const reportBtn = document.getElementById('modalReportBtn');
+    reportBtn.innerHTML = `${SVG_ICONS.warning} 举报该内容`;
     reportBtn.href = generateReportLink(uid);
 
-    modal.classList.add("active");
-    document.body.classList.add("modal-open");
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
   }
-  function closeModal() {
-    document.getElementById("detailModal").classList.remove("active");
-    document.body.classList.remove("modal-open");
+
+  function closeDetailModal() {
+    document.getElementById('detailModal').classList.remove('active');
+    document.body.classList.remove('modal-open');
   }
+
+  // ======================= 筛选逻辑 =======================
   function applyFilters() {
-    filteredData = allData.filter(item => {
-      const matchCategory = currentCategory === "全部" || extractText(item["分区"]) === currentCategory;
-      const matchContributor = currentContributor === "全部" || extractText(item["投稿人昵称"]) === currentContributor;
-      let matchTime = true;
-      if (currentStartDate || currentEndDate) {
-        const recordTime = getRecordTimeRange(item);
-        if (!recordTime) matchTime = false;
-        else {
-          const filterStart = currentStartDate ? new Date(currentStartDate).getTime() : 0;
-          const filterEnd = currentEndDate ? new Date(currentEndDate).getTime() + 86399000 : Infinity;
-          if (recordTime[1] < filterStart || recordTime[0] > filterEnd) matchTime = false;
+    filteredRecords = allRecords.filter(record => {
+      const categoryMatch = activeCategory === '全部' ||
+        extractPlainText(record['分区']) === activeCategory;
+      const contributorMatch = activeContributor === '全部' ||
+        extractPlainText(record['投稿人昵称']) === activeContributor;
+
+      let timeMatch = true;
+      if (startDateFilter || endDateFilter) {
+        const recordTimeRange = getRecordTimeRange(record);
+        if (!recordTimeRange) {
+          timeMatch = false;
+        } else {
+          const filterStartTs = startDateFilter ? new Date(startDateFilter).getTime() : 0;
+          const filterEndTs = endDateFilter
+            ? new Date(endDateFilter).getTime() + 86399000
+            : Infinity;
+          if (recordTimeRange[1] < filterStartTs || recordTimeRange[0] > filterEndTs) {
+            timeMatch = false;
+          }
         }
       }
-      let matchAttachment = true;
-      if (currentAttachment !== "全部") {
-        const attType = getAttachmentType(item);
-        if (currentAttachment === "图片") matchAttachment = attType.includes("图片");
-        else if (currentAttachment === "文档") matchAttachment = attType.includes("文档");
-        else if (currentAttachment === "无") matchAttachment = (attType === "无");
+
+      let attachmentMatch = true;
+      if (activeAttachmentType !== '全部') {
+        const attCategory = getAttachmentCategory(record);
+        if (activeAttachmentType === '图片') attachmentMatch = attCategory.includes('图片');
+        else if (activeAttachmentType === '文档') attachmentMatch = attCategory.includes('文档');
+        else if (activeAttachmentType === '无') attachmentMatch = attCategory === '无';
       }
-      const search = currentSearch.toLowerCase();
-      const matchSearch = !search || 
-        extractText(item["内容标题"]).toLowerCase().includes(search) ||
-        extractText(item["内容详述"]).toLowerCase().includes(search) ||
-        extractText(item["投稿人昵称"]).toLowerCase().includes(search) ||
-        extractText(item["内容主要参与人"]).toLowerCase().includes(search) ||
-        extractText(item["UID"]).toLowerCase().includes(search);
-      return matchCategory && matchContributor && matchTime && matchAttachment && matchSearch;
+
+      const query = searchQuery.toLowerCase();
+      const textMatch = !query ||
+        extractPlainText(record['内容标题']).toLowerCase().includes(query) ||
+        extractPlainText(record['内容详述']).toLowerCase().includes(query) ||
+        extractPlainText(record['投稿人昵称']).toLowerCase().includes(query) ||
+        extractPlainText(record['内容主要参与人']).toLowerCase().includes(query) ||
+        extractPlainText(record['UID']).toLowerCase().includes(query);
+
+      return categoryMatch && contributorMatch && timeMatch && attachmentMatch && textMatch;
     });
-    filteredData.sort((a, b) => (b["开始时间"] || b["投稿时间"] || 0) - (a["开始时间"] || a["投稿时间"] || 0));
-    renderList();
-    updateUIState();
-  }
-  function initFilters() {
-    const catSelect = document.getElementById("categorySelect"), conSelect = document.getElementById("contributorSelect");
-    const categories = [...new Set(allData.map(i => extractText(i["分区"])).filter(Boolean))];
-    const contributors = [...new Set(allData.map(i => extractText(i["投稿人昵称"])).filter(Boolean))];
-    categories.forEach(cat => { catSelect.innerHTML += `<option value="${escapeHTML(cat)}">${escapeHTML(cat)}</option>`; });
-    contributors.forEach(con => { conSelect.innerHTML += `<option value="${escapeHTML(con)}">${escapeHTML(con)}</option>`; });
 
+    filteredRecords.sort((a, b) => {
+      const timeA = a['开始时间'] || a['投稿时间'] || 0;
+      const timeB = b['开始时间'] || b['投稿时间'] || 0;
+      return timeB - timeA;
+    });
+
+    renderRecordList();
+    syncUIState();
+  }
+
+  // ======================= 筛选控件初始化 =======================
+  function initFilterControls() {
+    const categorySelect = document.getElementById('categorySelect');
+    const contributorSelect = document.getElementById('contributorSelect');
+
+    const uniqueCategories = [...new Set(
+      allRecords.map(r => extractPlainText(r['分区'])).filter(Boolean)
+    )];
+    const uniqueContributors = [...new Set(
+      allRecords.map(r => extractPlainText(r['投稿人昵称'])).filter(Boolean)
+    )];
+
+    uniqueCategories.forEach(cat => {
+      categorySelect.innerHTML += `<option value="${escapeHTML(cat)}">${escapeHTML(cat)}</option>`;
+    });
+    uniqueContributors.forEach(con => {
+      contributorSelect.innerHTML += `<option value="${escapeHTML(con)}">${escapeHTML(con)}</option>`;
+    });
+
+    // 从 URL 参数恢复筛选状态
     const params = new URLSearchParams(window.location.search);
-    currentSearch = params.get("search") || "";
-    currentCategory = params.get("category") || "全部";
-    currentContributor = params.get("contributor") || "全部";
-    currentStartDate = params.get("dateStart") || "";
-    currentEndDate = params.get("dateEnd") || "";
-    currentAttachment = params.get("attachment") || "全部";
+    searchQuery = params.get('search') || '';
+    activeCategory = params.get('category') || '全部';
+    activeContributor = params.get('contributor') || '全部';
+    startDateFilter = params.get('dateStart') || '';
+    endDateFilter = params.get('dateEnd') || '';
+    activeAttachmentType = params.get('attachment') || '全部';
 
-    document.getElementById("searchInput").value = currentSearch;
-    catSelect.value = currentCategory; conSelect.value = currentContributor;
-    document.getElementById("startDate").value = currentStartDate;
-    document.getElementById("endDate").value = currentEndDate;
-    document.getElementById("attachmentSelect").value = currentAttachment;
+    document.getElementById('searchInput').value = searchQuery;
+    categorySelect.value = activeCategory;
+    contributorSelect.value = activeContributor;
+    document.getElementById('startDate').value = startDateFilter;
+    document.getElementById('endDate').value = endDateFilter;
+    document.getElementById('attachmentSelect').value = activeAttachmentType;
 
-    catSelect.addEventListener("change", (e) => { currentCategory = e.target.value; applyFilters(); });
-    conSelect.addEventListener("change", (e) => { currentContributor = e.target.value; applyFilters(); });
-    document.getElementById("startDate").addEventListener("change", (e) => { currentStartDate = e.target.value; applyFilters(); });
-    document.getElementById("endDate").addEventListener("change", (e) => { currentEndDate = e.target.value; applyFilters(); });
-    document.getElementById("attachmentSelect").addEventListener("change", (e) => { currentAttachment = e.target.value; applyFilters(); });
+    // 绑定筛选事件
+    categorySelect.addEventListener('change', (e) => {
+      activeCategory = e.target.value;
+      applyFilters();
+    });
+    contributorSelect.addEventListener('change', (e) => {
+      activeContributor = e.target.value;
+      applyFilters();
+    });
+    document.getElementById('startDate').addEventListener('change', (e) => {
+      startDateFilter = e.target.value;
+      applyFilters();
+    });
+    document.getElementById('endDate').addEventListener('change', (e) => {
+      endDateFilter = e.target.value;
+      applyFilters();
+    });
+    document.getElementById('attachmentSelect').addEventListener('change', (e) => {
+      activeAttachmentType = e.target.value;
+      applyFilters();
+    });
   }
-  function initTheme() {
-    const toggleBtn = document.getElementById("themeToggle"), sunIcon = document.getElementById("icon-sun"), moonIcon = document.getElementById("icon-moon");
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.setAttribute('data-theme', 'dark'); sunIcon.style.display = "none"; moonIcon.style.display = "block";
+
+  // ======================= 主题切换 =======================
+  function initThemeToggle() {
+    const toggleBtn = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('icon-sun');
+    const moonIcon = document.getElementById('icon-moon');
+
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      sunIcon.style.display = 'none';
+      moonIcon.style.display = 'block';
     }
-    toggleBtn.addEventListener("click", () => {
+
+    toggleBtn.addEventListener('click', () => {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       if (isDark) {
-        document.documentElement.removeAttribute('data-theme'); localStorage.setItem('theme', 'light');
-        sunIcon.style.display = "block"; moonIcon.style.display = "none";
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
       } else {
-        document.documentElement.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark');
-        sunIcon.style.display = "none"; moonIcon.style.display = "block";
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
       }
     });
   }
 
-  async function load() {
-    initTheme(); 
-    const listContainer = document.getElementById("list");
-    let skeletonHTML = "";
-    for(let i=0; i<3; i++) skeletonHTML += `<div class="skeleton-card"><div class="skeleton-line skeleton-title"></div><div class="skeleton-line skeleton-meta"></div><div class="skeleton-line skeleton-body"></div></div>`;
-    listContainer.innerHTML = skeletonHTML;
+  // ======================= 数据加载与启动 =======================
+  async function loadData() {
+    initThemeToggle();
+    const listContainer = document.getElementById('list');
+
+    // 骨架屏占位
+    let skeletonHtml = '';
+    for (let i = 0; i < 3; i++) {
+      skeletonHtml += `<div class="skeleton-card">
+        <div class="skeleton-line skeleton-title"></div>
+        <div class="skeleton-line skeleton-meta"></div>
+        <div class="skeleton-line skeleton-body"></div>
+      </div>`;
+    }
+    listContainer.innerHTML = skeletonHtml;
 
     try {
-      const res = await fetch(DATA_URL);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      allData = await res.json();
-      if (!Array.isArray(allData) || allData.length === 0) { listContainer.innerHTML = '<div class="empty">暂无档案记录</div>'; return; }
-      initFilters();
-      applyFilters();
-      observer.observe(document.getElementById("scroll-sentinel"));
+      const response = await fetch(DATA_URL);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      allRecords = await response.json();
 
-      let timeout = null;
-      const searchInput = document.getElementById("searchInput");
-      searchInput.addEventListener("input", (e) => {
-        currentSearch = e.target.value.trim();
-        updateUIState();
-        clearTimeout(timeout);
-        timeout = setTimeout(() => { applyFilters(); }, 300);
+      if (!Array.isArray(allRecords) || allRecords.length === 0) {
+        listContainer.innerHTML = '<div class="empty">暂无档案记录</div>';
+        return;
+      }
+
+      initFilterControls();
+      applyFilters();
+      scrollObserver.observe(document.getElementById('scroll-sentinel'));
+
+      // 搜索防抖
+      let searchDebounceTimer = null;
+      const searchInput = document.getElementById('searchInput');
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim();
+        syncUIState();
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => applyFilters(), 300);
       });
-      document.getElementById("clearSearchBtn").onclick = () => { searchInput.value = ""; currentSearch = ""; applyFilters(); };
-      document.getElementById("resetAllBtn").onclick = () => {
-        searchInput.value = ""; document.getElementById("categorySelect").value = "全部"; document.getElementById("contributorSelect").value = "全部";
-        document.getElementById("startDate").value = ""; document.getElementById("endDate").value = ""; document.getElementById("attachmentSelect").value = "全部";
-        currentSearch = ""; currentCategory = "全部"; currentContributor = "全部"; currentStartDate = ""; currentEndDate = ""; currentAttachment = "全部";
+
+      // 清除搜索
+      document.getElementById('clearSearchBtn').onclick = () => {
+        searchInput.value = '';
+        searchQuery = '';
         applyFilters();
       };
-      const modal = document.getElementById("detailModal");
-      document.getElementById("modalClose").onclick = closeModal;
-      modal.onclick = (e) => { if (e.target === modal) closeModal(); };
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          if (document.getElementById("imageLightbox").classList.contains("active")) closeLightbox();
-          else if (modal.classList.contains("active")) closeModal();
+
+      // 重置所有筛选
+      document.getElementById('resetAllBtn').onclick = () => {
+        searchInput.value = '';
+        document.getElementById('categorySelect').value = '全部';
+        document.getElementById('contributorSelect').value = '全部';
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+        document.getElementById('attachmentSelect').value = '全部';
+
+        searchQuery = '';
+        activeCategory = '全部';
+        activeContributor = '全部';
+        startDateFilter = '';
+        endDateFilter = '';
+        activeAttachmentType = '全部';
+
+        applyFilters();
+      };
+
+      // 弹窗关闭事件
+      const modal = document.getElementById('detailModal');
+      document.getElementById('modalClose').onclick = closeDetailModal;
+      modal.onclick = (e) => {
+        if (e.target === modal) closeDetailModal();
+      };
+
+      // 键盘 Esc 关闭
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (document.getElementById('imageLightbox').classList.contains('active')) {
+            closeLightbox();
+          } else if (modal.classList.contains('active')) {
+            closeDetailModal();
+          }
         }
       });
-    } catch (e) {
-      listContainer.innerHTML = `<div class="empty">数据加载失败，请检查网络或确保 data.json 存在。<button class="btn-reset-all" style="display:flex; margin-top: 10px;" onclick="location.reload()">重试</button></div>`;
+
+    } catch (error) {
+      console.error('Failed to load data:', error);
+      listContainer.innerHTML = `<div class="empty">
+        数据加载失败，请检查网络或确保 data.json 存在。
+        <button class="btn-reset-all" style="display:flex; margin-top: 10px;" onclick="location.reload()">重试</button>
+      </div>`;
     }
   }
-  load();
+
+  loadData();
 </script>
 </body>
 </html>
