@@ -163,13 +163,16 @@
 
   // ======================= 核心逻辑 =======================
   async function initPage() {
-    // 解析 URL 获取 UID
-    const pathParts = window.location.pathname.split('/').filter(p => p !== '');
-    const targetUid = pathParts[pathParts.length - 1]; // 取最后一段
     const container = document.getElementById('mainContent');
+    
+    // 更严谨的 URL 解析：仅提取 /record/ 后面紧跟着的 UID
+    const path = window.location.pathname;
+    const match = path.match(/\/record\/([^/]+)/);
+    let targetUid = match ? decodeURIComponent(match[1]) : '';
 
-    if (!targetUid) {
-      render404(container, "路径错误", "未提供档案编号。");
+    // 如果匹配不到（比如直接访问了 /record/ 或 /record.html），显示 404
+    if (!targetUid || targetUid === 'record.html') {
+      render404(container, "路径错误", "未提供有效的档案编号。请从列表中点击进入。");
       return;
     }
 
