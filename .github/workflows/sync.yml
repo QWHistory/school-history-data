@@ -1,31 +1,35 @@
 name: Feishu to GitHub Sync
 
 on:
-  workflow_dispatch: # 允许你在网页上手动点击运行
+  workflow_dispatch: 
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 时间 0 点（北京时间早上 8 点）自动运行一次
+    - cron: '0 0 * * *' 
+
+# 强制串行，防止并发冲突
+concurrency:
+  group: sync-data
+  cancel-in-progress: false
 
 jobs:
   sync-data:
     runs-on: ubuntu-latest
     steps:
-      - name: 检出代码
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 设置 Python 环境
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: 安装依赖库
+      - name: Install dependencies
         run: pip install requests
 
-      - name: 运行同步脚本
+      - name: Run sync script
         env:
-          # 这里把 GitHub 保险箱里的秘密，注入成环境变量给 Python 用
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
           FEISHU_APP_TOKEN: ${{ secrets.FEISHU_APP_TOKEN }}
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
           GH_PAT: ${{ secrets.GH_PAT }}
-        run: python sync_history.py # 确保你的 python 脚本名字叫这个
+        run: python sync_history.py
