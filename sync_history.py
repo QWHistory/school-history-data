@@ -4,18 +4,15 @@ import json
 import time
 import os
 
+# ================= 🛑 配置区 =================
 APP_ID = os.environ.get("FEISHU_APP_ID")
 APP_SECRET = os.environ.get("FEISHU_APP_SECRET")
 APP_TOKEN = os.environ.get("FEISHU_APP_TOKEN")
 TABLE_ID = os.environ.get("FEISHU_TABLE_ID")
+
 GITHUB_PAT = os.environ.get("GH_PAT")
-
-REPO_OWNER = "QWHistory"                  
-REPO_NAME = "school-history-data"  
-
-# 附件大小限制 (单位：MB)
-MAX_FILE_SIZE_MB = 10
-MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+REPO_OWNER = "QWHistory"
+REPO_NAME = "school-history-data"
 # ============================================
 
 FEISHU_API = "https://open.feishu.cn/open-apis"
@@ -39,7 +36,7 @@ def fetch_approved_records(token):
     res = requests.post(url, headers=headers, json=payload).json()
     return res.get("data", {}).get("items", [])
 
-def download_file(token, file_token, filename):
+def download_file(token, file_token):
     url = f"{FEISHU_API}/drive/v1/medias/{file_token}/download"
     headers = {"Authorization": f"Bearer {token}"}
     res = requests.get(url, headers=headers)
@@ -71,92 +68,89 @@ def delete_feishu_record(token, record_id):
     headers = {"Authorization": f"Bearer {token}"}
     requests.post(url, headers=headers, json={"records": [record_id]})
 
-def extract_text(field_value):
-    if isinstance(field_value, list):
-        return "".join([item.get("text", "") for item in field_value if isinstance(item, dict) and item.get("type") == "text"])
-    elif isinstance(field_value, str):
-        return field_value
-    return ""
+def extract_text(val):
+    if not val: return ""
+    if isinstance(val, str): return val.strip()
+    if isinstance(val, list): return "".join([item.get("text", "") for item in val if isinstance(item, dict) and item.get("type") == "text"]).strip()
+    if isinstance(val, dict) and val.get("text"): return val.get("text").strip()
+    return str(val).strip()
 
 def main():
     print("1. 正在获取飞书 Token...")
     token = get_feishu_token()
     if not token:
-        print("❌ Token 获取失败，请检查 App ID 和 Secret")
+        print("❌ Token 获取失败")
         return
-    
+        
     print("2. 正在查询待同步的记录...")
     records = fetch_approved_records(token)
     print(f"✅ 找到 {len(records)} 条待同步记录。")
 
-    if not records:
-        return
+    if not records: return
 
-    # 拉取现有的 data.json，准备合并
     existing_data, data_sha = get_github_file("data.json")
-    if not isinstance(existing_data, list):
-        existing_data = []
+    if not isinstance(existing_data, list): existing_data = []
 
     for record in records:
         record_id = record["record_id"]
         fields = record["fields"]
         
-        # --- 处理附件 ---
+        # --- 处理附件 (加入防覆盖、防爆限制) ---
         attachments = fields.get("附件", [])
         attachment_paths = []
+        
         for att in attachments:
             file_token = att["file_token"]
-            filename = att["name"]
-            file_size = att.get("size", 0) # 飞书返回的文件大小（字节）
+            original_name = att["name"]
+            file_size = att.get("size", 0)
             
-            # 🔥 核心过滤逻辑：检查文件大小
-            if file_size > MAX_FILE_SIZE_BYTES:
-                print(f"      ⚠️ 附件 {filename} 大小 {(file_size / 1024 / 1024):.2f} MB 超过限制 ({MAX_FILE_SIZE_MB} MB)，已跳过上传。")
-                continue # 跳过该文件，不下载，不加入 attachment_paths
-
-            print(f"   -> 正在下载并上传附件: {filename} ({(file_size / 1024 / 1024):.2f} MB) ...")
+            # 1. 限制大小 (最大 5MB)
+            if file_size > 5 * 1024 * 1024:
+                print(f"      ⚠️ 跳过 {original_name}：文件超过 5MB")
+                continue
             
-            b64_data = download_file(token, file_token, filename)
+            # 2. 限制格式白名单
+            ext = original_name.split(".")[-1].lower() if "." in original_name else ""
+            if ext not in ["jpg", "jpeg", "png", "gif", "webp", "svg", "pdf", "doc", "docx", "xls", "xlsx", "txt", "md", "zip"]:
+                print(f"      ⚠️ 跳过 {original_name}：不支持的格式")
+                continue
+                
+            # 3. 生成绝对不重复的安全文件名 (UID_原名)
+            safe_name = f"{record_id}_{original_name}"
+            print(f"   -> 正在下载并上传: {safe_name} ...")
+            
+            b64_data = download_file(token, file_token)
             if b64_data:
-                github_path = f"images/{filename}"
-                success = push_to_github(github_path, b64_data, f"Upload {filename} from Feishu")
+                github_path = f"images/{safe_name}"
+                success = push_to_github(github_path, b64_data, f"Upload {safe_name}")
                 if success:
-                    print(f"      ✅ 附件已上传至 GitHub")
+                    print(f"      ✅ 附件已上传")
                     attachment_paths.append(github_path)
-                else:
-                    print(f"      ❌ 附件上传失败")
 
-        # --- 处理数据并合并 (动态提取所有列) ---
-        print(f"   -> 正在处理数据...")
-        
+        # --- 处理数据 ---
         data_entry = {
             "id": record_id,
             "attachments": attachment_paths
         }
 
         for key, value in fields.items():
-            if key == "附件":
-                continue 
-                
+            if key == "附件": continue
             if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict) and "text" in value[0]:
                 data_entry[key] = extract_text(value)
             else:
                 data_entry[key] = value
 
         existing_data.append(data_entry)
-
-        # --- 清理飞书 ---
-        print(f"   -> 正在从飞书清理该记录...")
         delete_feishu_record(token, record_id)
 
-    # --- 统一推送 data.json ---
-    print("3. 正在更新 GitHub 上的 data.json...")
-    existing_data.sort(key=lambda x: x.get("投稿时间", 0), reverse=True)
+    # --- 更新 data.json ---
+    print("3. 正在更新 data.json...")
+    existing_data.sort(key=lambda x: x.get("开始时间") or x.get("投稿时间") or 0, reverse=True)
     
     json_str = json.dumps(existing_data, ensure_ascii=False, indent=2)
     json_b64 = base64.b64encode(json_str.encode('utf-8')).decode('utf-8')
     
-    push_to_github("data.json", json_b64, "Update data.json with new approved records", data_sha)
+    push_to_github("data.json", json_b64, "Update data.json", data_sha)
     print("🎉 全部同步完成！")
 
 if __name__ == "__main__":
