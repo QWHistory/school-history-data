@@ -1,11 +1,11 @@
 name: Feishu to GitHub Sync
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *' 
+    - cron: '0 0 * * *'   # 每天 UTC 00:00（北京时间 08:00）自动运行
 
-# 强制串行，防止并发冲突
+# 防止并发执行导致数据覆盖
 concurrency:
   group: sync-data
   cancel-in-progress: false
@@ -14,10 +14,10 @@ jobs:
   sync-data:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
