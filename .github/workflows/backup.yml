@@ -2,15 +2,14 @@ name: Weekly Data Backup
 
 on:
   schedule:
-    # 每周一 UTC 0 点（北京时间周一早上 8 点）自动运行
     - cron: '0 0 * * 1'
-  workflow_dispatch: # 允许你随时手动点击备份
+  workflow_dispatch:
 
 jobs:
   backup:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 需要写入权限来创建 Release
+      contents: write
 
     steps:
       - name: Checkout code
@@ -18,9 +17,7 @@ jobs:
 
       - name: Create Backup Archive
         run: |
-          # 获取当前日期作为文件名
           DATE=$(date +'%Y-%m-%d')
-          # 将 data.json 和 images 文件夹打包为 tar.gz
           tar -czvf backup-$DATE.tar.gz data.json images/
           echo "BACKUP_FILE=backup-$DATE.tar.gz" >> $GITHUB_ENV
 
