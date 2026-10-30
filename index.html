@@ -3,348 +3,273 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>校史档案馆</title>
+<title>校史档案馆 - QWHistory</title>
 <style>
-  :root {
-    --bg-body: #ffffff;
-    --bg-surface: #fafafa;
-    --bg-hover: #f3f4f6;
-    --text-primary: #000000;
-    --text-secondary: #4b5563;
-    --text-tertiary: #9ca3af;
-    --border-color: #e5e7eb;
-    --primary: #000000;
-    --primary-hover: #333333;
-    --radius-md: 4px;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-  }
-
-  [data-theme="dark"] {
-    --bg-body: #0d1117;
-    --bg-surface: #161b22;
-    --bg-hover: #21262d;
-    --text-primary: #c9d1d9;
-    --text-secondary: #8b949e;
-    --text-tertiary: #6e7681;
-    --border-color: #30363d;
-    --primary: #f0f6fc;
-    --primary-hover: #ffffff;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--bg-body);
-    color: var(--text-primary);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    transition: background-color 0.2s, color 0.2s;
-  }
-
-  .navbar {
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--bg-body);
-  }
-
-  .nav-brand {
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .nav-brand .version {
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    font-size: 0.75rem;
-    color: var(--text-tertiary);
-    font-weight: normal;
-    background: var(--bg-surface);
-    padding: 0.1rem 0.4rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
-  }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .nav-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text-primary); }
-
-  .btn-icon {
-    background: none; border: 1px solid transparent; cursor: pointer;
-    color: var(--text-secondary); padding: 0.35rem; border-radius: var(--radius-md);
-    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-  }
-  .btn-icon:hover { background: var(--bg-surface); color: var(--text-primary); border-color: var(--border-color); }
-  .btn-icon svg { width: 16px; height: 16px; }
-
-  .container {
-    flex: 1;
-    max-width: 1100px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 6rem 2rem;
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 4rem;
-    align-items: center;
-  }
-
-  .hero-content {
-    max-width: 600px;
-  }
-
-  .hero-label {
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    font-size: 0.8rem;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 1.5rem;
-    display: block;
-  }
-
-  .hero-content h1 {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
-    color: var(--text-primary);
-  }
-
-  .hero-content p {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    margin-bottom: 3rem;
-    line-height: 1.6;
-    max-width: 480px;
-  }
-
-  .action-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .action-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    transition: all 0.2s;
-  }
-
-  .action-link.primary {
-    background-color: var(--primary);
-    color: var(--bg-body);
-    border: 1px solid var(--primary);
-  }
-  .action-link.primary:hover {
-    background-color: var(--primary-hover);
-  }
-
-  .action-link.secondary {
-    background-color: transparent;
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-  }
-  .action-link.secondary:hover {
-    background-color: var(--bg-surface);
-    border-color: var(--text-tertiary);
-  }
-
-  .action-link svg {
-    width: 16px;
-    height: 16px;
-    transition: transform 0.2s;
-  }
-  .action-link:hover svg {
-    transform: translateX(3px);
-  }
-
-  .stats-panel {
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    background-color: var(--bg-surface);
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .stat-label {
-    font-size: 0.75rem;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .stat-value {
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-
-  .divider {
-    height: 1px;
-    background-color: var(--border-color);
-    width: 100%;
-  }
-
-  .footer {
-    border-top: 1px solid var(--border-color);
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    color: var(--text-tertiary);
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  }
-
-  @media (max-width: 768px) {
-    .container {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-      padding: 4rem 1.5rem;
+    :root {
+        --primary: #8e2c7a;
+        --primary-dark: #6e1f5e;
+        --primary-light: #f5edf3;
+        --primary-glow: rgba(142, 44, 122, 0.15);
+        --nav-bg: rgba(255, 255, 255, 0.85);
+        --btn-bg: #8e2c7a;
+        --btn-bg-hover: #6e1f5e;
+        --topbar-bg: #6e1f5e;
+        --text-dark: #1a1a1a;
+        --text-body: #4a4a4a;
+        --text-muted: #8a8a8a;
+        --bg-body: #ffffff;
+        --bg-surface: #ffffff;
+        --bg-soft: #fcfcfc;
+        --border: #eaeaea;
+        --border-focus: #d1d1d1;
+        --footer-bg: #1e181c;
+        --footer-text: rgba(255, 255, 255, 0.7);
+        --footer-text-dim: rgba(255, 255, 255, 0.4);
+        --footer-border: rgba(255, 255, 255, 0.1);
+        --font-serif: "Georgia", "Songti SC", "SimSun", "宋体", serif;
+        --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        --font-mono: "SFMono-Regular", Consolas, monospace;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
-    .navbar {
-      padding: 1rem 1.5rem;
+    [data-theme="dark"] {
+        --primary: #c07ab0;
+        --primary-dark: #e0a8d4;
+        --primary-light: rgba(192, 122, 176, 0.1);
+        --primary-glow: rgba(192, 122, 176, 0.15);
+        --nav-bg: rgba(20, 16, 20, 0.85);
+        --btn-bg: #a85a93;
+        --btn-bg-hover: #c07ab0;
+        --topbar-bg: #0f0b0e;
+        --text-dark: #f0f0f0;
+        --text-body: #b0b0b0;
+        --text-muted: #808080;
+        --bg-body: #141014;
+        --bg-surface: #1d171b;
+        --bg-soft: #1a1418;
+        --border: #2a2228;
+        --border-focus: #3d3038;
+        --footer-bg: #0b080a;
+        --footer-text: rgba(255, 255, 255, 0.6);
+        --footer-text-dim: rgba(255, 255, 255, 0.3);
+        --footer-border: rgba(255, 255, 255, 0.05);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
-    .nav-links a:not(.btn-icon) {
-      display: none;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+        font-family: var(--font-sans);
+        background-color: var(--bg-body);
+        color: var(--text-body);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        transition: background-color 0.3s, color 0.3s;
     }
-    .footer {
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: center;
-      text-align: center;
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; width: 100%; }
+
+    .top-bar { background: var(--topbar-bg); color: var(--footer-text); font-size: 12px; padding: 8px 0; letter-spacing: 0.5px; }
+    .top-bar .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .top-bar a { color: var(--footer-text); transition: color 0.2s; margin: 0 4px; }
+    .top-bar a:hover { color: #fff; }
+
+    .site-header { background: var(--bg-body); border-bottom: 1px solid var(--border); padding: 20px 0; transition: border-color 0.3s; }
+    .header-inner { display: flex; align-items: center; min-height: 60px; }
+    .logo-block { display: flex; align-items: center; gap: 16px; }
+    .logo-mark {
+        width: 52px; height: 52px; border: 2px solid var(--primary); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-serif); font-size: 22px; font-weight: 700;
+        color: var(--primary); flex-shrink: 0; position: relative;
+        background: var(--bg-surface); box-shadow: 0 0 0 4px var(--primary-light); transition: all 0.3s;
     }
-  }
+    .logo-text h1 { font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--text-dark); letter-spacing: 2px; line-height: 1.2; }
+    .logo-text .en-name { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; margin-top: 4px; font-family: var(--font-mono); }
+
+    .main-nav { background: var(--nav-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; transition: all 0.3s; }
+    .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+    .nav-list { display: flex; list-style: none; gap: 4px; }
+    .nav-list li a { display: block; padding: 16px 20px; color: var(--text-body); font-size: 15px; font-weight: 500; position: relative; transition: color 0.2s; }
+    .nav-list li a:hover, .nav-list li a.active { color: var(--primary); }
+    .nav-list li a::after { content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background-color: var(--primary); transition: width 0.3s ease; }
+    .nav-list li a:hover::after, .nav-list li a.active::after { width: 80%; }
+    .theme-toggle { background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-body); cursor: pointer; padding: 8px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .theme-toggle:hover { border-color: var(--border-focus); color: var(--text-dark); background: var(--bg-soft); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+
+    .breadcrumb { background: var(--bg-soft); border-bottom: 1px solid var(--border); padding: 12px 0; font-size: 13px; color: var(--text-muted); }
+    .breadcrumb a { color: var(--text-body); transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb span { margin: 0 8px; color: var(--text-muted); opacity: 0.5; }
+
+    .main-content { flex: 1; display: flex; align-items: center; padding: 80px 0 100px; }
+    .hero-layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 6rem; align-items: center; width: 100%; }
+    .hero-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1.25rem; display: inline-block; background: var(--primary-light); padding: 4px 10px; border-radius: var(--radius-sm); }
+    .hero-content h2 { font-family: var(--font-serif); font-size: clamp(2.5rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.2; letter-spacing: 3px; margin-bottom: 1.5rem; color: var(--text-dark); }
+    .hero-content p { font-size: 1.05rem; color: var(--text-body); margin-bottom: 2.5rem; line-height: 1.8; max-width: 540px; }
+
+    .action-group { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .action-link { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.8rem 1.8rem; font-size: 0.95rem; font-weight: 500; border-radius: var(--radius-sm); transition: all 0.3s ease; letter-spacing: 1px; }
+    .action-link.primary { background: var(--btn-bg); color: #fff; border: 1px solid var(--btn-bg); box-shadow: 0 4px 12px var(--primary-glow); }
+    .action-link.primary:hover { background: var(--btn-bg-hover); border-color: var(--btn-bg-hover); transform: translateY(-2px); box-shadow: 0 6px 16px var(--primary-glow); }
+    .action-link.secondary { background: transparent; color: var(--text-dark); border: 1px solid var(--border); }
+    .action-link.secondary:hover { border-color: var(--primary); color: var(--primary); background: var(--bg-surface); transform: translateY(-2px); }
+    .action-link svg { width: 16px; height: 16px; transition: transform 0.3s; }
+    .action-link:hover svg { transform: translateX(4px); }
+
+    .stats-panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); position: relative; padding: 2.5rem 2rem; display: flex; flex-direction: column; gap: 1.5rem; box-shadow: var(--shadow-sm); transition: all 0.3s; }
+    .stats-panel:hover { box-shadow: var(--shadow-md); border-color: var(--border-focus); }
+    .stats-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); }
+    .stat-item { display: flex; flex-direction: column; gap: 0.4rem; }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-sans); }
+    .stat-value { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 600; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+    .divider { height: 1px; background: var(--border); width: 100%; }
+
+    .site-footer { background: var(--footer-bg); color: var(--footer-text); padding: 60px 0 0; font-size: 14px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; padding-bottom: 48px; }
+    .footer-grid h4 { color: #fff; font-family: var(--font-serif); font-size: 16px; margin-bottom: 20px; letter-spacing: 1px; }
+    .footer-grid p { line-height: 1.8; color: var(--footer-text); }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: var(--footer-text); transition: all 0.2s; display: inline-block; }
+    .footer-links a:hover { color: #fff; transform: translateX(4px); }
+    .footer-motto { font-family: var(--font-serif); font-size: 15px; color: var(--footer-text); letter-spacing: 3px; line-height: 2; }
+    .footer-bottom { border-top: 1px solid var(--footer-border); padding: 24px 0; text-align: center; font-size: 12px; color: var(--footer-text-dim); font-family: var(--font-mono); }
+
+    @media (max-width: 900px) { .hero-layout { grid-template-columns: 1fr; gap: 4rem; } .footer-grid { grid-template-columns: 1fr 1fr; } .main-content { padding: 60px 0 80px; } }
+    @media (max-width: 640px) { .container { padding: 0 20px; } .top-bar .container { justify-content: center; text-align: center; } .logo-text h1 { font-size: 18px; } .logo-mark { width: 44px; height: 44px; font-size: 18px; } .nav-list { gap: 0; } .nav-list li a { padding: 14px 12px; font-size: 14px; } .hero-content h2 { font-size: 2.2rem; letter-spacing: 2px; } .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
 </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="nav-brand">
-      QWHistory <span class="version">v1.0</span>
-    </div>
-    <div class="nav-links">
-      <a href="/weekly-digest/">档案库</a>
-      <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank">贡献数据</a>
-      <button id="themeToggle" class="btn-icon" title="切换主题">
-        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-        <svg id="icon-moon" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
-      </button>
-    </div>
-  </nav>
-
-  <main class="container">
-    <div class="hero-content">
-      <span class="hero-label">INSTITUTIONAL ARCHIVE</span>
-      <h1>校园历史<br>数字化档案库</h1>
-      <p>
-        本项目致力于收集、数字化并永久保存与学校历史相关的图文资料、重大事件与人物记忆。数据库面向公众开放检索。
-      </p>
-
-      <div class="action-group">
-        <a href="/weekly-digest/" class="action-link primary">
-          查阅全部记录
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-        </a>
-        <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="action-link secondary">
-          提交新档案
-        </a>
-      </div>
+    <div class="top-bar">
+        <div class="container">
+            <span>QWHistory 校史档案馆 · 校园记忆数字化保存计划</span>
+            <span>
+                <a href="/weekly-digest/">档案库</a> ｜
+                <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener">贡献数据</a>
+            </span>
+        </div>
     </div>
 
-    <div class="stats-panel">
-      <div class="stat-item">
-        <span class="stat-label">System Status</span>
-        <span class="stat-value">ONLINE</span>
-      </div>
-      <div class="divider"></div>
-      <div class="stat-item">
-        <span class="stat-label">Data Source</span>
-        <span class="stat-value">Feishu / GitHub</span>
-      </div>
-      <div class="divider"></div>
-      <div class="stat-item">
-        <span class="stat-label">Maintained By</span>
-        <span class="stat-value">QWHistory Org</span>
-      </div>
-    </div>
-  </main>
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="logo-block">
+                <div class="logo-mark">史</div>
+                <div class="logo-text">
+                    <h1>QWHistory 校史档案馆</h1>
+                    <div class="en-name">QWHistory Institutional Archive · v1.0</div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-  <footer class="footer">
-    <span>© 2026 QWHistory Project. All records are permanently preserved.</span>
-    <span>Powered by Cloudflare Pages</span>
-  </footer>
+    <nav class="main-nav">
+        <div class="container nav-inner">
+            <ul class="nav-list">
+                <li><a href="/" class="active">首页</a></li>
+                <li><a href="/weekly-digest/">档案库</a></li>
+                <li><a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener">贡献数据</a></li>
+            </ul>
+            <button id="themeToggle" class="theme-toggle" title="切换主题">
+                <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg id="icon-moon" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">首页</a> <span>›</span> 校史档案馆
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="hero-layout">
+                <div class="hero-content">
+                    <span class="hero-label">Institutional Archive</span>
+                    <h2>校园历史<br>数字化档案库</h2>
+                    <p>本项目致力于收集、数字化并永久保存与学校历史相关的图文资料、重大事件与人物记忆。数据库面向公众开放检索。</p>
+                    <div class="action-group">
+                        <a href="/weekly-digest/" class="action-link primary">
+                            查阅全部记录
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                        <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="action-link secondary">提交新档案</a>
+                    </div>
+                </div>
+                <div class="stats-panel">
+                    <div class="stat-item"><span class="stat-label">系统状态</span><span class="stat-value"><span class="status-dot"></span> 运行中</span></div>
+                    <div class="divider"></div>
+                    <div class="stat-item"><span class="stat-label">数据来源</span><span class="stat-value" style="font-family: var(--font-sans);">飞书 / GitHub</span></div>
+                    <div class="divider"></div>
+                    <div class="stat-item"><span class="stat-label">维护团队</span><span class="stat-value" style="font-family: var(--font-sans);">QWHistory 项目组</span></div>
+                    <div class="divider"></div>
+                    <div class="stat-item"><span class="stat-label">版本</span><span class="stat-value">v1.0</span></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4>QWHistory 校史档案馆</h4>
+                    <p>致力于校园历史的数字化保存与开放共享。所有记录均永久保存，面向公众提供检索服务。</p>
+                </div>
+                <div>
+                    <h4>快速链接</h4>
+                    <ul class="footer-links">
+                        <li><a href="/weekly-digest/">档案库</a></li>
+                        <li><a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener">贡献数据</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>项目理念</h4>
+                    <p class="footer-motto">存史 · 资政 · 育人<br>记录历史，保存记忆</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2026 QWHistory Project. All records are permanently preserved. Powered by Cloudflare Pages.
+            </div>
+        </div>
+    </footer>
 
 <script>
-  function initTheme() {
-    const toggleBtn = document.getElementById("themeToggle");
-    const sunIcon = document.getElementById("icon-sun");
-    const moonIcon = document.getElementById("icon-moon");
-
-    if (localStorage.getItem("theme") === "dark" ||
-        (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-      document.documentElement.setAttribute("data-theme", "dark");
-      sunIcon.style.display = "none";
-      moonIcon.style.display = "block";
-    }
-
-    toggleBtn.addEventListener("click", () => {
-      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-      if (isDark) {
-        document.documentElement.removeAttribute("data-theme");
-        localStorage.setItem("theme", "light");
-        sunIcon.style.display = "block";
-        moonIcon.style.display = "none";
-      } else {
-        document.documentElement.setAttribute("data-theme", "dark");
-        localStorage.setItem("theme", "dark");
-        sunIcon.style.display = "none";
-        moonIcon.style.display = "block";
-      }
-    });
-  }
-
-  initTheme();
+    (function initTheme() {
+        var toggleBtn = document.getElementById("themeToggle");
+        var sunIcon = document.getElementById("icon-sun");
+        var moonIcon = document.getElementById("icon-moon");
+        if (localStorage.getItem("theme") === "dark" || (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+            sunIcon.style.display = "none";
+            moonIcon.style.display = "block";
+        }
+        toggleBtn.addEventListener("click", function () {
+            var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            if (isDark) {
+                document.documentElement.removeAttribute("data-theme");
+                localStorage.setItem("theme", "light");
+                sunIcon.style.display = "block";
+                moonIcon.style.display = "none";
+            } else {
+                document.documentElement.setAttribute("data-theme", "dark");
+                localStorage.setItem("theme", "dark");
+                sunIcon.style.display = "none";
+                moonIcon.style.display = "block";
+            }
+        });
+    })();
 </script>
 </body>
 </html>
