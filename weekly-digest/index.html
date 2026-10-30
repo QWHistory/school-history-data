@@ -333,9 +333,11 @@
         if (window.getSelection().toString().length > 0) return;
         if (e.target.closest('a')) return; // 点击了附件或举报
         
-        const uid = extractPlainText(record['UID']);
+                // 核心跳转
+        const uid = extractPlainText(record['UID']).trim(); // 多加一个 trim() 去掉前后空格
         if (uid && uid !== '无') {
-          window.location.href = `/record/${uid}`;
+          // 使用 encodeURIComponent 防止特殊字符导致 URL 断裂
+          window.location.href = `/record/${encodeURIComponent(uid)}`;
         } else {
           alert('该档案缺少唯一编号，无法查看详情。');
         }
