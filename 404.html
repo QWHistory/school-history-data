@@ -28,25 +28,11 @@
   }
   body.modal-open { overflow: hidden; }
   
-  /* 顶部导航栏 */
-  .navbar { 
-    border-bottom: 1px solid var(--border-color); padding: 1rem 1.5rem; 
-    background: var(--bg-surface); display: flex; justify-content: space-between; 
-    align-items: center; position: sticky; top: 0; z-index: 100; 
-  }
-  .back-btn { 
-    display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); 
-    text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; cursor: pointer; 
-  }
+  .navbar { border-bottom: 1px solid var(--border-color); padding: 1rem 1.5rem; background: var(--bg-surface); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .back-btn { display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; cursor: pointer; }
   .back-btn:hover { color: var(--text-primary); }
   .back-btn svg { width: 16px; height: 16px; }
-
-  /* 切换按钮 */
-  .btn-icon {
-    background: none; border: 1px solid transparent; cursor: pointer; 
-    color: var(--text-secondary); padding: 0.35rem; border-radius: var(--radius-md); 
-    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-  }
+  .btn-icon { background: none; border: 1px solid transparent; cursor: pointer; color: var(--text-secondary); padding: 0.35rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
   .btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-color); }
   .btn-icon svg { width: 18px; height: 18px; }
 
@@ -81,7 +67,7 @@
   .error-state { text-align: center; padding: 5rem 0; }
   .error-state h2 { font-size: 1.5rem; margin-bottom: 1rem; }
   .error-state p { color: var(--text-secondary); margin-bottom: 2rem; }
-  .btn-primary { background: var(--primary); color: var(--bg-body); text-decoration: none; padding: 0.6rem 1.5rem; border-radius: var(--radius-md); font-weight: 500; }
+  .btn-primary { background: var(--primary); color: var(--bg-body); text-decoration: none; padding: 0.6rem 1.5rem; border-radius: var(--radius-md); font-weight: 500; display: inline-block; }
 
   .lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 3000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
   .lightbox-overlay.active { opacity: 1; visibility: visible; }
@@ -100,7 +86,7 @@
 <body>
 
   <nav class="navbar">
-    <a onclick="history.length > 1 ? history.back() : window.location.href='/weekly-digest/'" class="back-btn">
+    <a href="/weekly-digest/" class="back-btn">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
       返回档案列表
     </a>
@@ -151,75 +137,42 @@
     if (value && value.text) return value.text.trim();
     return String(value).trim();
   }
-  function escapeHTML(str) {
-    if (!str) return '';
-    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
-  }
+  function escapeHTML(str) { if (!str) return ''; return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])); }
   function formatTimeRange(startTs, endTs, fallbackTs) {
-    const fmt = (ts) => {
-      if (!ts) return '';
-      const d = new Date(ts);
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    };
-    const s = fmt(startTs), e = fmt(endTs);
-    if (s && e && s !== e) return `${s} 至 ${e}`;
-    return s || e || fmt(fallbackTs);
+    const fmt = (ts) => { if (!ts) return ''; const d = new Date(ts); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+    const s = fmt(startTs), e = fmt(endTs); if (s && e && s !== e) return `${s} 至 ${e}`; return s || e || fmt(fallbackTs);
   }
   function generateReportLink(uid) {
-    const email = '1077401836@qq.com';
-    const subject = encodeURIComponent(`[校史档案举报] 发现违规内容 - UID: ${uid}`);
-    const body = encodeURIComponent(`您好，\n\n我认为该档案（UID: ${uid}）存在侵权或违规问题，请核实处理。\n\n补充说明：`);
-    return `mailto:${email}?subject=${subject}&body=${body}`;
+    const email = '1077401836@qq.com'; const subject = encodeURIComponent(`[校史档案举报] 发现违规内容 - UID: ${uid}`); const body = encodeURIComponent(`您好，\n\n我认为该档案（UID: ${uid}）存在侵权或违规问题，请核实处理。\n\n补充说明：`); return `mailto:${email}?subject=${subject}&body=${body}`;
   }
-  function openLightbox(src) {
-    const lb = document.getElementById('imageLightbox');
-    document.getElementById('lightboxImg').src = src;
-    lb.classList.add('active');
-    document.body.classList.add('modal-open');
-  }
-  function closeLightbox(event) {
-    if (event) event.stopPropagation();
-    document.getElementById('imageLightbox').classList.remove('active');
-    document.body.classList.remove('modal-open');
-  }
+  function openLightbox(src) { const lb = document.getElementById('imageLightbox'); document.getElementById('lightboxImg').src = src; lb.classList.add('active'); document.body.classList.add('modal-open'); }
+  function closeLightbox(event) { if (event) event.stopPropagation(); document.getElementById('imageLightbox').classList.remove('active'); document.body.classList.remove('modal-open'); }
 
-  // ======================= 主题控制 =======================
   function initThemeToggle() {
-    const toggleBtn = document.getElementById('themeToggle');
-    const sunIcon = document.getElementById('icon-sun');
-    const moonIcon = document.getElementById('icon-moon');
-
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      sunIcon.style.display = 'none'; moonIcon.style.display = 'block';
-    }
-
+    const toggleBtn = document.getElementById('themeToggle'), sunIcon = document.getElementById('icon-sun'), moonIcon = document.getElementById('icon-moon');
+    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.setAttribute('data-theme', 'dark'); sunIcon.style.display = 'none'; moonIcon.style.display = 'block'; }
     toggleBtn.addEventListener('click', () => {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-        sunIcon.style.display = 'block'; moonIcon.style.display = 'none';
-      } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-        sunIcon.style.display = 'none'; moonIcon.style.display = 'block';
-      }
+      if (isDark) { document.documentElement.removeAttribute('data-theme'); localStorage.setItem('theme', 'light'); sunIcon.style.display = 'block'; moonIcon.style.display = 'none'; }
+      else { document.documentElement.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); sunIcon.style.display = 'none'; moonIcon.style.display = 'block'; }
     });
   }
 
   // ======================= 核心逻辑 =======================
   async function initPage() {
-    initThemeToggle(); // 初始化主题
-
+    initThemeToggle();
     const container = document.getElementById('mainContent');
     
-    // 严谨的 URL 解析：仅提取 /record/ 后面紧跟着的 UID
+    // 完美解析路径：拿到 /record/ 后面的内容
     const path = window.location.pathname;
-    const match = path.match(/\/record\/([^/]+)/);
-    let targetUid = match ? decodeURIComponent(match[1]) : '';
+    let targetUid = '';
+    
+    if (path.includes('/record/')) {
+      targetUid = path.split('/record/')[1].replace(/\/$/, ''); // 去掉尾部斜杠
+      targetUid = decodeURIComponent(targetUid).trim();
+    }
 
-    if (!targetUid || targetUid === 'record.html') {
+    if (!targetUid) {
       render404(container, "路径错误", "未提供有效的档案编号。请从列表中点击进入。");
       return;
     }
@@ -229,7 +182,7 @@
       if (!response.ok) throw new Error('Network error');
       const allRecords = await response.json();
       
-      const record = allRecords.find(r => extractPlainText(r['UID']) === targetUid);
+      const record = allRecords.find(r => extractPlainText(r['UID']).trim() === targetUid);
 
       if (!record) {
         render404(container, "未找到档案", `未找到编号为 ${targetUid} 的校史档案。`);
@@ -244,69 +197,38 @@
   }
 
   function render404(container, title, msg) {
-    container.innerHTML = `
-      <div class="error-state">
-        <h2>${escapeHTML(title)}</h2>
-        <p>${escapeHTML(msg)}</p>
-        <a href="/weekly-digest/" class="btn-primary">返回档案列表</a>
-      </div>
-    `;
+    container.innerHTML = `<div class="error-state"><h2>${escapeHTML(title)}</h2><p>${escapeHTML(msg)}</p><a href="/weekly-digest/" class="btn-primary">返回档案列表</a></div>`;
   }
 
   function renderDetail(container, record) {
-    const category = extractPlainText(record['分区']);
-    const title = extractPlainText(record['内容标题']) || '无标题档案';
-    const uid = extractPlainText(record['UID']);
-    const related = extractPlainText(record['内容主要参与人']);
+    const category = extractPlainText(record['分区']), title = extractPlainText(record['内容标题']) || '无标题档案';
+    const uid = extractPlainText(record['UID']), related = extractPlainText(record['内容主要参与人']);
     const timeRange = formatTimeRange(record['开始时间'], record['结束时间'], record['投稿时间']);
-    const body = extractPlainText(record['内容详述']);
-    const contributor = extractPlainText(record['投稿人昵称']);
-
+    const body = extractPlainText(record['内容详述']), contributor = extractPlainText(record['投稿人昵称']);
     document.title = `${title} - 校史档案馆`;
 
     let html = `<div class="header-section">`;
     if (category) html += `<span class="header-tag">${escapeHTML(category)}</span>`;
     html += `<h1 class="header-title">${escapeHTML(title)}</h1>`;
-    
     html += `<div class="meta-grid">`;
     html += `<div class="meta-item"><span class="meta-label">唯一编号 (UID)</span><span class="meta-value"><span class="uid-badge">${escapeHTML(uid)}</span></span></div>`;
-    if (timeRange) {
-      html += `<div class="meta-item"><span class="meta-label">发生时间</span><span class="meta-value">${SVG_ICONS.clock} ${escapeHTML(timeRange)}</span></div>`;
-    }
-    if (contributor) {
-      html += `<div class="meta-item"><span class="meta-label">贡献者</span><span class="meta-value">${SVG_ICONS.user} ${escapeHTML(contributor)}</span></div>`;
-    }
-    if (related) {
-      html += `<div class="meta-item"><span class="meta-label">有关人</span><span class="meta-value">${SVG_ICONS.users} ${escapeHTML(related)}</span></div>`;
-    }
+    if (timeRange) html += `<div class="meta-item"><span class="meta-label">发生时间</span><span class="meta-value">${SVG_ICONS.clock} ${escapeHTML(timeRange)}</span></div>`;
+    if (contributor) html += `<div class="meta-item"><span class="meta-label">贡献者</span><span class="meta-value">${SVG_ICONS.user} ${escapeHTML(contributor)}</span></div>`;
+    if (related) html += `<div class="meta-item"><span class="meta-label">有关人</span><span class="meta-value">${SVG_ICONS.users} ${escapeHTML(related)}</span></div>`;
     html += `</div></div>`;
-
-    if (body) {
-      html += `<div class="content-section">${escapeHTML(body)}</div>`;
-    }
+    if (body) html += `<div class="content-section">${escapeHTML(body)}</div>`;
 
     const attachments = record['attachments'] || [];
     if (attachments.length > 0) {
-      html += `<div class="attachments-section">
-        <div class="section-title">相关附件 (${attachments.length})</div>
-        <div class="attachment-grid">`;
+      html += `<div class="attachments-section"><div class="section-title">相关附件 (${attachments.length})</div><div class="attachment-grid">`;
       attachments.forEach(filePath => {
-        const href = CDN_PREFIX + filePath.replace(/^\//, '');
-        const displayName = escapeHTML(getDisplayFileName(filePath));
-        if (isImageFile(filePath)) {
-          html += `<a class="attachment-item" href="javascript:void(0)" onclick="event.preventDefault(); openLightbox('${href}')">${getFileIcon(filePath)} <span class="attachment-name">${displayName}</span></a>`;
-        } else {
-          html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" download="${getDisplayFileName(filePath)}">${getFileIcon(filePath)} <span class="attachment-name">${displayName}</span></a>`;
-        }
+        const href = CDN_PREFIX + filePath.replace(/^\//, ''), displayName = escapeHTML(getDisplayFileName(filePath));
+        if (isImageFile(filePath)) html += `<a class="attachment-item" href="javascript:void(0)" onclick="event.preventDefault(); openLightbox('${href}')">${getFileIcon(filePath)} <span class="attachment-name">${displayName}</span></a>`;
+        else html += `<a class="attachment-item" href="${href}" target="_blank" rel="noopener" download="${getDisplayFileName(filePath)}">${getFileIcon(filePath)} <span class="attachment-name">${displayName}</span></a>`;
       });
       html += `</div></div>`;
     }
-
-    html += `<div class="footer-section">
-      <span style="font-size: 0.85rem; color: var(--text-tertiary);">本页面链接可直接分享</span>
-      <a class="btn-report" href="${generateReportLink(uid)}">${SVG_ICONS.warning} 举报该内容</a>
-    </div>`;
-
+    html += `<div class="footer-section"><span style="font-size: 0.85rem; color: var(--text-tertiary);">本页面链接可直接分享</span><a class="btn-report" href="${generateReportLink(uid)}">${SVG_ICONS.warning} 举报该内容</a></div>`;
     container.innerHTML = html;
   }
 
