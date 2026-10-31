@@ -63,7 +63,7 @@
   [data-theme="dark"] { --calendar-filter: invert(1); }
   .range-separator { color: var(--text-tertiary); }
 
-  /* 列表卡片（扁平化） */
+  /* 列表卡片 */
   .entry { border-bottom: 1px solid var(--border-color); padding: 2rem 0; cursor: pointer; display: flex; gap: 2rem; align-items: flex-start; }
   .entry:hover .entry-title { color: var(--primary); }
   .entry-date-col { width: 120px; flex-shrink: 0; color: var(--text-tertiary); font-family: "Courier New", monospace; font-size: 1.1rem; margin-top: 0.2rem; }
@@ -97,17 +97,34 @@
   .empty { text-align: center; padding: 6rem 1rem; color: var(--text-tertiary); font-size: 1.1rem; border-bottom: 1px solid var(--border-color); }
   #scroll-sentinel { height: 40px; }
 
-  /* 详情视图 - 修复排版 */
+  /* 详情视图 */
   .detail-container { max-width: 860px; margin: 4rem auto; padding: 0 2rem; font-family: "Songti SC", "SimSun", serif; animation: fadeIn 0.3s ease; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .back-btn { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); text-decoration: none; font-size: 1rem; cursor: pointer; margin-bottom: 3rem; font-family: "Microsoft YaHei", sans-serif; }
+  
+  /* 完美修复的返回键 */
+  .back-btn { 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    color: var(--text-secondary); 
+    text-decoration: none; 
+    font-size: 0.95rem; 
+    cursor: pointer; 
+    margin-bottom: 3rem; 
+    font-family: "Microsoft YaHei", sans-serif; 
+    white-space: nowrap; 
+  }
   .back-btn:hover { color: var(--primary); }
+  .back-btn svg { 
+    width: 16px; 
+    height: 16px; 
+    flex-shrink: 0; 
+  }
   
   .header-section { margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; text-align: center; }
   .header-tag { display: inline-block; color: var(--primary); border: 1px solid var(--primary); padding: 0.1rem 0.8rem; font-size: 0.85rem; margin-bottom: 1.5rem; font-family: "Microsoft YaHei", sans-serif; }
   .header-title { font-size: 2.8rem; font-weight: bold; line-height: 1.4; color: var(--text-primary); margin-bottom: 2rem; letter-spacing: 0.05em; word-break: break-all; }
   
-  /* 完美修复的元信息排版 */
   .meta-grid { 
     display: flex; 
     justify-content: center; 
@@ -121,7 +138,7 @@
     display: flex; 
     align-items: center; 
     gap: 0.5rem; 
-    white-space: nowrap; /* 强制不换行 */
+    white-space: nowrap; 
   }
   .meta-value { color: var(--text-secondary); }
   .uid-badge { font-family: "Courier New", monospace; color: var(--text-primary); font-weight: bold; }
@@ -135,8 +152,7 @@
   
   .footer-section { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border-color); font-family: "Microsoft YaHei", sans-serif; flex-wrap: wrap; gap: 1rem; }
   .btn-report { 
-    background: none; border: 1px solid var(--border-color); padding: 0.6rem 1.2rem; font-size: 0.9rem; color: var(--text-secondary); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; 
-    white-space: nowrap; /* 强制不换行，修复竖排 */
+    background: none; border: 1px solid var(--border-color); padding: 0.6rem 1.2rem; font-size: 0.9rem; color: var(--text-secondary); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; white-space: nowrap;
   }
   .btn-report:hover { color: #d32f2f; border-color: #d32f2f; }
 
@@ -204,7 +220,7 @@
   <div id="detailView" class="detail-container">
     <a onclick="goHome()" class="back-btn">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-      返回列表
+      返回档案列表
     </a>
     <div id="detailContent"></div>
   </div>
@@ -301,7 +317,6 @@
     if (category) html += `<span class="header-tag">${escapeHTML(category)}</span>`;
     html += `<h1 class="header-title">${escapeHTML(title)}</h1>`;
     
-    // 修复了换行挤压的完美 Flex 布局
     html += `<div class="meta-grid">`;
     html += `<div class="meta-item"><span class="uid-badge">唯一编号: ${escapeHTML(realUid)}</span></div>`;
     if (timeRange) html += `<div class="meta-item">${SVG_ICONS.clock} <span class="meta-value">${escapeHTML(timeRange)}</span></div>`;
