@@ -6,84 +6,38 @@
 <title>档案详情 - 校史档案馆</title>
 <style>
   :root {
-    --bg-body: #ffffff; 
-    --bg-surface: #fafafa; 
-    --text-primary: #222222; 
-    --text-secondary: #555555; 
-    --text-tertiary: #888888;
-    --border-color: #e0e0e0; 
-    --primary: #4a0254; 
-    --primary-hover: #36013d;
+    --bg-body: #ffffff; --bg-surface: #fafafa; --text-primary: #222222; --text-secondary: #555555; --text-tertiary: #888888;
+    --border-color: #e0e0e0; --primary: #4a0254; --primary-hover: #36013d;
   }
   [data-theme="dark"] {
-    --bg-body: #121212; 
-    --bg-surface: #1e1e1e; 
-    --text-primary: #f0f0f0; 
-    --text-secondary: #aaaaaa; 
-    --text-tertiary: #777777;
-    --border-color: #333333; 
-    --primary: #b47dbd; 
-    --primary-hover: #cfa3d6;
+    --bg-body: #121212; --bg-surface: #1e1e1e; --text-primary: #f0f0f0; --text-secondary: #aaaaaa; --text-tertiary: #777777;
+    --border-color: #333333; --primary: #b47dbd; --primary-hover: #cfa3d6;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: "Songti SC", "SimSun", "Georgia", serif;
-    background-color: var(--bg-body); color: var(--text-primary); line-height: 1.6;
-    padding-bottom: 4rem; min-height: 100vh;
-  }
+  body { font-family: "Songti SC", "SimSun", "Georgia", serif; background-color: var(--bg-body); color: var(--text-primary); line-height: 1.6; padding-bottom: 4rem; min-height: 100vh; }
   body.modal-open { overflow: hidden; }
   
-  .navbar { 
-    border-bottom: 2px solid var(--primary); padding: 1.5rem 2rem; 
-    background: var(--bg-body); display: flex; justify-content: space-between; 
-    align-items: center; 
-  }
+  .navbar { border-bottom: 2px solid var(--primary); padding: 1.5rem 2rem; background: var(--bg-body); display: flex; justify-content: space-between; align-items: center; }
   .back-btn { display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); text-decoration: none; font-size: 1rem; cursor: pointer; font-family: "Microsoft YaHei", sans-serif; }
   .back-btn:hover { color: var(--primary); }
-  
   .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 0.5rem; transition: color 0.2s; }
   .btn-icon:hover { color: var(--primary); }
   .btn-icon svg { width: 20px; height: 20px; }
 
   .container { max-width: 860px; margin: 4rem auto; padding: 0 2rem; }
   
-  .header-section { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid var(--primary); }
+  .header-section { margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; text-align: center; }
   .header-tag { display: inline-block; color: var(--primary); border: 1px solid var(--primary); padding: 0.1rem 0.8rem; font-size: 0.85rem; margin-bottom: 1.5rem; font-family: "Microsoft YaHei", sans-serif; }
-  .header-title { font-size: 2.5rem; font-weight: bold; line-height: 1.4; color: var(--text-primary); margin-bottom: 2rem; letter-spacing: 0.05em; word-break: break-all; }
+  .header-title { font-size: 2.8rem; font-weight: bold; line-height: 1.4; color: var(--text-primary); margin-bottom: 2rem; letter-spacing: 0.05em; word-break: break-all; }
   
-  /* 核心修复：元信息区排版 */
-  .meta-grid { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 1rem 2rem; 
-    background: var(--bg-surface); 
-    padding: 1.5rem; 
-    border: 1px solid var(--border-color); 
-  }
-  .meta-item { 
-    display: flex; 
-    align-items: center; 
-    gap: 0.5rem; 
-    font-size: 0.95rem; 
-    color: var(--text-secondary);
-    white-space: nowrap; /* 强制不换行 */
-    font-family: "Microsoft YaHei", sans-serif;
-  }
-  .meta-label { color: var(--text-tertiary); }
+  .meta-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem 3rem; font-size: 0.95rem; color: var(--text-tertiary); font-family: "Microsoft YaHei", sans-serif; }
+  .meta-item { display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+  .meta-value { color: var(--text-secondary); }
   .uid-badge { font-family: "Courier New", monospace; color: var(--text-primary); font-weight: bold; }
-  .meta-item svg { width: 16px; height: 16px; color: var(--text-tertiary); }
+  .meta-item svg { width: 16px; height: 16px; }
   
-  /* 正文排版加固 */
-  .content-section { 
-    font-size: 1.15rem; 
-    line-height: 2; 
-    color: var(--text-primary); 
-    white-space: pre-wrap; /* 保留换行符 */
-    word-break: break-word; 
-    margin-bottom: 4rem; 
-  }
-
+  .content-section { font-size: 1.15rem; line-height: 2.2; color: var(--text-primary); white-space: pre-wrap; word-break: break-word; margin-bottom: 4rem; text-align: justify; }
+  
   .attachments-section { margin-bottom: 4rem; font-family: "Microsoft YaHei", sans-serif; }
   .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1.5rem; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; display: inline-block; }
   .attachment-grid { display: flex; flex-direction: column; gap: 1rem; }
@@ -91,13 +45,8 @@
   .attachment-item:hover { border-color: var(--primary); color: var(--primary); }
   .attachment-item svg { width: 20px; height: 20px; }
 
-  .footer-section { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border-color); font-family: "Microsoft YaHei", sans-serif; }
-  
-  /* 核心修复：举报按钮禁止换行 */
-  .btn-report { 
-    background: none; border: 1px solid var(--border-color); padding: 0.6rem 1.2rem; font-size: 0.9rem; color: var(--text-secondary); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; 
-    white-space: nowrap; 
-  }
+  .footer-section { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border-color); font-family: "Microsoft YaHei", sans-serif; flex-wrap: wrap; gap: 1rem; }
+  .btn-report { background: none; border: 1px solid var(--border-color); padding: 0.6rem 1.2rem; font-size: 0.9rem; color: var(--text-secondary); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; white-space: nowrap; }
   .btn-report:hover { color: #d32f2f; border-color: #d32f2f; }
 
   .loading-state { text-align: center; padding: 6rem 0; color: var(--text-tertiary); font-family: "Microsoft YaHei", sans-serif; }
@@ -112,11 +61,11 @@
   .lightbox-close { position: absolute; top: 30px; right: 30px; background: none; border: none; color: #fff; cursor: pointer; }
   .lightbox-close svg { width: 30px; height: 30px; }
   
-  @media (max-width: 600px) {
-    .header-title { font-size: 1.8rem; }
+  @media (max-width: 768px) {
+    .header-title { font-size: 2rem; }
+    .meta-grid { flex-direction: column; gap: 1rem; align-items: flex-start; text-align: left; }
     .container { margin: 2rem auto; padding: 0 1.5rem; }
-    .footer-section { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
-    .btn-report { width: 100%; justify-content: center; }
+    .footer-section { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -201,28 +150,17 @@
       targetUid = decodeURIComponent(targetUid).trim();
     }
 
-    if (!targetUid) {
-      render404(container, "路径错误", "未提供有效的档案编号。请从列表中点击进入。");
-      return;
-    }
+    if (!targetUid) { render404(container, "路径错误", "未提供有效的档案编号。请从列表中点击进入。"); return; }
 
     try {
       const response = await fetch(DATA_URL);
       if (!response.ok) throw new Error('Network error');
       const allRecords = await response.json();
-      
       const record = allRecords.find(r => extractPlainText(r['UID']).trim() === targetUid);
 
-      if (!record) {
-        render404(container, "未找到档案", `未找到编号为 ${targetUid} 的校史档案。`);
-        return;
-      }
-
+      if (!record) { render404(container, "未找到档案", `未找到编号为 ${targetUid} 的校史档案。`); return; }
       renderDetail(container, record);
-    } catch (error) {
-      console.error('Failed to load data:', error);
-      render404(container, "数据加载失败", "请检查网络连接或稍后再试。");
-    }
+    } catch (error) { render404(container, "数据加载失败", "请检查网络连接或稍后再试。"); }
   }
 
   function render404(container, title, msg) {
@@ -240,12 +178,11 @@
     if (category) html += `<span class="header-tag">${escapeHTML(category)}</span>`;
     html += `<h1 class="header-title">${escapeHTML(title)}</h1>`;
     
-    // 采用新的 Flex 布局防止挤压换行
     html += `<div class="meta-grid">`;
-    html += `<div class="meta-item"><span class="meta-label">唯一编号:</span><span class="uid-badge">${escapeHTML(uid)}</span></div>`;
-    if (timeRange) html += `<div class="meta-item"><span class="meta-label">时间:</span> ${SVG_ICONS.clock} <span class="meta-value">${escapeHTML(timeRange)}</span></div>`;
-    if (contributor) html += `<div class="meta-item"><span class="meta-label">贡献者:</span> ${SVG_ICONS.user} <span class="meta-value">${escapeHTML(contributor)}</span></div>`;
-    if (related) html += `<div class="meta-item"><span class="meta-label">有关人:</span> ${SVG_ICONS.users} <span class="meta-value">${escapeHTML(related)}</span></div>`;
+    html += `<div class="meta-item"><span class="uid-badge">唯一编号: ${escapeHTML(uid)}</span></div>`;
+    if (timeRange) html += `<div class="meta-item">${SVG_ICONS.clock} <span class="meta-value">${escapeHTML(timeRange)}</span></div>`;
+    if (contributor) html += `<div class="meta-item">${SVG_ICONS.user} 贡献者: <span class="meta-value">${escapeHTML(contributor)}</span></div>`;
+    if (related) html += `<div class="meta-item">${SVG_ICONS.users} 有关人: <span class="meta-value">${escapeHTML(related)}</span></div>`;
     html += `</div></div>`;
     
     if (body) html += `<div class="content-section">${escapeHTML(body)}</div>`;
