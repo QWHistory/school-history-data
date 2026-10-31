@@ -18,8 +18,10 @@
   body.modal-open { overflow: hidden; }
   
   .navbar { border-bottom: 2px solid var(--primary); padding: 1.5rem 2rem; background: var(--bg-body); display: flex; justify-content: space-between; align-items: center; }
-  .back-btn { display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); text-decoration: none; font-size: 1rem; cursor: pointer; font-family: "Microsoft YaHei", sans-serif; }
+  .back-btn { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; cursor: pointer; font-family: "Microsoft YaHei", sans-serif; white-space: nowrap; }
   .back-btn:hover { color: var(--primary); }
+  .back-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  
   .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 0.5rem; transition: color 0.2s; }
   .btn-icon:hover { color: var(--primary); }
   .btn-icon svg { width: 20px; height: 20px; }
@@ -73,7 +75,7 @@
 
   <nav class="navbar">
     <a href="/weekly-digest/" class="back-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
       返回列表
     </a>
     <button id="themeToggle" class="btn-icon">
