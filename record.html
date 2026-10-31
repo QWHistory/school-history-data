@@ -50,25 +50,48 @@
   
   .header-section { margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; text-align: center; }
   .header-tag { display: inline-block; color: var(--primary); border: 1px solid var(--primary); padding: 0.1rem 0.8rem; font-size: 0.85rem; margin-bottom: 1.5rem; font-family: "Microsoft YaHei", sans-serif; }
-  .header-title { font-size: 2.8rem; font-weight: bold; line-height: 1.4; color: var(--text-primary); margin-bottom: 2rem; letter-spacing: 0.05em; }
+  .header-title { font-size: 2.8rem; font-weight: bold; line-height: 1.4; color: var(--text-primary); margin-bottom: 2rem; letter-spacing: 0.05em; word-break: break-word; }
   
-  .meta-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 2rem; font-size: 0.9rem; color: var(--text-tertiary); font-family: "Microsoft YaHei", sans-serif; }
-  .meta-item { display: flex; align-items: center; gap: 0.4rem; }
-  .meta-value { color: var(--text-secondary); }
+  /* 核心修复：元数据网格 */
+  .meta-grid { 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    gap: 1.5rem 2.5rem; /* 控制行间距和列间距 */
+    font-size: 0.95rem; 
+    color: var(--text-tertiary); 
+    font-family: "Microsoft YaHei", sans-serif; 
+  }
+  .meta-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    white-space: nowrap; /* 强制单行，绝不从中间断开 */
+  }
+  .meta-value { color: var(--text-secondary); font-weight: 500; }
   .uid-badge { font-family: "Courier New", monospace; }
   
-  .content-section { font-size: 1.15rem; line-height: 2.2; color: var(--text-primary); white-space: pre-wrap; word-break: break-word; margin-bottom: 4rem; text-align: justify; }
+  .content-section { font-size: 1.15rem; line-height: 2.2; color: var(--text-primary); white-space: pre-wrap; word-break: break-word; margin: 3rem 0 4rem 0; text-align: justify; }
 
   .attachments-section { margin-bottom: 4rem; font-family: "Microsoft YaHei", sans-serif; }
   .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1.5rem; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; display: inline-block; }
   .attachment-grid { display: flex; flex-direction: column; gap: 1rem; }
   .attachment-item { display: flex; align-items: center; gap: 0.8rem; padding: 1rem; background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none; transition: all 0.2s; }
   .attachment-item:hover { border-color: var(--primary); color: var(--primary); }
-  .attachment-item svg { width: 20px; height: 20px; }
+  .attachment-item svg { width: 20px; height: 20px; flex-shrink: 0; }
 
   .footer-section { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border-color); font-family: "Microsoft YaHei", sans-serif; }
-  .btn-report { background: none; border: 1px solid var(--border-color); padding: 0.6rem 1.2rem; font-size: 0.9rem; color: var(--text-secondary); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+  
+  /* 核心修复：按钮不换行 */
+  .btn-report { 
+    background: none; border: 1px solid var(--border-color); 
+    padding: 0.6rem 1.2rem; font-size: 0.9rem; color: var(--text-secondary); 
+    cursor: pointer; text-decoration: none; 
+    display: inline-flex; align-items: center; gap: 0.5rem; 
+    transition: all 0.2s; white-space: nowrap; /* 强制不换行 */
+  }
   .btn-report:hover { color: #d32f2f; border-color: #d32f2f; }
+  .btn-report svg { width: 16px; height: 16px; flex-shrink: 0; }
 
   .loading-state { text-align: center; padding: 6rem 0; color: var(--text-tertiary); font-family: "Microsoft YaHei", sans-serif; }
   .error-state { text-align: center; padding: 6rem 0; font-family: "Microsoft YaHei", sans-serif; }
@@ -84,9 +107,9 @@
   
   @media (max-width: 600px) {
     .header-title { font-size: 2rem; }
-    .meta-grid { flex-direction: column; gap: 1rem; align-items: flex-start; text-align: left; }
+    .meta-grid { flex-direction: column; align-items: center; gap: 0.8rem; }
     .container { margin: 2rem auto; padding: 0 1.5rem; }
-    .footer-section { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+    .footer-section { flex-direction: column; gap: 1.5rem; align-items: center; text-align: center; }
   }
 </style>
 </head>
