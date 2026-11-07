@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>档案详情 - 清湾档案馆（非官方）</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .detail-header { text-align: center; margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
+  .detail-title { font-size: 2.5rem; margin-bottom: 1.5rem; word-break: break-all; }
+  .detail-meta { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; font-family: 'Microsoft YaHei'; font-size: 0.95rem; color: var(--text-tertiary); }
+  .detail-body { font-size: 1.15rem; line-height: 2.2; text-align: justify; margin-bottom: 4rem; white-space: pre-wrap; }
+  .detail-attachments { margin-bottom: 4rem; font-family: 'Microsoft YaHei'; }
+  .section-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; display: inline-block; margin-bottom: 1.5rem; }
+  .attachment-list { display: flex; flex-direction: column; gap: 1rem; }
+  .attachment-list a { display: flex; align-items: center; gap: 0.8rem; padding: 1rem; background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none; }
+  .detail-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border-color); font-family: 'Microsoft YaHei'; }
+  .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; margin-bottom: 2rem; font-size: 0.95rem; font-family: 'Microsoft YaHei'; }
+  .back-btn:hover { color: var(--primary); }
+  .back-btn svg { width: 16px; height: 16px; }
+  
+  @media (max-width: 768px) {
+    .detail-title { font-size: 1.8rem; }
+    .detail-meta { flex-direction: column; gap: 1rem; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="/" class="nav-brand">清湾校史档案 <span>非官方</span></a>
+    <div class="nav-actions">
+      <a href="/archive/" class="btn btn-outline">返回档案库</a>
+      <button id="themeToggle" class="btn-icon">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        <svg id="icon-moon" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper" id="mainContent">
+    <div style="text-align:center; padding: 4rem;">正在加载档案...</div>
+  </div>
+
+  <footer>
+    清湾校史档案馆（非官方）· 数据由全校师生共建<br>
+    本项目为公益性开源项目，与学校官方无关。
+  </footer>
+
+<script src="/assets/js/common.js"></script>
+<script>
+  const DATA_URL = '/data.json';
+  const CDN_PREFIX = '/';
+
+  async function loadData() {
+    initThemeToggle();
+    const container = document.getElementById('mainContent');
+    
+    // 极度鲁棒的提取：只抓 /record/ 后面的内容
+    const path = window.location.pathname;
+    let targetUid = '';
+    
+    if (path.includes('/record/')) {
+      targetUid = path.split('/record/')[1].replace(/\/$/, ''); 
+      targetUid = decodeURIComponent(targetUid).trim();
+    }
+
+    if (!targetUid) {
+      container.innerHTML = `<div style="text-align:center;">未提供有效的档案编号。请从列表点击进入。<br><br><a href="/archive/" class="btn btn-primary">返回列表</a></div>`;
+      return;
+    }
+
+    try {
+      const res = await fetch(DATA_URL);
+      const records = await res.json();
+      const record = records.find(r => extractPlainText(r['UID']).trim() === targetUid);
+
+      if (!record) {
+        container.innerHTML = `<div style="text-align:center;">找不到编号为 ${targetUid} 的档案。<br><br><a href="/archive/" class="btn btn-primary">返回列表</a></div>`;
+        return;
+      }
+
+      const title = extractPlainText(record['内容标题']) || '无标题';
+      const uid = extractPlainText(record['UID']);
+      const related = extractPlainText(record['内容主要参与人']);
+      const contributor = extractPlainText(record['投稿人昵称']);
+      const category = extractPlainText(record['分区']);
+      const body = extractPlainText(record['内容详述']);
+      const timeRange = formatTimeRange(record['开始时间'], record['结束时间'], record['投稿时间']);
+      document.title = `${title} - 清湾档案馆`;
+
+      let html = `<a href="/archive/" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg> 返回档案库</a>`;
+      
+      html += `<div class="detail-header">`;
+      if (category) html += `<span class="tag" style="margin-bottom:1rem; display:inline-block;">${escapeHTML(category)}</span>`;
+      html += `<h1 class="detail-title">${escapeHTML(title)}</h1>`;
+      html += `<div class="detail-meta">`;
+      html += `<span>编号: ${escapeHTML(uid)}</span>`;
+      if (timeRange) html += `<span>时间: ${escapeHTML(timeRange)}</span>`;
+      if (related) html += `<span>有关人: ${escapeHTML(related)}</span>`;
+      if (contributor) html += `<span>贡献者: ${escapeHTML(contributor)}</span>`;
+      html += `</div></div>`;
+
+      html += `<div class="detail-body">${escapeHTML(body || '暂无详细内容')}</div>`;
+
+      const attachments = record['attachments'] || [];
+      if (attachments.length > 0) {
+        html += `<div class="detail-attachments"><div class="section-title">相关附件</div><div class="attachment-list">`;
+        attachments.forEach(p => {
+          const href = CDN_PREFIX + p.replace(/^\//, '');
+          const name = p.split('/').pop().replace(/^rec[a-zA-Z0-9]+_/, '');
+          html += `<a href="${href}" target="_blank" rel="noopener">📎 ${escapeHTML(name)}</a>`;
+        });
+        html += `</div></div>`;
+      }
+      
+      html += `<div class="detail-footer"><span style="font-size:0.9rem; color:var(--text-tertiary);">本页面链接可直接分享</span><a class="btn-outline" href="${generateReportLink(uid)}" style="text-decoration:none;">举报违规内容</a></div>`;
+      
+      container.innerHTML = html;
+    } catch (e) {
+      container.innerHTML = `<div style="text-align:center; color:red;">加载失败，请检查 data.json。</div>`;
+    }
+  }
+  loadData();
+</script>
+</body>
+</html>
