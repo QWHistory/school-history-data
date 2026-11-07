@@ -28,27 +28,35 @@
   [data-theme="dark"] { --calendar-filter: invert(1); }
   .range-separator { color: var(--text-tertiary); }
 
-  .entry { border-bottom: 1px solid var(--border-color); padding: 2rem 0; cursor: pointer; display: flex; gap: 2rem; align-items: flex-start; text-decoration: none; color: inherit; }
+  /* 列表修复 */
+  .entry { border-bottom: 1px solid var(--border-color); padding: 2rem 0; cursor: pointer; display: flex; gap: 2rem; align-items: flex-start; }
   .entry:hover .entry-title { color: var(--primary); }
-  .entry-date-col { width: 120px; flex-shrink: 0; color: var(--text-tertiary); font-family: "Courier New", monospace; font-size: 1.1rem; margin-top: 0.2rem; }
-  .entry-content-col { flex: 1; min-width: 0; }
-  .entry-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
-  .entry-title { font-size: 1.4rem; font-weight: bold; color: var(--text-primary); font-family: "Microsoft YaHei", sans-serif; word-break: break-word; }
+  .entry-date-col { width: 100px; flex-shrink: 0; color: var(--text-tertiary); font-family: "Courier New", monospace; font-size: 1rem; margin-top: 0.2rem; }
+  .entry-content-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  
+  .entry-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+  .entry-title { font-size: 1.3rem; font-weight: bold; color: var(--text-primary); font-family: "Microsoft YaHei", sans-serif; word-break: break-word; margin: 0; }
   .tag { color: var(--primary); padding: 0.1rem 0.5rem; font-size: 0.8rem; border: 1px solid var(--primary); font-family: "Microsoft YaHei", sans-serif; white-space: nowrap; }
-  .entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; }
-  .meta-item { display: flex; align-items: center; gap: 0.4rem; }
+  
+  .entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.8rem; font-family: "Microsoft YaHei", sans-serif; }
+  .meta-item { display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; } /* 加上 nowrap 解决文字竖排 */
   .meta-strong { color: var(--text-primary); }
   .uid-badge { font-family: "Courier New", monospace; font-size: 0.8rem; color: var(--text-secondary); }
-  .entry-body { white-space: pre-wrap; word-break: break-word; font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  
+  .entry-body { white-space: pre-wrap; word-break: break-word; font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.6; }
   
   .attachment-grid { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; }
-  .attachment-item { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--primary); text-decoration: none; }
+  .attachment-item { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--primary); text-decoration: none; cursor: pointer; }
   .attachment-item:hover { text-decoration: underline; }
   .attachment-item svg { width: 14px; height: 14px; }
   
-  .entry-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: "Microsoft YaHei", sans-serif; }
-  .footer-contributor { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-tertiary); }
+  .entry-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: "Microsoft YaHei", sans-serif; margin-top: auto; }
+  .footer-contributor { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-tertiary); white-space: nowrap; }
   .footer-contributor span { color: var(--text-secondary); }
+  .btn-action.report { background: none; border: none; font-size: 0.85rem; color: var(--text-tertiary); cursor: pointer; display: flex; align-items: center; gap: 0.2rem; transition: color 0.2s; text-decoration: none; white-space: nowrap; }
+  .btn-action.report:hover { color: #d32f2f; }
+  .btn-action.report svg { width: 14px; height: 14px; }
+  
   .empty { text-align: center; padding: 6rem 1rem; color: var(--text-tertiary); font-size: 1.1rem; }
   #scroll-sentinel { height: 40px; }
 
@@ -159,18 +167,21 @@
     if(dateStr.includes(' 至 ')) dateStr = dateStr.split(' 至 ')[0].substring(0, 4);
     else if(dateStr.length >= 10) dateStr = dateStr.substring(0, 10);
     
-    // 改为 A 标签，直接触发页面跳转，抛弃前端拦截
-    let html = `<a href="/record/${uid}" class="entry">`;
+    // 关键修复：使用 div 配合 onclick 触发页面跳转，摒弃 a 标签嵌套
+    let html = `<div class="entry" onclick="window.location.href='/record/${uid}'">`;
     html += `<div class="entry-date-col">${escapeHTML(dateStr)}</div>`;
     html += `<div class="entry-content-col">`;
+    
     html += `<div class="entry-header">`;
     if (title) html += `<div class="entry-title">${escapeHTML(title)}</div>`;
     if (category) html += `<span class="tag">${escapeHTML(category)}</span>`;
     html += `</div>`;
+    
     html += `<div class="entry-meta">`;
     html += `<span class="meta-item uid-badge">编号: ${escapeHTML(uid)}</span>`;
     if (relatedPeople) html += `<span class="meta-item">${SVG_ICONS.users} 有关人: <span class="meta-strong">${escapeHTML(relatedPeople)}</span></span>`;
     html += `</div>`;
+    
     if (body) html += `<div class="entry-body">${escapeHTML(body)}</div>`;
     
     const attachments = record['attachments'] || [];
@@ -178,13 +189,14 @@
       html += `<div class="attachment-grid">`;
       attachments.forEach(filePath => {
         const href = CDN_PREFIX + filePath.replace(/^\//, ''), displayName = escapeHTML(getDisplayFileName(filePath));
-        if (isImageFile(filePath)) html += `<span class="attachment-item" onclick="event.preventDefault(); window.open('${href}', '_blank')">${getFileIcon(filePath)} <span>${displayName}</span></span>`;
-        else html += `<span class="attachment-item" onclick="event.preventDefault(); const a=document.createElement('a'); a.href='${href}'; a.download='${getDisplayFileName(filePath)}'; a.click();">${getFileIcon(filePath)} <span>${displayName}</span></span>`;
+        if (isImageFile(filePath)) html += `<span class="attachment-item" onclick="event.stopPropagation(); window.open('${href}', '_blank')">${getFileIcon(filePath)} <span>${displayName}</span></span>`;
+        else html += `<span class="attachment-item" onclick="event.stopPropagation(); const a=document.createElement('a'); a.href='${href}'; a.download='${getDisplayFileName(filePath)}'; a.click();">${getFileIcon(filePath)} <span>${displayName}</span></span>`;
       });
       html += `</div>`;
     }
-    html += `<div class="entry-footer"><div class="footer-contributor">${contributor ? `${SVG_ICONS.user} 贡献者: <span>${escapeHTML(contributor)}</span>` : ''}</div><div class="footer-actions"><span class="btn-action report" onclick="event.preventDefault(); window.location.href='${generateReportLink(uid)}'">${SVG_ICONS.warning} 举报</span></div></div>`;
-    html += `</div></a>`;
+    
+    html += `<div class="entry-footer"><div class="footer-contributor">${contributor ? `${SVG_ICONS.user} 贡献者: <span>${escapeHTML(contributor)}</span>` : ''}</div><div class="footer-actions"><span class="btn-action report" onclick="event.stopPropagation(); window.location.href='${generateReportLink(uid)}'">${SVG_ICONS.warning} 举报</span></div></div>`;
+    html += `</div></div>`;
     return html;
   }
 
