@@ -6,44 +6,117 @@
   --bg-body: #121212; --bg-surface: #1e1e1e; --text-primary: #f0f0f0; --text-secondary: #aaaaaa; --text-tertiary: #777777;
   --border-color: #333333; --primary: #b47dbd; --primary-hover: #cfa3d6;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: "Songti SC", "SimSun", "Georgia", serif; background-color: var(--bg-body); color: var(--text-primary); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
 
-/* 核心布局：绝对居中，强制上下留白 */
-.main-container {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 4rem 2rem; /* 顶部 4rem，左右 2rem */
-  flex: 1;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Songti SC", "SimSun", "Georgia", serif;
+  background-color: var(--bg-body); color: var(--text-primary); line-height: 1.6; min-height: 100vh;
+  display: flex; flex-direction: column;
 }
 
+/* 核心：全局唯一的外层容器，负责居中和大留白 */
+.page-wrapper {
+  flex: 1;
+  width: 100%;
+  max-width: 900px; /* 限制最大宽度，阅读更舒适 */
+  margin: 0 auto;
+  padding: 4rem 2rem; /* 顶部留白 4rem，左右留白 2rem，彻底告别贴边 */
+}
+
+/* 顶部导航 */
 .navbar { background-color: var(--bg-body); border-bottom: 2px solid var(--primary); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
 .nav-brand { font-size: 1.4rem; font-weight: bold; color: var(--primary); text-decoration: none; font-family: "Microsoft YaHei", sans-serif; display: flex; align-items: center; gap: 0.5rem; }
 .nav-brand span { font-size: 0.8rem; font-weight: normal; border: 1px solid var(--primary); padding: 0.1rem 0.4rem; }
 .nav-actions { display: flex; align-items: center; gap: 1rem; font-family: "Microsoft YaHei", sans-serif; }
-.btn-icon { background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 0.5rem; }
+
+.btn-icon { background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 0.5rem; transition: color 0.2s; }
 .btn-icon:hover { color: var(--primary); }
 .btn-icon svg { width: 20px; height: 20px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.2rem; font-size: 0.95rem; border: 1px solid transparent; text-decoration: none; cursor: pointer; font-family: "Microsoft YaHei", sans-serif; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.2rem; font-size: 0.95rem; border: 1px solid transparent; transition: all 0.2s; font-family: "Microsoft YaHei", sans-serif; text-decoration: none; cursor: pointer; }
 .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-hover); }
 .btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+.btn-outline:hover { background: var(--primary); color: #fff; }
 
 footer { border-top: 1px solid var(--border-color); padding: 2rem; text-align: center; font-family: "Microsoft YaHei", sans-serif; font-size: 0.85rem; color: var(--text-tertiary); line-height: 1.8; }
 
-/* 列表统一卡片样式 */
-.card-list { display: flex; flex-direction: column; gap: 2rem; }
-.card { display: flex; gap: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; cursor: pointer; }
-.card:hover .card-title { color: var(--primary); }
-.card-date { width: 120px; flex-shrink: 0; color: var(--text-tertiary); font-family: "Courier New", monospace; font-size: 1.1rem; }
-.card-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.card-title { font-size: 1.4rem; font-weight: bold; color: var(--text-primary); font-family: "Microsoft YaHei", sans-serif; margin-bottom: 0.5rem; }
-.card-meta { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; display: flex; flex-wrap: wrap; gap: 1.5rem; }
-.card-body { font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.card-attachments { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; }
-.card-footer { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-tertiary); font-family: "Microsoft YaHei", sans-serif; margin-top: auto; }
+/* ======== 列表页专用：彻底解决卡片间距 ======== */
+.list-container {
+  display: flex;
+  flex-direction: column;
+}
+.entry {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem 0; 
+  border-bottom: 1px solid var(--border-color);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s;
+}
+.entry:hover .entry-title { color: var(--primary); }
+.entry-date {
+  width: 120px;
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  font-family: "Courier New", monospace;
+  font-size: 1.1rem;
+  margin-top: 0.3rem;
+}
+.entry-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* 用 flex gap 保证内部元素间距一致 */
+}
+.entry-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  font-family: "Microsoft YaHei", sans-serif;
+  word-break: break-word;
+}
+.entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-family: "Microsoft YaHei", sans-serif;
+}
+.entry-body {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.entry-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-family: "Microsoft YaHei", sans-serif;
+}
+.entry-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  font-family: "Microsoft YaHei", sans-serif;
+}
 
+/* 标签 */
+.tag { color: var(--primary); padding: 0.1rem 0.5rem; font-size: 0.8rem; border: 1px solid var(--primary); font-family: "Microsoft YaHei", sans-serif; }
+
+/* 移动端适配 */
 @media (max-width: 768px) {
-  .card { flex-direction: column; gap: 0.5rem; }
-  .card-date { width: auto; }
+  .page-wrapper { padding: 2rem 1.5rem; }
+  .entry { flex-direction: column; gap: 0.5rem; padding: 1.5rem 0; }
+  .entry-date { width: auto; }
 }
