@@ -90,11 +90,19 @@
     const container = document.getElementById('mainContent');
     
     // 解析 /record/xxx
+    //const path = window.location.pathname;
+    //let targetUid = '';
+    //if (path.includes('/record/')) {
+      //targetUid = path.split('/record/')[1].replace(/\/$/, '');
+      //targetUid = decodeURIComponent(targetUid).trim();
+    //}
+    // 替换 record.html 里的 initPage 解析逻辑
     const path = window.location.pathname;
     let targetUid = '';
+    
+    // 兼容 /record/123, /record/123/, 甚至带 .html 的意外情况
     if (path.includes('/record/')) {
-      targetUid = path.split('/record/')[1].replace(/\/$/, '');
-      targetUid = decodeURIComponent(targetUid).trim();
+      targetUid = path.split('/record/')[1].replace(/\/|\.html/g, '').trim();
     }
 
     if (!targetUid) { render404(container, "路径错误", "未提供有效的档案编号。请从列表点击进入。"); return; }
