@@ -3,180 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>校史档案馆 - 首页</title>
+<title>清湾校史档案馆（非官方）</title>
+<link rel="stylesheet" href="/assets/css/style.css">
 <style>
-  :root {
-    --bg-body: #ffffff; 
-    --bg-surface: #fafafa; 
-    --text-primary: #222222; 
-    --text-secondary: #555555; 
-    --text-tertiary: #888888;
-    --border-color: #e0e0e0; 
-    --primary: #4a0254; /* 官方暗紫 */
-    --primary-hover: #36013d;
-  }
-
-  [data-theme="dark"] {
-    --bg-body: #121212; 
-    --bg-surface: #1e1e1e; 
-    --text-primary: #f0f0f0; 
-    --text-secondary: #aaaaaa; 
-    --text-tertiary: #777777;
-    --border-color: #333333; 
-    --primary: #b47dbd; /* 暗色模式亮紫 */
-    --primary-hover: #cfa3d6;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .hero { text-align: center; max-width: 800px; margin: 0 auto; padding: 4rem 1rem; }
+  .hero-label { font-family: "Microsoft YaHei", sans-serif; font-size: 0.9rem; color: var(--text-tertiary); letter-spacing: 0.3em; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); display: inline-block; padding-bottom: 0.5rem; }
+  .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: bold; color: var(--text-primary); margin-bottom: 1.5rem; letter-spacing: 0.1em; }
+  .hero p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 3rem; line-height: 2; }
   
-  body {
-    font-family: "Songti SC", "SimSun", "Georgia", serif;
-    background-color: var(--bg-body);
-    color: var(--text-primary);
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    transition: background-color 0.2s, color 0.2s;
-  }
-
-  /* 顶部导航：与列表页保持一致 */
-  .navbar { 
-    background-color: var(--bg-body); 
-    border-bottom: 2px solid var(--primary); 
-    padding: 1.5rem 3rem; 
-    display: flex; justify-content: space-between; align-items: center; 
-    z-index: 100; flex-wrap: wrap; gap: 1rem;
-  }
-  .nav-brand { 
-    font-size: 1.6rem; 
-    font-weight: bold; 
-    letter-spacing: 0.1em; 
-    color: var(--primary); 
-    text-decoration: none;
-    font-family: "Microsoft YaHei", sans-serif;
-  }
-  .nav-actions { display: flex; align-items: center; gap: 1.5rem; font-family: "Microsoft YaHei", sans-serif; }
+  .section-title { font-size: 1.5rem; font-weight: bold; color: var(--primary); border-left: 4px solid var(--primary); padding-left: 1rem; margin-bottom: 2rem; margin-top: 4rem; }
   
-  .btn-icon { 
-    background: none; border: none; cursor: pointer; 
-    color: var(--text-secondary); padding: 0.5rem; 
-    transition: color 0.2s; display: flex; align-items: center; justify-content: center;
-  }
-  .btn-icon:hover { color: var(--primary); }
-  .btn-icon svg { width: 20px; height: 20px; }
-
-  .nav-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.2s;
-  }
-  .nav-link:hover { color: var(--primary); }
-
-  /* 主体内容区 */
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 8rem 2rem;
-    text-align: center;
-  }
-
-  .hero-label {
-    font-family: "Arial", sans-serif;
-    font-size: 0.9rem;
-    color: var(--text-tertiary);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.5rem;
-  }
-
-  .hero-title {
-    font-size: clamp(3rem, 6vw, 5rem);
-    font-weight: bold;
-    color: var(--text-primary);
-    line-height: 1.2;
-    letter-spacing: 0.1em;
-    margin-bottom: 2rem;
-  }
-
-  .hero-desc {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto 4rem auto;
-    line-height: 2;
-  }
-
-  /* 按钮组：直角、实心/空心 */
-  .actions {
-    display: flex;
-    gap: 2rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    font-family: "Microsoft YaHei", sans-serif;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 1rem 3rem;
-    font-size: 1.1rem;
-    text-decoration: none;
-    transition: all 0.2s;
-    letter-spacing: 0.1em;
-  }
-
-  .btn-primary {
-    background-color: var(--primary);
-    color: #ffffff;
-    border: 1px solid var(--primary);
-  }
-  .btn-primary:hover {
-    background-color: var(--primary-hover);
-  }
-
-  .btn-outline {
-    background-color: transparent;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-  }
-  .btn-outline:hover {
-    background-color: var(--primary);
-    color: #ffffff;
-  }
-
-  /* 底部：实线分割 */
-  footer {
-    border-top: 1px solid var(--border-color);
-    padding: 2rem;
-    text-align: center;
-    font-family: "Microsoft YaHei", sans-serif;
-    font-size: 0.85rem;
-    color: var(--text-tertiary);
-  }
-
-  @media (max-width: 768px) {
-    .navbar { padding: 1rem 1.5rem; flex-direction: column; align-items: flex-start; }
-    .nav-actions { width: 100%; justify-content: space-between; }
-    .nav-link { display: none; }
-    main { padding: 5rem 1.5rem; }
-    .actions { flex-direction: column; width: 100%; max-width: 300px; gap: 1rem; }
-    .btn { width: 100%; text-align: center; }
-  }
+  .weekly-placeholder { background: var(--bg-surface); border: 1px dashed var(--border-color); padding: 4rem 2rem; text-align: center; color: var(--text-tertiary); font-family: "Microsoft YaHei", sans-serif; }
 </style>
 </head>
 <body>
 
   <nav class="navbar">
-    <a href="/" class="nav-brand">校史档案馆</a>
+    <a href="/" class="nav-brand">清湾校史档案 <span>非官方</span></a>
     <div class="nav-actions">
-      <a href="/weekly-digest/" class="nav-link">进入档案库</a>
-      <button id="themeToggle" class="btn-icon" title="切换主题">
+      <a href="/archive/" class="btn btn-outline">进入档案库</a>
+      <a href="/submit/" class="btn btn-primary">我要投稿</a>
+      <button id="themeToggle" class="btn-icon">
         <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
         <svg id="icon-moon" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
       </button>
@@ -184,45 +31,28 @@
   </nav>
 
   <main>
-    <div class="hero-label">Institutional Archive</div>
-    
-    <h1 class="hero-title">时光印记<br>校史档案库</h1>
-    
-    <p class="hero-desc">
-      本项目致力于收集、数字化并永久保存与学校历史相关的图文资料与人物记忆。数据库面向公众开放检索，记录属于我们的共同过往。
-    </p>
+    <div class="container">
+      <div class="hero">
+        <div class="hero-label">QINGWAN INSTITUTIONAL ARCHIVE</div>
+        <h1>时光印记</h1>
+        <p>本项目是由学生团队自发维护的清华大学附属中学湾区学校（清湾）非官方校史资料库。我们致力于收集、数字化并永久保存与学校历史相关的图文资料与人物记忆。</p>
+      </div>
 
-    <div class="actions">
-      <a href="/weekly-digest/" class="btn btn-primary">查阅档案</a>
-      <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="btn btn-outline">贡献数据</a>
+      <h2 class="section-title">最新一周摘要</h2>
+      <div class="weekly-placeholder">
+        本周校史摘要正在编纂中，敬请期待。
+      </div>
     </div>
   </main>
 
   <footer>
-    © 2026 QWHistory Project. All records are permanently preserved.
+    清湾校史档案馆（非官方）· 数据由全校师生共建<br>
+    本项目为公益性开源项目，与学校官方无关。<br>
+    © 2026 QWHistory Project.
   </footer>
 
+<script src="/assets/js/common.js"></script>
 <script>
-  function initThemeToggle() {
-    const toggleBtn = document.getElementById('themeToggle'), sunIcon = document.getElementById('icon-sun'), moonIcon = document.getElementById('icon-moon');
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) { 
-      document.documentElement.setAttribute('data-theme', 'dark'); 
-      sunIcon.style.display = 'none'; moonIcon.style.display = 'block'; 
-    }
-    toggleBtn.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) { 
-        document.documentElement.removeAttribute('data-theme'); 
-        localStorage.setItem('theme', 'light'); 
-        sunIcon.style.display = 'block'; moonIcon.style.display = 'none'; 
-      } else { 
-        document.documentElement.setAttribute('data-theme', 'dark'); 
-        localStorage.setItem('theme', 'dark'); 
-        sunIcon.style.display = 'none'; moonIcon.style.display = 'block'; 
-      }
-    });
-  }
-
   initThemeToggle();
 </script>
 </body>
