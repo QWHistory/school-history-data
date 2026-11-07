@@ -1,27 +1,12 @@
 :root {
-  /* 清湾暗紫体系 */
-  --bg-body: #ffffff; 
-  --bg-surface: #fafafa; 
-  --text-primary: #222222; 
-  --text-secondary: #555555; 
-  --text-tertiary: #888888;
-  --border-color: #e0e0e0; 
-  --primary: #4a0254; 
-  --primary-hover: #36013d;
-  --mark-bg: #f0e6f5; 
-  --mark-text: #4a0254;
+  --bg-body: #ffffff; --bg-surface: #fafafa; --text-primary: #222222; --text-secondary: #555555; --text-tertiary: #888888;
+  --border-color: #e0e0e0; --primary: #4a0254; --primary-hover: #36013d;
+  --mark-bg: #f0e6f5; --mark-text: #4a0254;
 }
 [data-theme="dark"] {
-  --bg-body: #121212; 
-  --bg-surface: #1e1e1e; 
-  --text-primary: #f0f0f0; 
-  --text-secondary: #aaaaaa; 
-  --text-tertiary: #777777;
-  --border-color: #333333; 
-  --primary: #b47dbd; 
-  --primary-hover: #cfa3d6;
-  --mark-bg: #3a1a47; 
-  --mark-text: #b47dbd;
+  --bg-body: #121212; --bg-surface: #1e1e1e; --text-primary: #f0f0f0; --text-secondary: #aaaaaa; --text-tertiary: #777777;
+  --border-color: #333333; --primary: #b47dbd; --primary-hover: #cfa3d6;
+  --mark-bg: #3a1a47; --mark-text: #b47dbd;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,9 +37,9 @@ footer { margin-top: auto; border-top: 1px solid var(--border-color); padding: 2
 footer a { color: var(--text-secondary); text-decoration: none; }
 footer a:hover { color: var(--primary); }
 
-/* 通用容器 */
+/* 通用布局修复：强制底部留白，消除负间距 */
+main { flex: 1; padding: 3rem 0 5rem 0; }
 .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; width: 100%; }
-main { flex: 1; padding: 4rem 0; }
 
 /* 纯文本换行 */
 .pre-wrap { white-space: pre-wrap; word-break: break-word; }
