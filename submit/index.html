@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我要投稿 - 清湾档案馆（非官方）</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .notice-box { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 2rem; margin-bottom: 2rem; border-left: 4px solid var(--primary); }
+  .notice-box h3 { color: var(--primary); margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; }
+  .notice-box ul { margin-left: 1.5rem; color: var(--text-secondary); line-height: 2; }
+  
+  .iframe-container { width: 100%; height: 800px; border: 1px solid var(--border-color); background: var(--bg-surface); display: none; margin-top: 2rem; }
+  .iframe-container iframe { width: 100%; height: 100%; border: none; }
+  
+  .fallback-box { text-align: center; padding: 4rem 2rem; background: var(--bg-surface); border: 1px dashed var(--border-color); margin-top: 2rem; }
+  .fallback-box p { margin-bottom: 2rem; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="/" class="nav-brand">清湾校史档案 <span>非官方</span></a>
+    <div class="nav-actions">
+      <a href="/archive/" class="btn btn-outline">进入档案库</a>
+      <button id="themeToggle" class="btn-icon">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        <svg id="icon-moon" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div style="margin-bottom: 2rem;">
+      <a href="/" style="color: var(--text-secondary); text-decoration: none;">&larr; 返回首页</a>
+    </div>
+    <h1 style="color: var(--primary); margin-bottom: 2rem;">投稿须知</h1>
+    
+    <div class="notice-box">
+      <h3>在提交您的珍贵记忆前，请仔细阅读：</h3>
+      <ul>
+        <li><strong>授权与合规：</strong>请确保您拥有所提交照片、文字的版权或合法授权。提交即代表您同意本（非官方）档案馆对其进行数字化保存及公开展示。</li>
+        <li><strong>隐私保护：</strong>请勿上传涉及他人隐私（如身份证号、家庭住址等）的敏感信息。</li>
+        <li><strong>审核流程：</strong>提交后，所有档案将由学生史官团队进行人工审核。审核通过后，通常在 1-2 天内展示在档案库中。</li>
+      </ul>
+    </div>
+
+    <div class="fallback-box" id="fallbackBox">
+      <p>点击下方按钮，将前往飞书填写表单。<br>（为保证稳定性，推荐在新标签页打开）</p>
+      <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">前往飞书表单提交</a>
+    </div>
+
+    <!-- 尝试加载 iframe，如果飞书拒绝，用户依然可以用上面的按钮 -->
+    <div class="iframe-container" id="iframeContainer">
+      <iframe id="feishuForm" src="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" onload="document.getElementById('iframeContainer').style.display='block'; document.getElementById('fallbackBox').style.display='none';"></iframe>
+    </div>
+
+  </main>
+
+  <footer>
+    清湾校史档案馆（非官方）· 数据由全校师生共建<br>
+    本项目为公益性开源项目，与学校官方无关。
+  </footer>
+<script src="/assets/js/common.js"></script>
+<script>
+  initThemeToggle();
+  // 延迟加载 iframe 策略：如果 5 秒内没加载出来，就保持显示跳转按钮
+  setTimeout(() => {
+    const iframe = document.getElementById('feishuForm');
+    try {
+      if (iframe.contentWindow && iframe.contentWindow.document.URL === 'about:blank') {
+        // 被拦截了，保持 fallback 显示
+      }
+    } catch(e) {
+      // 跨域说明加载进去了
+      document.getElementById('iframeContainer').style.display='block'; 
+      document.getElementById('fallbackBox').style.display='none';
+    }
+  }, 3000);
+</script>
+</body>
+</html>
