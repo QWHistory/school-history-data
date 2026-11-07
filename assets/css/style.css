@@ -1,0 +1,60 @@
+:root {
+  /* 清湾暗紫体系 */
+  --bg-body: #ffffff; 
+  --bg-surface: #fafafa; 
+  --text-primary: #222222; 
+  --text-secondary: #555555; 
+  --text-tertiary: #888888;
+  --border-color: #e0e0e0; 
+  --primary: #4a0254; 
+  --primary-hover: #36013d;
+  --mark-bg: #f0e6f5; 
+  --mark-text: #4a0254;
+}
+[data-theme="dark"] {
+  --bg-body: #121212; 
+  --bg-surface: #1e1e1e; 
+  --text-primary: #f0f0f0; 
+  --text-secondary: #aaaaaa; 
+  --text-tertiary: #777777;
+  --border-color: #333333; 
+  --primary: #b47dbd; 
+  --primary-hover: #cfa3d6;
+  --mark-bg: #3a1a47; 
+  --mark-text: #b47dbd;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Songti SC", "SimSun", "Georgia", serif;
+  background-color: var(--bg-body); color: var(--text-primary); line-height: 1.6; min-height: 100vh;
+  display: flex; flex-direction: column; transition: background-color 0.2s, color 0.2s;
+}
+
+/* 顶部导航 */
+.navbar { background-color: var(--bg-body); border-bottom: 2px solid var(--primary); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; flex-wrap: wrap; gap: 1rem; }
+.nav-brand { font-size: 1.4rem; font-weight: bold; letter-spacing: 0.05em; color: var(--primary); text-decoration: none; font-family: "Microsoft YaHei", sans-serif; display: flex; align-items: center; gap: 0.5rem; }
+.nav-brand span { font-size: 0.8rem; font-weight: normal; border: 1px solid var(--primary); padding: 0.1rem 0.4rem; letter-spacing: 0; }
+.nav-actions { display: flex; align-items: center; gap: 1.5rem; font-family: "Microsoft YaHei", sans-serif; }
+.btn-icon { background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 0.5rem; transition: color 0.2s; display: flex; align-items: center; justify-content: center; }
+.btn-icon:hover { color: var(--primary); }
+.btn-icon svg { width: 20px; height: 20px; }
+
+/* 按钮 */
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.6rem 1.5rem; font-size: 0.95rem; border: 1px solid transparent; transition: all 0.2s; font-family: "Microsoft YaHei", sans-serif; text-decoration: none; cursor: pointer; white-space: nowrap; }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+.btn-outline:hover { background: var(--primary); color: #fff; }
+
+/* 页脚 */
+footer { margin-top: auto; border-top: 1px solid var(--border-color); padding: 2rem; text-align: center; font-family: "Microsoft YaHei", sans-serif; font-size: 0.85rem; color: var(--text-tertiary); line-height: 1.8; }
+footer a { color: var(--text-secondary); text-decoration: none; }
+footer a:hover { color: var(--primary); }
+
+/* 通用容器 */
+.container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; width: 100%; }
+main { flex: 1; padding: 4rem 0; }
+
+/* 纯文本换行 */
+.pre-wrap { white-space: pre-wrap; word-break: break-word; }
