@@ -12,12 +12,18 @@
     <a href="/" class="nav-brand">清湾校史档案 <span>非官方</span></a>
     <div class="nav-actions">
       <a href="/submit/" class="btn btn-outline">我要投稿</a>
+      <button id="themeToggle" class="btn-icon">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        <svg id="icon-moon" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+      </button>
     </div>
   </nav>
 
-  <main class="main-container">
-    <div id="list" class="card-list"></div>
-  </main>
+  <div class="page-wrapper">
+    <div id="list" class="list-container">
+      <div style="text-align:center; padding:4rem; color:var(--text-tertiary);">正在加载档案...</div>
+    </div>
+  </div>
 
   <footer>
     清湾校史档案馆（非官方）· 数据由全校师生共建<br>
@@ -26,17 +32,18 @@
 
 <script src="/assets/js/common.js"></script>
 <script>
-  // 仅用于加载数据并渲染最基础的卡片
   const DATA_URL = '/data.json';
-  
+
   async function loadData() {
+    initThemeToggle();
     try {
       const res = await fetch(DATA_URL);
       const records = await res.json();
       const list = document.getElementById('list');
-      
+      list.innerHTML = '';
+
       if (!records || records.length === 0) {
-        list.innerHTML = '<div style="text-align:center; padding: 4rem;">暂无记录</div>';
+        list.innerHTML = '<div style="text-align:center;">暂无记录</div>';
         return;
       }
 
@@ -45,20 +52,38 @@
         const uid = extractPlainText(record['UID']) || '无';
         const body = extractPlainText(record['内容详述']);
         const contributor = extractPlainText(record['投稿人昵称']);
-        const date = formatTimeRange(record['开始时间'], record['结束时间'], record['投稿时间']);
+        const related = extractPlainText(record['内容主要参与人']);
+        const category = extractPlainText(record['分区']);
+        const timeRange = formatTimeRange(record['开始时间'], record['结束时间'], record['投稿时间']);
         
-        // 只用最原生的 a 标签
+        let dateStr = timeRange || '';
+        if(dateStr.includes(' 至 ')) dateStr = dateStr.split(' 至 ')[0].substring(0, 4);
+        else if(dateStr.length >= 10) dateStr = dateStr.substring(0, 10);
+        
+        const attachments = record['attachments'] || [];
+        let attachmentHtml = '';
+        if (attachments.length > 0) {
+          attachmentHtml = `<div class="entry-attachments">`;
+          attachments.forEach(path => {
+            attachmentHtml += `<span style="color:var(--primary); font-size:0.9rem;">📎 ${path.split('/').pop().replace(/^rec[a-zA-Z0-9]+_/, '')}</span>`;
+          });
+          attachmentHtml += `</div>`;
+        }
+
+        // 原生 a 标签跳转
         const html = `
-          <a href="/record/${uid}" style="text-decoration:none; color:inherit; display:block;">
-            <div class="card">
-              <div class="card-date">${date.substring(0, 10)}</div>
-              <div class="card-content">
-                <div class="card-title">${escapeHTML(title)}</div>
-                <div class="card-meta"><span>编号: ${escapeHTML(uid)}</span></div>
-                ${body ? `<div class="card-body">${escapeHTML(body)}</div>` : ''}
-                <div class="card-footer">
-                  <span>${contributor ? '贡献者: ' + escapeHTML(contributor) : ''}</span>
-                </div>
+          <a class="entry" href="/record/${uid}">
+            <div class="entry-date">${dateStr}</div>
+            <div class="entry-main">
+              <div class="entry-title">${escapeHTML(title)}</div>
+              <div class="entry-meta">
+                <span>编号: ${escapeHTML(uid)}</span>
+                ${related ? `<span>有关人: ${escapeHTML(related)}</span>` : ''}
+              </div>
+              ${body ? `<div class="entry-body">${escapeHTML(body)}</div>` : ''}
+              ${attachmentHtml}
+              <div class="entry-footer">
+                <span>${contributor ? '贡献者: ' + escapeHTML(contributor) : ''}</span>
               </div>
             </div>
           </a>
@@ -66,7 +91,7 @@
         list.insertAdjacentHTML('beforeend', html);
       });
     } catch (e) {
-      document.getElementById('list').innerHTML = '<div style="text-align:center;">加载失败</div>';
+      document.getElementById('list').innerHTML = '<div style="text-align:center; color:red;">数据加载失败，请检查网络或 data.json 路径。</div>';
     }
   }
   loadData();
