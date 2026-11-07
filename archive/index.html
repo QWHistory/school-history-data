@@ -6,6 +6,9 @@
 <title>校史档案库 - 清湾档案馆（非官方）</title>
 <link rel="stylesheet" href="/assets/css/style.css">
 <style>
+  /* 暴力强制顶部不贴顶 */
+  body { padding-top: 1px; }
+  
   .toolbar { display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
   .search-row { display: flex; gap: 1rem; align-items: center; }
   .search-wrapper { position: relative; display: flex; align-items: center; flex: 1; }
@@ -28,24 +31,27 @@
   [data-theme="dark"] { --calendar-filter: invert(1); }
   .range-separator { color: var(--text-tertiary); }
 
-  /* 终极卡片布局：相对定位，内嵌绝对定位的 a 标签 */
-  .entry { position: relative; border-bottom: 1px solid var(--border-color); padding: 2.5rem 0; display: flex; gap: 2.5rem; align-items: flex-start; transition: background-color 0.2s; }
+  /* 终极网格卡片：绝对解决错位 */
+  .entry { 
+    display: grid; 
+    grid-template-columns: 120px 1fr; 
+    gap: 2rem; 
+    border-bottom: 1px solid var(--border-color); 
+    padding: 2.5rem 0; 
+    position: relative;
+    transition: background-color 0.2s;
+  }
   .entry:hover { background-color: var(--bg-surface); }
   .entry:hover .entry-title { color: var(--primary); }
   
-  /* 覆盖全卡的点击层 */
   .entry-link-overlay { position: absolute; inset: 0; z-index: 1; }
   
-  /* 卡片内容层级要高于覆盖层 */
-  .entry-date-col, .entry-content-col { position: relative; z-index: 2; pointer-events: none; }
-  /* 但里面的链接和按钮要允许点击 */
+  .entry-date-col { color: var(--text-tertiary); font-family: "Courier New", monospace; font-size: 1.1rem; margin-top: 0.2rem; position: relative; z-index: 2; pointer-events: none; }
+  .entry-content-col { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 2; pointer-events: none; }
   .entry a, .entry button { pointer-events: auto; }
-
-  .entry-date-col { width: 120px; flex-shrink: 0; color: var(--text-tertiary); font-family: "Courier New", monospace; font-size: 1.1rem; margin-top: 0.2rem; }
-  .entry-content-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   
   .entry-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
-  .entry-title { font-size: 1.4rem; font-weight: bold; color: var(--text-primary); font-family: "Microsoft YaHei", sans-serif; word-break: break-word; margin: 0; transition: color 0.2s; }
+  .entry-title { font-size: 1.4rem; font-weight: bold; color: var(--text-primary); font-family: "Microsoft YaHei", sans-serif; word-break: break-word; margin: 0; transition: color 0.2s; line-height: 1.3; }
   .tag { color: var(--primary); padding: 0.15rem 0.6rem; font-size: 0.8rem; border: 1px solid var(--primary); font-family: "Microsoft YaHei", sans-serif; white-space: nowrap; }
   
   .entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; }
@@ -72,8 +78,7 @@
 
   @media (max-width: 768px) { 
     .filter-row { grid-template-columns: 1fr; } 
-    .entry { flex-direction: column; gap: 0.5rem; padding: 1.5rem 0; }
-    .entry-date-col { width: auto; }
+    .entry { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.5rem 0; }
   }
 </style>
 </head>
@@ -177,7 +182,6 @@
     if(dateStr.includes(' 至 ')) dateStr = dateStr.split(' 至 ')[0].substring(0, 4);
     else if(dateStr.length >= 10) dateStr = dateStr.substring(0, 10);
     
-    // 核心改动：外层是 div，里面塞了一个绝对定位的 a 标签作为点击热区
     let html = `<div class="entry">`;
     if (uid !== '无') {
       html += `<a href="/record/${encodeURIComponent(uid)}" class="entry-link-overlay" aria-label="查看档案"></a>`;
