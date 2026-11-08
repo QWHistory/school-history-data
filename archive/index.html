@@ -100,7 +100,7 @@
     else if(dateStr.length >= 10) dateStr = dateStr.substring(0, 10);
 
     return `
-      <div class="entry-item" onclick="window.location.href='/record/${uid}'">
+      <div class="entry-item" onclick="window.location.href='/archives/${uid}'">
         <div class="entry-date">${escapeHTML(dateStr)}</div>
         <div class="entry-content">
           <div class="entry-title">${escapeHTML(title)} ${category ? `<span class="tag">${escapeHTML(category)}</span>` : ''}</div>
