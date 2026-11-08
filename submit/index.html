@@ -11,13 +11,53 @@
   .notice-box ul { margin-left: 1.5rem; color: var(--text-secondary); line-height: 1.8; font-family: "Microsoft YaHei", sans-serif; font-size: 0.95rem; }
   .notice-box li { margin-bottom: 0.5rem; word-break: break-word; }
   
-  /* 默认显示的兜底框 */
-  .fallback-box { text-align: center; padding: 4rem 2rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 4px; }
-  .fallback-box p { margin-bottom: 1.5rem; color: var(--text-secondary); font-family: "Microsoft YaHei", sans-serif; font-size: 1.05rem; }
-  
-  /* 隐藏的 iframe 容器 */
-  .iframe-container { display: none; width: 100%; height: 800px; border: 1px solid var(--border-color); background: var(--bg-surface); border-radius: 4px; overflow: hidden; }
-  .iframe-container iframe { width: 100%; height: 100%; border: none; }
+  /* 核心区域：控制加载状态与 iframe 显示 */
+  .form-wrapper {
+    position: relative;
+    width: 100%;
+    height: 800px; /* 可根据需要调整 */
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  /* 加载中占位层 */
+  .loading-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-surface);
+    z-index: 10;
+    font-family: "Microsoft YaHei", sans-serif;
+  }
+  .loading-text {
+    font-size: 1.2rem;
+    color: var(--text-tertiary);
+    margin-bottom: 1rem;
+  }
+  .fallback-link {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  .fallback-link a {
+    color: var(--primary);
+    text-decoration: underline;
+  }
+  .fallback-link a:hover {
+    color: var(--primary-hover);
+  }
+
+  /* iframe 默认隐藏，加载成功后显示 */
+  .form-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none; /* 初始隐藏 */
+  }
 </style>
 </head>
 <body>
@@ -48,15 +88,18 @@
       </ul>
     </div>
 
-    <!-- 默认显示的兜底：点击前往 -->
-    <div class="fallback-box" id="fallbackBox">
-      <p>点击下方按钮，将前往飞书填写表单。<br>（为保证稳定性，推荐在新标签页打开）</p>
-      <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.9rem 2.5rem;">前往飞书表单提交</a>
-    </div>
+    <!-- 表单区域 -->
+    <div class="form-wrapper">
+      <!-- 占位提示层 -->
+      <div class="loading-placeholder" id="loadingPlaceholder">
+        <div class="loading-text">表单加载中，请稍候...</div>
+        <div class="fallback-link">
+          加载失败或长时间无响应？请 <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener">点击此处在新标签页打开</a>
+        </div>
+      </div>
 
-    <!-- 如果飞书允许，后台加载成功后替换掉上面的兜底框 -->
-    <div class="iframe-container" id="iframeContainer">
-      <iframe id="feishuForm" src="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" onload="showIframe()"></iframe>
+      <!-- 真实的 iframe -->
+      <iframe id="feishuForm" src="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd"></iframe>
     </div>
 
   </main>
@@ -70,11 +113,23 @@
 <script>
   initThemeToggle();
 
-  // 当 iframe 加载成功后，把兜底的大按钮隐藏，把 iframe 展示出来
-  function showIframe() {
-    document.getElementById('iframeContainer').style.display = 'block';
-    document.getElementById('fallbackBox').style.display = 'none';
-  }
+  const iframe = document.getElementById('feishuForm');
+  const loadingPlaceholder = document.getElementById('loadingPlaceholder');
+
+  // 当 iframe 加载完成（或者被拦截触发 onload）时执行
+  iframe.onload = function() {
+    // 隐藏占位层，显示 iframe
+    loadingPlaceholder.style.display = 'none';
+    iframe.style.display = 'block';
+  };
+
+  // 兜底策略：如果 4 秒后还没加载完，强行显示 iframe（即便里面是报错，也比一直卡在加载中好），让用户自己去点小字链接。
+  setTimeout(() => {
+    if (iframe.style.display === 'none') {
+      loadingPlaceholder.style.display = 'none';
+      iframe.style.display = 'block';
+    }
+  }, 4000);
 </script>
 </body>
 </html>
