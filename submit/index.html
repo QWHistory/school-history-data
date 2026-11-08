@@ -6,23 +6,49 @@
 <title>我要投稿 - 清湾档案馆（非官方）</title>
 <link rel="stylesheet" href="/assets/css/style.css">
 <style>
-  .notice-box { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 2rem; margin-bottom: 2rem; border-left: 4px solid var(--primary); border-radius: 4px; }
+  .notice-box { 
+    position: relative;
+    background: var(--bg-surface); 
+    border: 1px solid var(--border-color); 
+    padding: 2rem; 
+    margin-bottom: 2rem; 
+    border-left: 4px solid var(--primary); 
+    border-radius: 4px; 
+  }
   .notice-box h3 { color: var(--primary); margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; font-size: 1.1rem; }
   .notice-box ul { margin-left: 1.5rem; color: var(--text-secondary); line-height: 1.8; font-family: "Microsoft YaHei", sans-serif; font-size: 0.95rem; }
   .notice-box li { margin-bottom: 0.5rem; word-break: break-word; }
   
-  /* 核心区域：控制加载状态与 iframe 显示 */
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    color: var(--text-tertiary);
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: color 0.2s;
+    user-select: none;
+  }
+  .close-btn:hover { color: var(--primary); }
+
   .form-wrapper {
     position: relative;
     width: 100%;
-    height: 800px; /* 表单显示时的高度 */
+    height: 800px;
     border: 1px solid var(--border-color);
     background: var(--bg-surface);
     border-radius: 4px;
     overflow: hidden;
+    /* 给滤镜加个平滑过渡动画 */
+    transition: filter 0.3s ease;
   }
 
-  /* 加载中占位层 */
+  /* 核心魔法：色相不变，明度反转 */
+  [data-theme="dark"] .form-wrapper {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
   .loading-placeholder {
     position: absolute;
     inset: 0;
@@ -33,31 +59,20 @@
     background: var(--bg-surface);
     z-index: 10;
     font-family: "Microsoft YaHei", sans-serif;
+    /* 占位层不能反转，否则字看不清 */
+    filter: invert(0); 
   }
-  .loading-text {
-    font-size: 1.2rem;
-    color: var(--text-tertiary);
-    margin-bottom: 1rem;
-  }
-  .fallback-link {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-  }
-  .fallback-link a {
-    color: var(--primary);
-    text-decoration: underline;
-  }
-  .fallback-link a:hover {
-    color: var(--primary-hover);
+  /* 抵消父元素的滤镜 */
+  [data-theme="dark"] .loading-placeholder {
+    filter: invert(1) hue-rotate(180deg);
   }
 
-  /* iframe 默认隐藏，加载成功后显示 */
-  .form-wrapper iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: none; /* 初始隐藏 */
-  }
+  .loading-text { font-size: 1.2rem; color: var(--text-tertiary); margin-bottom: 1rem; }
+  .fallback-link { font-size: 0.9rem; color: var(--text-secondary); }
+  .fallback-link a { color: var(--primary); text-decoration: underline; }
+  .fallback-link a:hover { color: var(--primary-hover); }
+
+  .form-wrapper iframe { width: 100%; height: 100%; border: none; display: none; }
 </style>
 </head>
 <body>
@@ -79,7 +94,8 @@
     </div>
     <h1 style="color: var(--primary); margin-bottom: 2rem; font-size: 2rem;">投稿须知</h1>
     
-    <div class="notice-box">
+    <div class="notice-box" id="noticeBox">
+      <span class="close-btn" id="closeNotice" title="关闭提示">&times;</span>
       <h3>在提交您的珍贵记忆前，请仔细阅读：</h3>
       <ul>
         <li><strong>授权与合规：</strong>请确保您拥有所提交照片、文字的版权或合法授权。提交即代表您同意本（非官方）档案馆对其进行数字化保存及公开展示。</li>
@@ -88,17 +104,13 @@
       </ul>
     </div>
 
-    <!-- 表单区域 -->
-    <div class="form-wrapper">
-      <!-- 占位提示层 -->
+    <div class="form-wrapper" id="formWrapper">
       <div class="loading-placeholder" id="loadingPlaceholder">
         <div class="loading-text">表单加载中，请稍候...</div>
         <div class="fallback-link">
           无法显示？请 <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener">点击此处在新标签页打开</a>
         </div>
       </div>
-
-      <!-- 真实的 iframe -->
       <iframe id="feishuForm" src="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd"></iframe>
     </div>
 
@@ -113,10 +125,14 @@
 <script>
   initThemeToggle();
 
+  // 1. 关闭提示框
+  document.getElementById('closeNotice').onclick = function() {
+    document.getElementById('noticeBox').style.display = 'none';
+  };
+
+  // 2. iframe 加载逻辑
   const iframe = document.getElementById('feishuForm');
   const loadingPlaceholder = document.getElementById('loadingPlaceholder');
-
-  // 当 iframe 加载完成时，隐藏提示层，展示 iframe
   iframe.onload = function() {
     loadingPlaceholder.style.display = 'none';
     iframe.style.display = 'block';
