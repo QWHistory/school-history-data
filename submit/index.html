@@ -6,13 +6,19 @@
 <title>我要投稿 - 清湾档案馆（非官方）</title>
 <link rel="stylesheet" href="/assets/css/style.css">
 <style>
-  .notice-box { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 2.5rem; margin-bottom: 3rem; border-left: 4px solid var(--primary); border-radius: 4px; }
-  .notice-box h3 { color: var(--primary); margin-bottom: 1.5rem; font-family: "Microsoft YaHei", sans-serif; font-size: 1.2rem; }
-  .notice-box ul { margin-left: 1.5rem; color: var(--text-secondary); line-height: 2; font-family: "Microsoft YaHei", sans-serif; }
+  .notice-box { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 2rem; margin-bottom: 2rem; border-left: 4px solid var(--primary); border-radius: 4px; }
+  .notice-box h3 { color: var(--primary); margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; font-size: 1.1rem; }
+  .notice-box ul { margin-left: 1.5rem; color: var(--text-secondary); line-height: 1.8; font-family: "Microsoft YaHei", sans-serif; font-size: 0.95rem; }
   .notice-box li { margin-bottom: 0.5rem; word-break: break-word; }
   
-  .fallback-box { text-align: center; padding: 5rem 2rem; background: var(--bg-surface); border: 1px dashed var(--border-color); margin-top: 3rem; border-radius: 4px; }
-  .fallback-box p { margin-bottom: 2rem; color: var(--text-secondary); font-size: 1.1rem; }
+  /* 加载提示文字 */
+  .form-tip { text-align: center; margin-bottom: 1rem; font-family: "Microsoft YaHei", sans-serif; font-size: 0.9rem; color: var(--text-tertiary); }
+  .form-tip a { color: var(--primary); text-decoration: underline; }
+  .form-tip a:hover { color: var(--primary-hover); }
+
+  /* iframe 容器 */
+  .iframe-container { width: 100%; height: 800px; border: 1px solid var(--border-color); background: var(--bg-surface); border-radius: 4px; overflow: hidden; }
+  .iframe-container iframe { width: 100%; height: 100%; border: none; }
 </style>
 </head>
 <body>
@@ -43,14 +49,17 @@
       </ul>
     </div>
 
-    <div class="fallback-box" id="fallbackBox">
-      <p>点击下方按钮，将前往飞书填写表单。<br>（为保证稳定性，推荐在新标签页打开）</p>
-      <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.9rem 2.5rem;">前往飞书表单提交</a>
+    <!-- 提示语区域 -->
+    <div class="form-tip" id="formTip">
+      <span id="loadingText">表单加载中，请稍候...</span>
+      <span id="fallbackText" style="display: none;">
+        如果上方表单长时间无法显示，请 <a href="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" target="_blank" rel="noopener">点击此处在新标签页打开</a>。
+      </span>
     </div>
 
-    <!-- iframe 隐藏，如果飞书不拦截则加载出来 -->
-    <div class="iframe-container" id="iframeContainer" style="display:none; margin-top: 2rem; width:100%; height: 800px; border: 1px solid var(--border-color);">
-      <iframe id="feishuForm" src="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd" style="width:100%; height:100%; border:none;" onload="document.getElementById('iframeContainer').style.display='block'; document.getElementById('fallbackBox').style.display='none';"></iframe>
+    <!-- 直接展示 iframe -->
+    <div class="iframe-container">
+      <iframe id="feishuForm" src="https://qcnbntrwmgix.feishu.cn/share/base/form/shrcnkDQYPEUFTH1E3HEWcLcivd"></iframe>
     </div>
 
   </main>
@@ -59,9 +68,31 @@
     清湾校史档案馆（非官方）· 数据由全校师生共建<br>
     本项目为公益性开源项目，与学校官方无关。
   </footer>
+
 <script src="/assets/js/common.js"></script>
 <script>
   initThemeToggle();
+
+  const iframe = document.getElementById('feishuForm');
+  const loadingText = document.getElementById('loadingText');
+  const fallbackText = document.getElementById('fallbackText');
+  let isLoaded = false;
+
+  // 当 iframe 加载完成时（无论是正常显示还是被拦截报错，都会触发）
+  iframe.onload = function() {
+    if (isLoaded) return;
+    isLoaded = true;
+    loadingText.style.display = 'none';
+    fallbackText.style.display = 'inline';
+  };
+
+  // 兜底策略：如果 3 秒了还没加载完，也把跳转链接亮出来给用户，免得他们干等
+  setTimeout(() => {
+    if (!isLoaded) {
+      loadingText.style.display = 'none';
+      fallbackText.style.display = 'inline';
+    }
+  }, 3000);
 </script>
 </body>
 </html>
