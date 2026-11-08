@@ -1,1 +1,1 @@
-/record/:uid /record1 200
+/record/* /record1.html 200
